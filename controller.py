@@ -1,6 +1,9 @@
 from View.viewtile import ViewTile
-from View.viewmainframe import ViewMainFrame
 from PySide2.QtCore import Signal, Slot, QObject
+
+from Model.mod_room import ModRoom
+from View.viewmainframe import ViewMainFrame
+
 from random import randint
 
 
@@ -9,25 +12,37 @@ class Controller(QObject):
 
     def __init__(self):
         QObject.__init__(self)
+
+        # BDD connection
+        self.__bdd = sqlite3.connect("Model/SQL/sdc_db")
+        self.__cursor = self.__bdd.cursor()
+
+        # Create the Views
         self.gui = ViewMainFrame()
-        self.sig_add_tile.connect(self.create_tile)
         self.gui.central_widget.sig_add_tile = self.sig_add_tile
         self.v_canvas = self.gui.central_widget.v_canvas
 
+        # Create the models
+        self.m_room = ModRoom("s 314")
+
+        # Signals connection
+        self.sig_add_tile.connect(self.create_desk)
+
+
     @Slot()
-    def create_tile(self):
-        self.v_canvas.tiles.clear()
+    def create_desk(self):
 
-        generated = []
-
-        while len(generated) < 5:
+        c, cont = 0, True
+        while c<10 and cont:
+            c += 1
             x = randint(0, 4)
             y = randint(0, 4)
+            id = self.m_room.get_desk_id(x, y)
+            if id == 0:
+                # The place is free, we create the desk
+                self.m_room.add_desk(x, y)
+                cont = False
+                new_tile = ViewTile(x, y)
 
-            if (x, y) not in generated:
-                generated.append((x, y))
-
-        for x, y in generated:
-            self.v_canvas.tiles.append(ViewTile(x, y))
-
+        self.v_canvas.tiles.append(new_tile)
         self.v_canvas.repaint()
