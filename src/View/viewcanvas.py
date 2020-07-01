@@ -57,7 +57,7 @@ class ViewCanvas(QWidget):
         x = event.x() // self.square_size
         y = event.y() // self.square_size
 
-        self.sig_canvas_click.emit(x, y)
+        self.sig_canvas_click.emit((x, y))
 
     def convert_point_at(self, x, y):
         """

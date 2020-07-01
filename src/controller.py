@@ -34,7 +34,7 @@ class Controller(QObject):
         # Signals connection
         self.sig_add_tile.connect(self.create_desk)
         self.sig_quit.connect(self.do_quit)
-        self.sig_canvas_click(self.add_desk)
+        self.sig_canvas_click.connect(self.add_desk)
 
 
     @Slot()
@@ -57,16 +57,14 @@ class Controller(QObject):
     @Slot(tuple)
     def add_desk(self, coords):
         """Add a new desk at mouse place"""
-            x = coords[0]
-            y = coords[1]
-            print(x, y)
-            id_desk = self.m_room.get_desk_id(x, y)
-            if id_desk == 0:
-                # The place is free, we create the desk
-                id_desk = self.m_room.add_desk(x, y)
-                cont = False
-                new_tile = ViewTile(x, y)
-                self.v_canvas.tiles.append(new_tile)
+        x = coords[0]
+        y = coords[1]
+        id_desk = self.m_room.get_desk_id(x, y)
+        if id_desk == 0:
+            # The place is free, we create the desk
+            id_desk = self.m_room.add_desk(x, y)
+            new_tile = ViewTile(x, y)
+            self.v_canvas.tiles.append(new_tile)
         self.v_canvas.repaint()
 
     @Slot()

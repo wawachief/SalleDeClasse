@@ -58,10 +58,13 @@ class ModRoom:
         if self.__id != 0:
             req = "INSERT INTO Desks (IdRoom, CoordX, CoordY) VALUES (?, ?, ?)"
             self.__cursor.execute(req, [self.__id, cx, cy])
-            dsk = Desk(self.__cursor.lastrowid, cx, cy)
+            id_dsk = self.__cursor.lastrowid
+            dsk = Desk(id_dsk, cx, cy)
             self.__bdd.commit()
+            return id_dsk
         else:
             print ('add desk impossible')
+            return 0
     
     def get_desk_id(self, cx, cy):
         req = "SELECT IdDesk FROM Desks WHERE IdRoom = ? AND CoordX = ? AND CoordY = ?"
