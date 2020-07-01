@@ -1,10 +1,10 @@
 import sqlite3
 
-from View.viewcanvas import ViewTile
+from src.View.viewcanvas import ViewTile
 from PySide2.QtCore import Signal, Slot, QObject
 
-from Model.mod_room import ModRoom
-from View.viewmainframe import ViewMainFrame
+from src.Model.mod_room import ModRoom
+from src.View.viewmainframe import ViewMainFrame
 
 from random import randint
 
@@ -17,7 +17,7 @@ class Controller(QObject):
         QObject.__init__(self)
 
         # BDD connection
-        self.__bdd = sqlite3.connect("Model/SQL/sdc_db")
+        self.__bdd = sqlite3.connect("src/Model/SQL/sdc_db")
 
         # Create the Views
         self.gui = ViewMainFrame(self.sig_quit)
