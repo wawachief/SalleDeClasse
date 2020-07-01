@@ -31,8 +31,8 @@ class ViewCanvas(QWidget):
 
         self.setFixedSize(self.square_size * 5, self.square_size * 5)
 
-        self.sig_click = None  # Signal triggered when a click is performed on a desk
-        self.sig_drag = None  # Signal triggered when a drag operation is performed on the canvas
+        self.sig_canvas_click = None  # Signal triggered when a click is performed on a desk
+        self.sig_canvas_drag = None  # Signal triggered when a drag operation is performed on the canvas
 
     def paintEvent(self, event):
         """
@@ -57,7 +57,7 @@ class ViewCanvas(QWidget):
         x = event.x() // self.square_size
         y = event.y() // self.square_size
 
-        # self.sig_click.emit(x, y)
+        self.sig_canvas_click.emit(x, y)
 
     def convert_point_at(self, x, y):
         """

@@ -12,6 +12,7 @@ from random import randint
 class Controller(QObject):
     sig_add_tile = Signal()
     sig_quit = Signal()
+    sig_canvas_click = Signal(tuple)
 
     def __init__(self):
         QObject.__init__(self)
@@ -22,20 +23,23 @@ class Controller(QObject):
         # Create the Views
         self.gui = ViewMainFrame(self.sig_quit)
         self.gui.central_widget.sig_add_tile = self.sig_add_tile
-        self.gui.sig_quit = self.sig_quit
         self.v_canvas = self.gui.central_widget.v_canvas
+        # Plugs the signals
+        self.gui.sig_quit = self.sig_quit
+        self.v_canvas.sig_canvas_click = self.sig_canvas_click
 
-        # Create the models
+        # Create the Models
         self.m_room = self.show_room("s 314")
 
         # Signals connection
         self.sig_add_tile.connect(self.create_desk)
         self.sig_quit.connect(self.do_quit)
+        self.sig_canvas_click(self.add_desk)
 
 
     @Slot()
     def create_desk(self):
-
+        """Create dummy desk at random place"""
         c, cont = 0, True
         while c<10 and cont:
             c += 1
@@ -49,7 +53,22 @@ class Controller(QObject):
                 new_tile = ViewTile(x, y)
                 self.v_canvas.tiles.append(new_tile)
         self.v_canvas.repaint()
-    
+
+    @Slot(tuple)
+    def add_desk(self, coords):
+        """Add a new desk at mouse place"""
+            x = coords[0]
+            y = coords[1]
+            print(x, y)
+            id_desk = self.m_room.get_desk_id(x, y)
+            if id_desk == 0:
+                # The place is free, we create the desk
+                id_desk = self.m_room.add_desk(x, y)
+                cont = False
+                new_tile = ViewTile(x, y)
+                self.v_canvas.tiles.append(new_tile)
+        self.v_canvas.repaint()
+
     @Slot()
     def do_quit(self):
         print("Bye")
