@@ -44,12 +44,39 @@ class ViewCanvas(QWidget):
         """
         super().paintEvent(event)
 
+        tile_hover_pos = self.__convert_point(self.mouse_pos[0], self.mouse_pos[1]) if self.mouse_pos else None
+        tile_hover = None
+
         painter = QPainter(self)
         for t in self.tiles:
             x, y = t.pos
-            painter.fillRect(self.__get_rect_at(x, y), QColor("cyan"))
+            if t.pos == self.click_pos:  # If the tile is selected
+                tile_hover = t
+                color = "blue"
+            elif t.pos == tile_hover_pos:  # If the mouse is hover
+                color = "lightblue"
+            else:
+                color = "cyan"
+            painter.fillRect(self.__get_rect_at(x, y), QColor(color))
             painter.drawText(QPoint(self.square_size * x, self.square_size * y + 10), f"{t.name}")
             painter.drawText(QPoint(self.square_size * x, self.square_size * y + 20), f"{t.surname}")
+
+        if self.click_pos != tile_hover_pos and tile_hover and self.mouse_pos:
+            # If the mouse is no longer hover the clicked tile we draw the dragged tile
+            self.__draw_dragged_tile(painter, tile_hover, self.mouse_pos[0], self.mouse_pos[1])
+
+    def __draw_dragged_tile(self, painter, tile, x, y):
+        """
+        Draws the given tile under the mouse position
+
+        :param painter: painter object
+        :param tile: tile data object
+        :param x: real mouse position x
+        :param y: real mouse position y
+        """
+        painter.fillRect(QRect(QPoint(x, y), QPoint(x + self.square_size, y + self.square_size)), QColor("grey"))
+        painter.drawText(QPoint(x, y + 10), f"{tile.name}")
+        painter.drawText(QPoint(x, y + 20), f"{tile.surname}")
 
     def mousePressEvent(self, event):
         """
@@ -60,7 +87,11 @@ class ViewCanvas(QWidget):
             self.click_pos = self.__convert_point(event.x(), event.y())  # Register the click point
 
     def mouseMoveEvent(self, event):
-        pass
+        if not self.click_pos:  # The drag operation is performed only with a left click
+            return
+
+        self.mouse_pos = (event.x(), event.y())
+        self.repaint()
 
     def mouseReleaseEvent(self, event):
         """
@@ -79,6 +110,8 @@ class ViewCanvas(QWidget):
             # self.sig_canvas_drag.emit(self.click_pos, click_end_pos)
 
         self.click_pos = ()
+        self.mouse_pos = ()
+        self.repaint()
 
     def __convert_point(self, x, y):
         """
