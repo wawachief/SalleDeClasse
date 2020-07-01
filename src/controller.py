@@ -18,7 +18,7 @@ class Controller(QObject):
         QObject.__init__(self)
 
         # BDD connection
-        self.__bdd = sqlite3.connect("src/Model/SQL/sdc_db")
+        self.__bdd = sqlite3.connect("src/SQL/sdc_db")
 
         # Create the Views
         self.gui = ViewMainFrame(self.sig_quit)
