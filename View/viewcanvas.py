@@ -6,6 +6,9 @@ from PySide2.QtCore import QPoint, QRect
 class ViewCanvas(QWidget):
 
     def __init__(self):
+        """
+        Application's main canvas, in which is drawn desks and student's names.
+        """
         QWidget.__init__(self)
 
         self.square_size = 70
@@ -13,7 +16,13 @@ class ViewCanvas(QWidget):
 
         self.setFixedSize(self.square_size * 5, self.square_size * 5)
 
+        self.sig_click = None  # Signal triggered when a click is performed on a desk
+        self.sig_drag = None  # Signal triggered when a drag operation is performed on the canvas
+
     def paintEvent(self, event):
+        """
+        Draws the desks and students' names given the self.tiles list
+        """
         super().paintEvent(event)
 
         painter = QPainter(self)
@@ -23,9 +32,21 @@ class ViewCanvas(QWidget):
             painter.drawText(QPoint(self.square_size * x, self.square_size * y + 10), f"{t.name}")
             painter.drawText(QPoint(self.square_size * x, self.square_size * y + 20), f"{t.surname}")
 
+    def mousePressEvent(self, event):
+        """
+        Intercepts the mousePressEvent in order to get where the user clicked and signal it to the controller,
+        using self.sig_click.
+
+        :param event:
+        """
+        x = event.x() // self.square_size
+        y = event.y() // self.square_size
+
+        # self.sig_click.emit(x, y) 
+
     def convert_point_at(self, x, y):
         """
-        Gets the QRect associated with the given position
+        Gets the QRect associated with the given position. Used for drawing the desks
         :rtype: QRect
         """
         return QRect(QPoint(self.square_size * x, self.square_size * y),
