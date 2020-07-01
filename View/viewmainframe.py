@@ -1,7 +1,6 @@
-from PySide2.QtWidgets import QMainWindow, QWidget, QPushButton, QVBoxLayout
+from PySide2.QtWidgets  import  QMainWindow, QWidget, QPushButton, QVBoxLayout
 
 from View.viewcanvas import ViewCanvas
-
 
 class CentralWidget(QWidget):
     def __init__(self):
@@ -20,7 +19,6 @@ class CentralWidget(QWidget):
     def new_tile(self):
         self.sig_add_tile.emit()
 
-
 class ViewMainFrame(QMainWindow):
 
     def __init__(self,  sig_quit):
@@ -28,11 +26,7 @@ class ViewMainFrame(QMainWindow):
         self.central_widget = CentralWidget()
         self.setCentralWidget(self.central_widget)
         self.sig_quit = sig_quit
-    
-    def do_quit(self):
-        pass
 
     def closeEvent(self, event):
-        self.do_quit()
         self.sig_quit.emit()
         event.accept()
