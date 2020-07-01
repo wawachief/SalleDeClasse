@@ -1,8 +1,8 @@
-from PySide2.QtWidgets import QWidget
+from PySide2.QtWidgets import QWidget, QSizePolicy
 from PySide2.QtGui import QPainter, QColor, QPen, QPalette
 from PySide2.QtCore import QPoint, QRect, Qt
 
-OFFSET = 1
+PADDING = 1  # Padding of each tile
 
 
 class ViewTile:
@@ -36,8 +36,6 @@ class ViewCanvas(QWidget):
         self.setAutoFillBackground(True)
         self.tiles = []
 
-        self.setFixedSize(self.square_size * 5, self.square_size * 5)
-
         self.sig_canvas_click = None  # Signal triggered when a click is performed on a desk
         self.sig_canvas_drag = None  # Signal triggered when a drag operation is performed on the canvas
 
@@ -45,6 +43,9 @@ class ViewCanvas(QWidget):
         self.click_pos = ()
         self.mouse_pos = ()
 
+        nb_rows = int(self.config.get('size', 'default_room_rows'))
+        nb_columns = int(self.config.get('size', 'default_room_columns'))
+        self.setFixedSize(self.square_size * nb_columns, self.square_size * nb_rows)
         self.__init_style()
 
     def __init_style(self):
@@ -92,8 +93,8 @@ class ViewCanvas(QWidget):
         :param x: real mouse position x
         :param y: real mouse position y
         """
-        rect = QRect(QPoint(OFFSET + x, OFFSET + y),
-                     QPoint(x + self.square_size - OFFSET, y + self.square_size - OFFSET))
+        rect = QRect(QPoint(PADDING + x, PADDING + y),
+                     QPoint(x + self.square_size - PADDING, y + self.square_size - PADDING))
         painter.fillRect(rect, QColor(self.config.get('colors', 'dragged_tile')))
         painter.drawText(rect, Qt.AlignCenter | Qt.TextWordWrap, f"{tile.firstname}\n{tile.lastname}")
 
@@ -151,6 +152,6 @@ class ViewCanvas(QWidget):
         :param y: column
         :rtype: QRect
         """
-        return QRect(QPoint(OFFSET + self.square_size * x, OFFSET + self.square_size * y),
-                     QPoint(self.square_size * x + self.square_size - OFFSET,
-                            self.square_size * y + self.square_size - OFFSET))
+        return QRect(QPoint(PADDING + self.square_size * x, PADDING + self.square_size * y),
+                     QPoint(self.square_size * x + self.square_size - PADDING,
+                            self.square_size * y + self.square_size - PADDING))

@@ -46,6 +46,7 @@ class ViewMainFrame(QMainWindow):
         QMainWindow.__init__(self)
         self.central_widget = CentralWidget(config)
         self.setCentralWidget(self.central_widget)
+
         self.sig_quit = sig_quit
 
         self.setStyleSheet("QMainWindow {" + f"background-color: {config.get('colors', 'main_bg')};" + "}")
