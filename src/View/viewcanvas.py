@@ -31,8 +31,8 @@ class ViewCanvas(QWidget):
 
         self.setFixedSize(self.square_size * 5, self.square_size * 5)
 
-        self.sig_click = None  # Signal triggered when a click is performed on a desk
-        self.sig_drag = None  # Signal triggered when a drag operation is performed on the canvas
+        self.sig_canvas_click = None  # Signal triggered when a click is performed on a desk
+        self.sig_canvas_drag = None  # Signal triggered when a drag operation is performed on the canvas
 
         # Tracking for drag/drop operation
         self.mouse_btn_left_click = False
@@ -60,7 +60,7 @@ class ViewCanvas(QWidget):
         if event.button() == Qt.LeftButton:
             self.mouse_btn_left_click = True  # For the mouse tracking in case of drag/drop operation
 
-        # self.sig_click.emit(self.__convert_point(x, y)) TODO
+        self.sig_canvas_click.emit(self.__convert_point(event.x(), event.y()))
 
     def mouseMoveEvent(self, event):
         """
@@ -86,7 +86,7 @@ class ViewCanvas(QWidget):
         - The start point differs from the end point
         """
         if self.mouse_btn_left_click and self.drag_start and self.drag_end and self.drag_start != self.drag_end:
-            # self.sig_drag.emit(self.drag_start, self.drag_end) TODO
+            # self.sig_canvas_drag.emit(self.drag_start, self.drag_end) TODO
             self.mouse_btn_left_click = False
             self.drag_start = ()
 

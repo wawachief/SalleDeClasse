@@ -1,6 +1,6 @@
 from PySide2.QtWidgets import QMainWindow, QWidget, QPushButton, QVBoxLayout
 
-from View.viewcanvas import ViewCanvas
+from src.View.viewcanvas import ViewCanvas
 
 
 class CentralWidget(QWidget):
