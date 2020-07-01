@@ -47,8 +47,7 @@ class Controller(QObject):
                 self.m_room.add_desk(x, y)
                 cont = False
                 new_tile = ViewTile(x, y)
-
-        self.v_canvas.tiles.append(new_tile)
+                self.v_canvas.tiles.append(new_tile)
         self.v_canvas.repaint()
     
     @Slot()
@@ -57,7 +56,7 @@ class Controller(QObject):
         self.__bdd.close()
 
     def show_room(self, room_name):
-        room = ModRoom(self.__bdd, "s 314")
+        room = ModRoom(self.__bdd, room_name)
         all_desks = room.get_all_desks()
         for d in all_desks:
             new_tile = ViewTile(d.cx, d.cy)
