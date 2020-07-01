@@ -2,6 +2,7 @@ from PySide2.QtWidgets import QWidget, QPushButton, QVBoxLayout
 from PySide2.QtGui import QPainter, QColor
 from PySide2.QtCore import QPoint, QRect
 
+
 class ViewCanvas(QWidget):
 
     def __init__(self):

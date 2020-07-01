@@ -1,6 +1,7 @@
-from PySide2.QtWidgets  import  QMainWindow, QWidget, QPushButton, QVBoxLayout
+from PySide2.QtWidgets import QMainWindow, QWidget, QPushButton, QVBoxLayout
 
 from View.viewcanvas import ViewCanvas
+
 
 class CentralWidget(QWidget):
     def __init__(self):
@@ -18,6 +19,7 @@ class CentralWidget(QWidget):
 
     def new_tile(self):
         self.sig_add_tile.emit()
+
 
 class ViewMainFrame(QMainWindow):
 
