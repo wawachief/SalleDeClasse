@@ -3,6 +3,21 @@ from PySide2.QtGui import QPainter, QColor
 from PySide2.QtCore import QPoint, QRect
 
 
+class ViewTile:
+
+    def __init__(self, x, y):
+        """
+        Description object, contains the information that needs to be displayed in the associated tile's position
+
+        :param x: row coordinate
+        :param y: column coordinate
+        """
+        self.name = "Toto"
+        self.surname = "AZERTY"
+
+        self.pos = (x, y)
+
+
 class ViewCanvas(QWidget):
 
     def __init__(self):
@@ -42,7 +57,7 @@ class ViewCanvas(QWidget):
         x = event.x() // self.square_size
         y = event.y() // self.square_size
 
-        # self.sig_click.emit(x, y) 
+        # self.sig_click.emit(x, y)
 
     def convert_point_at(self, x, y):
         """

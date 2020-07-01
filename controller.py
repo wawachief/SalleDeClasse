@@ -1,6 +1,6 @@
 import sqlite3
 
-from View.viewtile import ViewTile
+from View.viewcanvas import ViewTile
 from PySide2.QtCore import Signal, Slot, QObject
 
 from Model.mod_room import ModRoom
