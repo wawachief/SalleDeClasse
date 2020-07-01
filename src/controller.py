@@ -1,10 +1,10 @@
 import sqlite3
 
-from src.View.viewcanvas import ViewTile
+from src.View.view_canvas import ViewTile
 from PySide2.QtCore import Signal, Slot, QObject
 
 from src.Model.mod_room import ModRoom
-from src.View.viewmainframe import ViewMainFrame
+from src.View.view_mainframe import ViewMainFrame
 
 from random import randint
 
@@ -14,14 +14,21 @@ class Controller(QObject):
     sig_quit = Signal()
     sig_canvas_click = Signal(tuple)
 
-    def __init__(self):
+    def __init__(self, config):
+        """
+        Application main controller.
+
+        :param config: application's parsed configuration
+        """
         QObject.__init__(self)
+
+        self.config = config
 
         # BDD connection
         self.__bdd = sqlite3.connect("src/SQL/sdc_db")
 
         # Create the Views
-        self.gui = ViewMainFrame(self.sig_quit)
+        self.gui = ViewMainFrame(self.sig_quit, self.config)
         self.gui.central_widget.sig_add_tile = self.sig_add_tile
         self.v_canvas = self.gui.central_widget.v_canvas
         # Plugs the signals
