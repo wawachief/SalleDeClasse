@@ -1,4 +1,4 @@
-class Desk():
+class Desk:
     def __init__(self, id, cx, cy):
         self.__id = id
         self.cx, self.cy = cx, cy
@@ -6,7 +6,8 @@ class Desk():
     def __str__(self):
         return f"Desk [{self.cx} - {self.cy} ]"
 
-class ModRoom():
+
+class ModRoom:
     """Room management class"""
     def __init__(self, bdd, name=None):
         self.__name = name
@@ -16,7 +17,6 @@ class ModRoom():
         self.__all_desks = []
 
         self.get_id()
-
 
     def get_id(self):
         """Gets the room Id from the name
