@@ -35,9 +35,8 @@ class ViewCanvas(QWidget):
         self.sig_canvas_drag = None  # Signal triggered when a drag operation is performed on the canvas
 
         # Tracking for drag/drop operation
-        self.mouse_btn_left_click = False
-        self.drag_start = ()
-        self.drag_end = ()
+        self.click_pos = ()
+        self.mouse_pos = ()
 
     def paintEvent(self, event):
         """
@@ -45,50 +44,74 @@ class ViewCanvas(QWidget):
         """
         super().paintEvent(event)
 
+        tile_hover_pos = self.__convert_point(self.mouse_pos[0], self.mouse_pos[1]) if self.mouse_pos else None
+        tile_hover = None
+
         painter = QPainter(self)
         for t in self.tiles:
             x, y = t.pos
-            painter.fillRect(self.__get_rect_at(x, y), QColor("cyan"))
+            if t.pos == self.click_pos:  # If the tile is selected
+                tile_hover = t
+                color = "blue"
+            elif t.pos == tile_hover_pos:  # If the mouse is hover
+                color = "lightblue"
+            else:
+                color = "cyan"
+            painter.fillRect(self.__get_rect_at(x, y), QColor(color))
             painter.drawText(QPoint(self.square_size * x, self.square_size * y + 10), f"{t.name}")
             painter.drawText(QPoint(self.square_size * x, self.square_size * y + 20), f"{t.surname}")
 
+        if self.click_pos != tile_hover_pos and tile_hover and self.mouse_pos:
+            # If the mouse is no longer hover the clicked tile we draw the dragged tile
+            self.__draw_dragged_tile(painter, tile_hover, self.mouse_pos[0], self.mouse_pos[1])
+
+    def __draw_dragged_tile(self, painter, tile, x, y):
+        """
+        Draws the given tile under the mouse position
+
+        :param painter: painter object
+        :param tile: tile data object
+        :param x: real mouse position x
+        :param y: real mouse position y
+        """
+        painter.fillRect(QRect(QPoint(x, y), QPoint(x + self.square_size, y + self.square_size)), QColor("grey"))
+        painter.drawText(QPoint(x, y + 10), f"{tile.name}")
+        painter.drawText(QPoint(x, y + 20), f"{tile.surname}")
+
     def mousePressEvent(self, event):
         """
-        Intercepts the mousePressEvent in order to get where the user clicked and signal it to the controller,
-        using self.sig_click.
+        Intercepts the mousePressEvent in order to get where the user clicked. We will compare this in the
+        mouseReleaseEvent to process the event.
         """
         if event.button() == Qt.LeftButton:
-            self.mouse_btn_left_click = True  # For the mouse tracking in case of drag/drop operation
-
-        self.sig_canvas_click.emit(self.__convert_point(event.x(), event.y()))
+            self.click_pos = self.__convert_point(event.x(), event.y())  # Register the click point
 
     def mouseMoveEvent(self, event):
-        """
-        Intercepted to process the drag operation.
-        This method will register the drag operation from the start click to the final release.
-        """
-        if not self.mouse_btn_left_click:  # We track only if we use mouse's left button
+        if not self.click_pos:  # The drag operation is performed only with a left click
             return
 
-        if not self.drag_start:  # Register the first point
-            self.drag_start = self.__convert_point(event.x(), event.y())
-
-        self.drag_end = self.__convert_point(event.x(), event.y())  # Updates the end points each time
+        self.mouse_pos = (event.x(), event.y())
+        self.repaint()
 
     def mouseReleaseEvent(self, event):
         """
-        Processes the drag operation, using the drag coordinates intercepted by the mouseMoveEvent.
-        Triggers the self.sig_drag signal if the drag/drop is valid.
+        Processes the click operation.
+        If the user clicked and released inside the same tile, we consider it a simple click.
 
-        We identify a drag drop operation if:
-        - We have a start point and an end point
-        - The mouse left button was the one used
-        - The start point differs from the end point
+        If the user clicked and released in two different tiles, we consider it as a drag/drop operation.
         """
-        if self.mouse_btn_left_click and self.drag_start and self.drag_end and self.drag_start != self.drag_end:
-            # self.sig_canvas_drag.emit(self.drag_start, self.drag_end) TODO
-            self.mouse_btn_left_click = False
-            self.drag_start = ()
+
+        click_end_pos = self.__convert_point(event.x(), event.y())
+
+        if click_end_pos == self.click_pos:
+            self.sig_canvas_click.emit(self.__convert_point(event.x(), event.y()))
+        else:
+            print(self.click_pos, click_end_pos)
+            # self.sig_canvas_drag.emit(self.click_pos, click_end_pos)
+
+        self.click_pos = ()
+        self.mouse_pos = ()
+        self.repaint()
 
     def __convert_point(self, x, y):
         """
