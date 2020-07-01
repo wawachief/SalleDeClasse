@@ -21,7 +21,16 @@ class CentralWidget(QWidget):
 
 class ViewMainFrame(QMainWindow):
 
-    def __init__(self):
+    def __init__(self,  sig_quit):
         QMainWindow.__init__(self)
         self.central_widget = CentralWidget()
         self.setCentralWidget(self.central_widget)
+        self.sig_quit = sig_quit
+    
+    def do_quit(self):
+        pass
+
+    def closeEvent(self, event):
+        self.do_quit()
+        self.sig_quit.emit()
+        event.accept()

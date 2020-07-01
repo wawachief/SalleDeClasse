@@ -1,5 +1,5 @@
 CREATE TABLE Desks (
-    IdDesk INTEGER PROMARY KEY,
+    IdDesk INTEGER PRIMARY KEY,
     CoordX INTEGER,
     CoordY INTEGER,
     IdRoom INTEGER,
