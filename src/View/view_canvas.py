@@ -1,6 +1,8 @@
-from PySide2.QtWidgets import QWidget
-from PySide2.QtGui import QPainter, QColor
+from PySide2.QtWidgets import QWidget, QSizePolicy
+from PySide2.QtGui import QPainter, QColor, QPen, QPalette
 from PySide2.QtCore import QPoint, QRect, Qt
+
+PADDING = 1  # Padding of each tile
 
 
 class ViewTile:
@@ -12,24 +14,27 @@ class ViewTile:
         :param x: row coordinate
         :param y: column coordinate
         """
-        self.name = "Toto"
-        self.surname = "AZERTY"
+        self.firstname = "Toto"
+        self.lastname = "AZERTY"
 
         self.pos = (x, y)
 
 
 class ViewCanvas(QWidget):
 
-    def __init__(self):
+    def __init__(self, config):
         """
         Application's main canvas, in which is drawn desks and student's names.
+
+        :param config: application's parsed configuration
         """
         QWidget.__init__(self)
 
-        self.square_size = 70
-        self.tiles = []
+        self.config = config
 
-        self.setFixedSize(self.square_size * 5, self.square_size * 5)
+        self.square_size = int(config.get('size', 'desk'))
+        self.setAutoFillBackground(True)
+        self.tiles = []
 
         self.sig_canvas_click = None  # Signal triggered when a click is performed on a desk
         self.sig_canvas_drag = None  # Signal triggered when a drag operation is performed on the canvas
@@ -37,6 +42,16 @@ class ViewCanvas(QWidget):
         # Tracking for drag/drop operation
         self.click_pos = ()
         self.mouse_pos = ()
+
+        nb_rows = int(self.config.get('size', 'default_room_rows'))
+        nb_columns = int(self.config.get('size', 'default_room_columns'))
+        self.setFixedSize(self.square_size * nb_columns, self.square_size * nb_rows)
+        self.__init_style()
+
+    def __init_style(self):
+        pal = QPalette()
+        pal.setColor(QPalette.Background, self.config.get('colors', 'room_bg'))
+        self.setPalette(pal)
 
     def paintEvent(self, event):
         """
@@ -48,18 +63,22 @@ class ViewCanvas(QWidget):
         tile_hover = None
 
         painter = QPainter(self)
+        pen = QPen()
+        pen.setColor(QColor(self.config.get('colors', 'tile_text')))
+        painter.setPen(pen)
+
         for t in self.tiles:
             x, y = t.pos
             if t.pos == self.click_pos:  # If the tile is selected
                 tile_hover = t
-                color = "blue"
+                color = QColor(self.config.get('colors', 'selected_tile'))
             elif t.pos == tile_hover_pos:  # If the mouse is hover
-                color = "lightblue"
-            else:
-                color = "cyan"
-            painter.fillRect(self.__get_rect_at(x, y), QColor(color))
-            painter.drawText(QPoint(self.square_size * x, self.square_size * y + 10), f"{t.name}")
-            painter.drawText(QPoint(self.square_size * x, self.square_size * y + 20), f"{t.surname}")
+                color = QColor(self.config.get('colors', 'hovered_tile'))
+            else:  # Regular tile
+                color = QColor(self.config.get('colors', 'tile'))
+            rect = self.__get_rect_at(x, y)
+            painter.fillRect(rect, color)
+            painter.drawText(rect, Qt.AlignCenter | Qt.TextWordWrap, f"{t.firstname}\n{t.lastname}")
 
         if self.click_pos != tile_hover_pos and tile_hover and self.mouse_pos:
             # If the mouse is no longer hover the clicked tile we draw the dragged tile
@@ -74,9 +93,10 @@ class ViewCanvas(QWidget):
         :param x: real mouse position x
         :param y: real mouse position y
         """
-        painter.fillRect(QRect(QPoint(x, y), QPoint(x + self.square_size, y + self.square_size)), QColor("grey"))
-        painter.drawText(QPoint(x, y + 10), f"{tile.name}")
-        painter.drawText(QPoint(x, y + 20), f"{tile.surname}")
+        rect = QRect(QPoint(PADDING + x, PADDING + y),
+                     QPoint(x + self.square_size - PADDING, y + self.square_size - PADDING))
+        painter.fillRect(rect, QColor(self.config.get('colors', 'dragged_tile')))
+        painter.drawText(rect, Qt.AlignCenter | Qt.TextWordWrap, f"{tile.firstname}\n{tile.lastname}")
 
     def mousePressEvent(self, event):
         """
@@ -132,5 +152,6 @@ class ViewCanvas(QWidget):
         :param y: column
         :rtype: QRect
         """
-        return QRect(QPoint(self.square_size * x, self.square_size * y),
-                     QPoint(self.square_size * x + self.square_size, self.square_size * y + self.square_size))
+        return QRect(QPoint(PADDING + self.square_size * x, PADDING + self.square_size * y),
+                     QPoint(self.square_size * x + self.square_size - PADDING,
+                            self.square_size * y + self.square_size - PADDING))

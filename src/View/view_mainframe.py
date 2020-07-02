@@ -1,16 +1,20 @@
 from PySide2.QtWidgets import QMainWindow, QWidget, QPushButton, QVBoxLayout
 
-from src.View.viewcanvas import ViewCanvas
+from src.View.view_canvas import ViewCanvas
 
 
 class CentralWidget(QWidget):
-    def __init__(self):
+    def __init__(self, config):
         """
         Application's central widget, contains all the app's widgets.
+
+        :param config: application's parsed configuration
         """
         QWidget.__init__(self)
 
-        self.v_canvas = ViewCanvas()  # Central canvas
+        self.config = config
+
+        self.v_canvas = ViewCanvas(config)  # Central canvas
         self.btn = QPushButton("+")
         self.btn.clicked.connect(self.new_tile)
         self.sig_add_tile = None
@@ -32,16 +36,20 @@ class CentralWidget(QWidget):
 
 class ViewMainFrame(QMainWindow):
 
-    def __init__(self,  sig_quit):
+    def __init__(self, sig_quit, config):
         """
         Main application's frame
 
         :param sig_quit: signal to trigger when the application closes
+        :param config: application's parsed configuration
         """
         QMainWindow.__init__(self)
-        self.central_widget = CentralWidget()
+        self.central_widget = CentralWidget(config)
         self.setCentralWidget(self.central_widget)
+
         self.sig_quit = sig_quit
+
+        self.setStyleSheet("QMainWindow {" + f"background-color: {config.get('colors', 'main_bg')};" + "}")
 
     def closeEvent(self, event):
         """
