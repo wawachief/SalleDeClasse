@@ -24,6 +24,7 @@ class MoveAnimationThread(QThread):
         QThread.__init__(self)
 
         self.running = True
+        self.__departure = departure
         self.__current = departure
         self.__arrival = arrival
         self.__sig_update = sig_update
@@ -32,25 +33,25 @@ class MoveAnimationThread(QThread):
 
     def run(self):
         ty, tx = self.__arrival  # Target coordinates
+        sy, sx = self.__departure  # Start coordinates
 
-        while self.running and self.__current != self.__arrival:
+        dy, dx = ty - sy, tx - sx
+
+        t = ANIMATE_REFRESH_RATE / 1000
+
+        vy = dy/1  # 1 sec
+        vx = dx/1  # 1 sec
+
+        i = 0
+        while self.running and i <= 100:
             y, x = self.__current
 
-            if x != tx:
-                if tx > x:
-                    x += 1
-                else:
-                    x -= 1
-
-            if y != ty:
-                if ty > y:
-                    y += 1
-                else:
-                    y -= 1
-
+            y, x = t * vy + y, t * vx + x
             self.__sig_update.emit(y, x)
             self.__current = (y, x)
-            sleep(ANIMATE_REFRESH_RATE / 1000)
+
+            sleep(t)  # 10 ms
+            i += 1
 
 
 class ViewTile(QObject):
