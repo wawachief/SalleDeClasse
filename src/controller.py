@@ -1,6 +1,5 @@
 import sqlite3
 
-from src.View.view_canvas import ViewTile
 from PySide2.QtCore import Signal, Slot, QObject
 
 from src.Model.mod_room import ModRoom
@@ -47,6 +46,8 @@ class Controller(QObject):
     @Slot()
     def create_desk(self):
         """Create dummy desk at random place"""
+
+        """
         c, cont = 0, True
         while c<10 and cont:
             c += 1
@@ -57,9 +58,12 @@ class Controller(QObject):
                 # The place is free, we create the desk
                 self.m_room.add_desk(x, y)
                 cont = False
-                new_tile = ViewTile(x, y)
-                self.v_canvas.tiles.append(new_tile)
+                self.v_canvas.new_tile(x, y)
         self.v_canvas.repaint()
+        """
+
+        self.v_canvas.move_tile((1, 0), (2, 6), True)
+        self.v_canvas.move_tile((2, 3), (1, 4), True)
 
     @Slot(tuple)
     def add_desk(self, coords):
@@ -70,20 +74,19 @@ class Controller(QObject):
         if id_desk == 0:
             # The place is free, we create the desk
             id_desk = self.m_room.add_desk(x, y)
-            new_tile = ViewTile(x, y)
-            self.v_canvas.tiles.append(new_tile)
+            self.v_canvas.new_tile(x, y)
         self.v_canvas.repaint()
 
     @Slot()
     def do_quit(self):
         print("Bye")
+        self.v_canvas.application_closing()
         self.__bdd.close()
 
     def show_room(self, room_name):
         room = ModRoom(self.__bdd, room_name)
         all_desks = room.get_all_desks()
         for d in all_desks:
-            new_tile = ViewTile(d.cx, d.cy)
-            self.v_canvas.tiles.append(new_tile)
+            self.v_canvas.new_tile(d.cx, d.cy)
         self.v_canvas.repaint()
         return room
