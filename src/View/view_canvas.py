@@ -49,7 +49,7 @@ class MoveAnimationThread(QThread):
 
             y, x = t * vy + y, t * vx + x
 
-            if abs(ty - y) <= 2 and abs(tx - x) <= 2:
+            if abs(ty - y) <= 5 and abs(tx - x) <= 5:
                 y, x = ty, tx
 
             self.__sig_update.emit(y, x)
@@ -77,8 +77,8 @@ class ViewTile(QObject):
         :type sig_move_ended: Signal
         """
         QObject.__init__(self)
-        self.firstname = "Toto"
-        self.lastname = "AZERTY"
+        self.__firstname = ""
+        self.__lastname = ""
 
         self.__square_size = square_size
 
@@ -94,6 +94,30 @@ class ViewTile(QObject):
         self.__move_end_pos = ()  # row/column position
 
         self.__set_position(row, column)
+
+    def set_student(self, firstname, lastname):
+        """
+        Sets the student data inside this tile
+
+        :param firstname: Student's first name
+        :type firstname: str
+        :param lastname: Student's last name
+        :type lastname: str
+        """
+        self.__firstname = firstname
+        self.__lastname = lastname
+
+    def firstname(self):
+        """
+        :return: Student's first name
+        """
+        return self.__firstname
+
+    def lastname(self):
+        """
+        :return: Student's last name
+        """
+        return self.__lastname
 
     def move(self, new_row, new_column, animate=False):
         """
@@ -217,9 +241,9 @@ class ViewCanvas(QWidget):
         self.__running_animations = 0
         self.update_timer = None  # Timer running only during animations to perform the UI update
 
-        nb_rows = int(self.config.get('size', 'default_room_rows'))
-        nb_columns = int(self.config.get('size', 'default_room_columns'))
-        self.setFixedSize(self.square_size * nb_columns, self.square_size * nb_rows)
+        self.nb_rows = int(self.config.get('size', 'default_room_rows'))
+        self.nb_columns = int(self.config.get('size', 'default_room_columns'))
+        self.setFixedSize(self.square_size * self.nb_columns, self.square_size * self.nb_rows)
         self.__init_style()
 
     def __init_style(self):
@@ -242,7 +266,7 @@ class ViewCanvas(QWidget):
                 self.__tiles.remove(t)
                 break
 
-    def new_tile(self, row, column):
+    def new_tile(self, row, column, firstname="", lastname=""):
         """
         Creates a new tile at the given position.
 
@@ -250,8 +274,30 @@ class ViewCanvas(QWidget):
         :type row: int
         :param column: column coordinate
         :type column: int
+        :param firstname: Student's first name
+        :type firstname: str
+        :param lastname: Student's last name
+        :type lastname: str
         """
-        self.__tiles.append(ViewTile(row, column, self.square_size, self.sig_move_ended))
+        new_tile = ViewTile(row, column, self.square_size, self.sig_move_ended)
+        self.__tiles.append(new_tile)
+        new_tile.set_student(firstname, lastname)
+
+    def set_student(self, pos, firstname, lastname):
+        """
+        Sets the student's information at the given position
+
+        :param pos: tile's position (row, column)
+        :type pos: tuple
+        :param firstname: Student's first name
+        :type firstname: str
+        :param lastname: Student's last name
+        :type lastname: str
+        """
+        for t in self.__tiles:
+            if t.grid_position() == pos:
+                t.set_student(firstname, lastname)
+                break
 
     def move_tile(self, current_pos, new_pos, animate=False):
         """
@@ -314,6 +360,19 @@ class ViewCanvas(QWidget):
 
         painter = QPainter(self)
         pen = QPen()
+        pen.setColor(QColor(self.config.get('colors', 'room_grid')))
+        pen.setWidth(2)
+        painter.setPen(pen)
+
+        # Draw the grid
+        for r in range(self.nb_rows):
+            painter.drawLine(QPoint(0, r * self.square_size),
+                             QPoint(self.square_size * self.nb_columns, r * self.square_size))
+
+        for c in range(self.nb_columns):
+            painter.drawLine(QPoint(c * self.square_size, 0),
+                             QPoint(c * self.square_size, self.square_size * self.nb_rows))
+
         pen.setColor(QColor(self.config.get('colors', 'tile_text')))
         painter.setPen(pen)
 
@@ -329,7 +388,7 @@ class ViewCanvas(QWidget):
                 color = QColor(self.config.get('colors', 'tile'))
             rect = self.__get_rect_at(y, x)
             painter.fillRect(rect, color)
-            painter.drawText(rect, Qt.AlignCenter | Qt.TextWordWrap, f"{t.firstname}\n{t.lastname}")
+            painter.drawText(rect, Qt.AlignCenter | Qt.TextWordWrap, f"{t.firstname()}\n{t.lastname()}")
 
         # Dragged tile
         if self.__click_pos != tile_hover_pos and tile_hover and self.__mouse_pos:
@@ -348,7 +407,7 @@ class ViewCanvas(QWidget):
         rect = QRect(QPoint(PADDING + y, PADDING + x),
                      QPoint(y + self.square_size - PADDING, x + self.square_size - PADDING))
         painter.fillRect(rect, QColor(self.config.get('colors', 'dragged_tile')))
-        painter.drawText(rect, Qt.AlignCenter | Qt.TextWordWrap, f"{tile.firstname}\n{tile.lastname}")
+        painter.drawText(rect, Qt.AlignCenter | Qt.TextWordWrap, f"{tile.firstname()}\n{tile.lastname()}")
 
     def mousePressEvent(self, event):
         """
@@ -404,5 +463,5 @@ class ViewCanvas(QWidget):
         :param y: mouse y
         :rtype: QRect
         """
-        return QRect(QPoint(PADDING + x, PADDING + y), QPoint(x + self.square_size - PADDING,
-                                                              y + self.square_size - PADDING))
+        return QRect(QPoint(PADDING + x, PADDING + y), QPoint(x + self.square_size - PADDING - 1,
+                                                              y + self.square_size - PADDING - 1))
