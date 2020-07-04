@@ -81,13 +81,13 @@ class ModBdd():
     #
     # Student relative requests
     #
-    def get_student_by_id(self, idStd):
+    def get_student_by_id(self, id_std):
         """Returns a Student object
         Input : idStd - student id
         Output : Student object or None of no students matches the idStd"""
 
         req = "SELECT * FROM Students WHERE IdStudent = ?"
-        self.__cursor.execute(req, idStd)
+        self.__cursor.execute(req, [id_std])
         r = self.__cursor.fetchone()
         return r if r is None else Student(id, r[1], r[2])
         
