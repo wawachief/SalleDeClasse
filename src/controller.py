@@ -45,28 +45,8 @@ class Controller(QObject):
 
     @Slot()
     def test_buttton(self):
-        """Create dummy desk at random place"""
-
-        """
-        c, cont = 0, True
-        while c<10 and cont:
-            c += 1
-            x = randint(0, 4)
-            y = randint(0, 4)
-            id = self.m_room.get_desk_id(x, y)
-            if id == 0:
-                # The place is free, we create the desk
-                self.m_room.add_desk(x, y)
-                cont = False
-                self.v_canvas.new_tile(x, y)
-        self.v_canvas.repaint()
-        """
-
-        self.v_canvas.move_tile((1, 2), (0, 4), True)
-        self.v_canvas.move_tile((1, 3), (3, 0), True)
-        self.v_canvas.move_tile((2, 3), (0, 0), True)
-        self.v_canvas.move_tile((2, 4), (3, 5), True)
-
+        self.auto_place()
+        
     @Slot(tuple)
     def add_desk(self, coords):
         """Add a new desk at mouse place"""
@@ -97,3 +77,19 @@ class Controller(QObject):
 
     def set_course(self, course_name):
         self.id_course = self.mod_bdd.create_course_with_name(course_name)
+
+    def auto_place(self):
+        """Autoplacement of students on the free tiles"""
+        maxRow = int(self.config.get("size", "default_room_rows"))
+        maxCol = int(self.config.get("size", "default_room_columns"))
+        list_students = self.mod_bdd.get_students_in_course(self.id_course)
+        for s in list_students:
+            print(s)
+        for row in range(maxRow):
+            for col in range(maxCol):
+                id_desk = self.mod_bdd.get_desk_id_in_course_by_coords(self.id_course, row, col)
+                if id_desk != 0:
+                    student = self.mod_bdd.get_student_by_desk_id(id_desk)
+                    if student is None:
+                        # We have a free spot
+                        print(row, col)

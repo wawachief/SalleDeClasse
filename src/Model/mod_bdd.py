@@ -37,9 +37,9 @@ class ModBdd():
 
     def get_desk_id_in_course_by_coords(self, id_course, row, col):
         """Returns the Id of the desk at the given coordinates
-        Input : idCourse - if of the course
+        Input : id_course - if of the course
                 row, col : Corrdinates of the desk
-        OUtput : idDesk or 0 if no desk is present"""
+        Output : idDesk or 0 if no desk is present"""
 
         req = "SELECT IdDesk FROM Desks WHERE IdCourse = ? AND DeskRow = ? AND DeskCol = ?"
         self.__cursor.execute(req, [id_course, row, col])
@@ -95,7 +95,17 @@ class ModBdd():
         """Returns an array of Students in the room
         Input : id_course - the course id
         Output : a list (maybe empty) of students in the course"""
-        req = """SELECT * from Students JOIN Desks ON (idStudent) WHERE Desks.IdCourse = ?"""
-        self.__cursor.execute(req, id_course)
+        req = """SELECT * from Students JOIN Desks USING (idStudent) WHERE Desks.IdCourse = ?"""
+        self.__cursor.execute(req, [id_course])
         r = self.__cursor.fetchall()
         return [] if r is None else [Student(t[0], t[1], t[2]) for t in r ]
+
+    def get_student_by_desk_id(self, id_desk):
+        """Returns the Id of the desk at the given coordinates
+        Input : id_desk - id of the desk
+        Output : student object or None"""
+
+        req = "SELECT * FROM Students JOIN Desks USING (IdStudent) WHERE Desks.IdDesk = ?"
+        self.__cursor.execute(req, [id_desk])
+        r = self.__cursor.fetchone()
+        return r if r is None else Student(r[0], r[1], r[2])
