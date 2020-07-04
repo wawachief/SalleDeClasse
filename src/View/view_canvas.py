@@ -174,6 +174,8 @@ class ViewTile(QObject):
         self.__set_position(self.__move_end_pos[0], self.__move_end_pos[1])  # Update final position
         self.__move_end_pos = ()  # Reset move position
         self.__sig_move_ended.emit()
+        # Oublié par Thomas. Que cela passe à la postérité que C wawa K corigé ce beug !!!
+        self.animate_thread = None
 
     def abort_animation(self):
         """
@@ -329,7 +331,7 @@ class ViewCanvas(QWidget):
                 self.update_timer.start(ANIMATE_REFRESH_RATE)
 
             self.__running_animations += 1
-            print("[CANVAS-DEBUG] - Animation started, running:", self.__running_animations)
+            # print("[CANVAS-DEBUG] - Animation started, running:", self.__running_animations)
 
     @Slot()
     def on_move_ended(self):
@@ -338,7 +340,7 @@ class ViewCanvas(QWidget):
         """
         self.__running_animations -= 1
 
-        print("[CANVAS-DEBUG] - Animation ended, left:", self.__running_animations)
+        # print("[CANVAS-DEBUG] - Animation ended, left:", self.__running_animations)
 
         if not self.__running_animations:  # once all animations have ended, stop the timer
             self.update_timer.stop()
@@ -449,8 +451,8 @@ class ViewCanvas(QWidget):
         if click_end_pos == self.__click_pos:
             self.sig_canvas_click.emit(self.__convert_point(event.y(), event.x()))
         else:
-            print(self.__click_pos, click_end_pos)
-            # self.sig_canvas_drag.emit(self.click_pos, click_end_pos)
+            # print(self.__click_pos, click_end_pos)
+            self.sig_canvas_drag.emit(self.__click_pos, click_end_pos)
 
         self.__click_pos = ()
         self.__mouse_pos = ()

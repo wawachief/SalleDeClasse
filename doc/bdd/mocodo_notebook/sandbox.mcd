@@ -1,6 +1,9 @@
 
-Students: IdStudent, StdFirstname, StdLastname
+Students: IdStudent, StdFirstname, StdLastname, OrderKey
 sitsAt, 0N Students, 11 Desks
 Desks: IdDesk, DeskRow, DeskCol
 belongs to, 1N Courses, 11 Desks
 Courses: IdCourse, CourseName
+    
+IsIn, 1N Students, 1N Classes
+Classes: IdClass, ClassName

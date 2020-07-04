@@ -1,3 +1,5 @@
-Students (_IdStudent_, StdFirstname, StdLastname)
+Students (_IdStudent_, StdFirstname, StdLastname, OrderKey)
 Desks (_IdDesk_, DeskRow, DeskCol, #IdStudent, #IdCourse)
 Courses (_IdCourse_, CourseName)
+IsIn (_#IdStudent_, _#IdClass_)
+Classes (_IdClass_, ClassName)

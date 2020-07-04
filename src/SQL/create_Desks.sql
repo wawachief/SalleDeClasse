@@ -4,6 +4,6 @@ CREATE TABLE Desks (
     DeskCol INTEGER,
     IdCourse INTEGER,
     IdStudent INTEGER,
-    FOREIGN KEY (IdCourse) REFERENCES Rooms(IdCourse)
+    FOREIGN KEY (IdCourse) REFERENCES Courses(IdCourse)
     FOREIGN KEY (IdStudent) REFERENCES Students(IdStudent)
 );

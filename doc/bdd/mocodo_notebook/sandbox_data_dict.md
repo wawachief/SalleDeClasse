@@ -1,8 +1,11 @@
 - IdStudent
 - StdFirstname
 - StdLastname
+- OrderKey
 - IdDesk
 - DeskRow
 - DeskCol
 - IdCourse
 - CourseName
+- IdClass
+- ClassName

@@ -77,7 +77,28 @@ class ModBdd():
         else:
             raise ValueError('new_desk error : invalid course id')
             return 0
-    
+
+    def move_desk_by_id(self, id_desk, row, col):
+        """Moves a desk to a new destination
+        Input : id_desk : the id of the desk to move
+                row, col : destination
+        Output : None"""
+        req = "UPDATE Desks SET DeskRow = ?, DeskCol = ?  WHERE IdDesk = ?"
+        self.__cursor.execute(req, [row, col, id_desk])
+        self.__bdd.commit()
+        return None
+
+    def set_student_in_desk_by_id(self, id_std, id_desk):
+        """Places a student on a desk/
+        Input : id_std : id of student to place
+                id_desk : id of the desk
+        Output : None"""
+
+        if id_std*id_desk != 0:
+            req = "UPDATE Desks SET IdStudent = ? WHERE IdDesk = ?"
+            self.__cursor.execute (req, [id_std, id_desk])
+            self.__bdd.commit()
+
     #
     # Student relative requests
     #
@@ -95,8 +116,17 @@ class ModBdd():
         """Returns an array of Students in the room
         Input : id_course - the course id
         Output : a list (maybe empty) of students in the course"""
-        req = """SELECT * from Students JOIN Desks USING (idStudent) WHERE Desks.IdCourse = ?"""
+        req = """SELECT * from Students JOIN Desks USING (idStudent) WHERE Desks.IdCourse = ? ORDER BY OrderKey"""
         self.__cursor.execute(req, [id_course])
+        r = self.__cursor.fetchall()
+        return [] if r is None else [Student(t[0], t[1], t[2]) for t in r ]
+
+    def get_students_in_class(self, id_class):
+        """Returns an array of Students in the room
+        Input : id_class - the class id
+        Output : a list (maybe empty) of students in the class"""
+        req = """SELECT * from Students JOIN IsIn USING (idStudent) WHERE IsIn.IdClass = ? ORDER BY OrderKey"""
+        self.__cursor.execute(req, [id_class])
         r = self.__cursor.fetchall()
         return [] if r is None else [Student(t[0], t[1], t[2]) for t in r ]
 

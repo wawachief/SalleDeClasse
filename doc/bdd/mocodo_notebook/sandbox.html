@@ -14,7 +14,8 @@
   <span class='relation'>Students</span> (
     <span class='primary'>IdStudent</span>,
     <span class='normal'>StdFirstname</span>,
-    <span class='normal'>StdLastname</span>
+    <span class='normal'>StdLastname</span>,
+    <span class='normal'>OrderKey</span>
   )
 </div>
 <div>
@@ -30,6 +31,18 @@
   <span class='relation'>Courses</span> (
     <span class='primary'>IdCourse</span>,
     <span class='normal'>CourseName</span>
+  )
+</div>
+<div>
+  <span class='relation'>IsIn</span> (
+    <span class='primary'>#IdStudent</span>,
+    <span class='primary'>#IdClass</span>
+  )
+</div>
+<div>
+  <span class='relation'>Classes</span> (
+    <span class='primary'>IdClass</span>,
+    <span class='normal'>ClassName</span>
   )
 </div>
 </div>

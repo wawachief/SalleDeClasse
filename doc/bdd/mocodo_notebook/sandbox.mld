@@ -1,8 +1,15 @@
 %%mocodo
 :
-Students: IdStudent, StdFirstname, StdLastname
-:
+Students: IdStudent, StdFirstname, StdLastname, OrderKey
+:::
 Desks: IdDesk, DeskRow, DeskCol, #IdStudent->Students->IdStudent, #IdCourse->Courses->IdCourse
 :
 Courses: IdCourse, CourseName
 :
+
+
+:::
+IsIn: #IdStudent->Students->IdStudent, _#IdClass->Classes->IdClass
+:
+Classes: IdClass, ClassName
+:::

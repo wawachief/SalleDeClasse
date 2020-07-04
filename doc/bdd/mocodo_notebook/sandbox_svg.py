@@ -1,22 +1,26 @@
 #!/usr/bin/env python
 # encoding: utf-8
-# Généré par Mocodo 2.3.7 le Sat, 04 Jul 2020 10:57:44
+# Généré par Mocodo 2.3.7 le Sat, 04 Jul 2020 14:39:56
 
 from __future__ import division
 from math import hypot
 
 import time, codecs
 
-(width,height) = (520,142)
+(width,height) = (682,236)
 cx = {
     u"Students":   98,
-    u"Desks"   :  268,
-    u"Courses" :  430,
+    u"Desks"   :  430,
+    u"Courses" :  592,
+    u"IsIn"    :  268,
+    u"Classes" :  430,
 }
 cy = {
     u"Students":   71,
     u"Desks"   :   71,
     u"Courses" :   71,
+    u"IsIn"    :  192,
+    u"Classes" :  192,
 }
 colors = {
     u"annotation_color"                : '#8c510a',
@@ -198,16 +202,17 @@ lines += u"""\n\n<!-- Entity Students -->"""
 (x,y) = (cx[u"Students"],cy[u"Students"])
 lines += u"""\n<g id="entity-Students">""" % {}
 lines += u"""\n	<g id="frame-Students">""" % {}
-lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="112" height="26" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'x': -56+x, 'y': -44+y, 'color': colors['entity_cartouche_color'], 'stroke_color': colors['entity_cartouche_color']}
-lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="112" height="62" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'x': -56+x, 'y': -18.0+y, 'color': colors['entity_color'], 'stroke_color': colors['entity_color']}
-lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="112" height="88" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -56+x, 'y': -44+y, 'color': colors['transparent_color'], 'stroke_color': colors['entity_stroke_color']}
-lines += u"""\n		<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -56+x, 'y0': -18+y, 'x1': 56+x, 'y1': -18+y, 'stroke_color': colors['entity_stroke_color']}
+lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="112" height="26" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'x': -56+x, 'y': -53+y, 'color': colors['entity_cartouche_color'], 'stroke_color': colors['entity_cartouche_color']}
+lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="112" height="80" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'x': -56+x, 'y': -27.0+y, 'color': colors['entity_color'], 'stroke_color': colors['entity_color']}
+lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="112" height="106" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -56+x, 'y': -53+y, 'color': colors['transparent_color'], 'stroke_color': colors['entity_stroke_color']}
+lines += u"""\n		<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -56+x, 'y0': -27+y, 'x1': 56+x, 'y1': -27+y, 'stroke_color': colors['entity_stroke_color']}
 lines += u"""\n	</g>""" % {}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Courier New" font-size="14">Students</text>""" % {'x': -34+x, 'y': -25.4+y, 'text_color': colors['entity_cartouche_text_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Courier New" font-size="14">IdStudent</text>""" % {'x': -51+x, 'y': 0.6+y, 'text_color': colors['entity_attribute_text_color']}
-lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -51+x, 'y0': 3.0+y, 'x1': 26+x, 'y1': 3.0+y, 'stroke_color': colors['entity_attribute_text_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Courier New" font-size="14">StdFirstname</text>""" % {'x': -51+x, 'y': 18.6+y, 'text_color': colors['entity_attribute_text_color']}
-lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Courier New" font-size="14">StdLastname</text>""" % {'x': -51+x, 'y': 36.6+y, 'text_color': colors['entity_attribute_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Courier New" font-size="14">Students</text>""" % {'x': -34+x, 'y': -34.4+y, 'text_color': colors['entity_cartouche_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Courier New" font-size="14">IdStudent</text>""" % {'x': -51+x, 'y': -8.4+y, 'text_color': colors['entity_attribute_text_color']}
+lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -51+x, 'y0': -6.0+y, 'x1': 26+x, 'y1': -6.0+y, 'stroke_color': colors['entity_attribute_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Courier New" font-size="14">StdFirstname</text>""" % {'x': -51+x, 'y': 9.6+y, 'text_color': colors['entity_attribute_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Courier New" font-size="14">StdLastname</text>""" % {'x': -51+x, 'y': 27.6+y, 'text_color': colors['entity_attribute_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Courier New" font-size="14">OrderKey</text>""" % {'x': -51+x, 'y': 45.6+y, 'text_color': colors['entity_attribute_text_color']}
 lines += u"""\n</g>""" % {}
 
 lines += u"""\n\n<!-- Entity Desks -->"""
@@ -242,14 +247,57 @@ lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Cou
 lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -43+x, 'y0': 12.0+y, 'x1': 25+x, 'y1': 12.0+y, 'stroke_color': colors['entity_attribute_text_color']}
 lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Courier New" font-size="14">CourseName</text>""" % {'x': -43+x, 'y': 27.6+y, 'text_color': colors['entity_attribute_text_color']}
 lines += u"""\n</g>""" % {}
+
+lines += u"""\n\n<!-- Entity IsIn -->"""
+(x,y) = (cx[u"IsIn"],cy[u"IsIn"])
+lines += u"""\n<g id="entity-IsIn">""" % {}
+lines += u"""\n	<g id="frame-IsIn">""" % {}
+lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="96" height="26" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'x': -48+x, 'y': -35+y, 'color': colors['entity_cartouche_color'], 'stroke_color': colors['entity_cartouche_color']}
+lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="96" height="44" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'x': -48+x, 'y': -9.0+y, 'color': colors['entity_color'], 'stroke_color': colors['entity_color']}
+lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="96" height="70" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -48+x, 'y': -35+y, 'color': colors['transparent_color'], 'stroke_color': colors['entity_stroke_color']}
+lines += u"""\n		<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -48+x, 'y0': -9+y, 'x1': 48+x, 'y1': -9+y, 'stroke_color': colors['entity_stroke_color']}
+lines += u"""\n	</g>""" % {}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Courier New" font-size="14">IsIn</text>""" % {'x': -18+x, 'y': -16.4+y, 'text_color': colors['entity_cartouche_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Courier New" font-size="14">#IdStudent</text>""" % {'x': -43+x, 'y': 9.6+y, 'text_color': colors['entity_attribute_text_color']}
+lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -43+x, 'y0': 12.0+y, 'x1': 42+x, 'y1': 12.0+y, 'stroke_color': colors['entity_attribute_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Courier New" font-size="14">#IdClass</text>""" % {'x': -43+x, 'y': 27.6+y, 'text_color': colors['entity_attribute_text_color']}
+lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -43+x, 'y0': 30.0+y, 'x1': 25+x, 'y1': 30.0+y, 'stroke_color': colors['entity_attribute_text_color']}
+lines += u"""\n</g>""" % {}
+
+lines += u"""\n\n<!-- Entity Classes -->"""
+(x,y) = (cx[u"Classes"],cy[u"Classes"])
+lines += u"""\n<g id="entity-Classes">""" % {}
+lines += u"""\n	<g id="frame-Classes">""" % {}
+lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="88" height="26" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'x': -44+x, 'y': -35+y, 'color': colors['entity_cartouche_color'], 'stroke_color': colors['entity_cartouche_color']}
+lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="88" height="44" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="0"/>""" % {'x': -44+x, 'y': -9.0+y, 'color': colors['entity_color'], 'stroke_color': colors['entity_color']}
+lines += u"""\n		<rect x="%(x)s" y="%(y)s" width="88" height="70" fill="%(color)s" stroke="%(stroke_color)s" stroke-width="1.5"/>""" % {'x': -44+x, 'y': -35+y, 'color': colors['transparent_color'], 'stroke_color': colors['entity_stroke_color']}
+lines += u"""\n		<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -44+x, 'y0': -9+y, 'x1': 44+x, 'y1': -9+y, 'stroke_color': colors['entity_stroke_color']}
+lines += u"""\n	</g>""" % {}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Courier New" font-size="14">Classes</text>""" % {'x': -30+x, 'y': -16.4+y, 'text_color': colors['entity_cartouche_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Courier New" font-size="14">IdClass</text>""" % {'x': -39+x, 'y': 9.6+y, 'text_color': colors['entity_attribute_text_color']}
+lines += u"""\n	<line x1="%(x0)s" y1="%(y0)s" x2="%(x1)s" y2="%(y1)s" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': -39+x, 'y0': 12.0+y, 'x1': 21+x, 'y1': 12.0+y, 'stroke_color': colors['entity_attribute_text_color']}
+lines += u"""\n	<text x="%(x)s" y="%(y)s" fill="%(text_color)s" font-family="Courier New" font-size="14">ClassName</text>""" % {'x': -39+x, 'y': 27.6+y, 'text_color': colors['entity_attribute_text_color']}
+lines += u"""\n</g>""" % {}
 (fs,ps) = (min([(-1, -1), (1, -1), (-1, 1), (1, 1)], key=lambda fs_ps: abs(cx[u"Desks"]+48*fs_ps[0] - cx[u"Students"]-56*fs_ps[1])))
-(xf,yf,xp,yp) = (cx[u"Desks"]+48*fs,cy[u"Desks"]+32.0,cx[u"Students"]+56*ps,cy[u"Students"]+-4.0)
+(xf,yf,xp,yp) = (cx[u"Desks"]+48*fs,cy[u"Desks"]+32.0,cx[u"Students"]+56*ps,cy[u"Students"]+-13.0)
 lines += u"""\n<path d="M%(x0)s %(y0)s C %(x1)s %(y1)s %(x2)s %(y2)s %(x3)s %(y3)s" fill="none" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': xf, 'y0': yf, 'x1': xf+(xp-xf)/2 if fs != ps else xf+56*fs, 'y1': yf+(yp-yf)/2, 'x2': xf+(xp-xf)/3 if fs != ps else xp+56*ps, 'y2': yp, 'x3': xp, 'y3': yp, 'stroke_color': colors['leg_stroke_color']}
 path = arrow(xp,yp,ps,0)
 lines += u"""\n<path d="%(path)s" fill="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'stroke_color': colors['leg_stroke_color']}
 lines += u"""\n<circle cx="%(cx)s" cy="%(cy)s" r="1.5" stroke="%(stroke_color)s" stroke-width="1.5" fill="%(color)s"/>""" % {'cx': xf, 'cy': yf, 'stroke_color': colors['leg_stroke_color'], 'color': colors['leg_stroke_color']}
 (fs,ps) = (min([(1, 1), (-1, 1), (1, -1), (-1, -1)], key=lambda fs_ps: abs(cx[u"Desks"]+48*fs_ps[0] - cx[u"Courses"]-48*fs_ps[1])))
 (xf,yf,xp,yp) = (cx[u"Desks"]+48*fs,cy[u"Desks"]+50.0,cx[u"Courses"]+48*ps,cy[u"Courses"]+5.0)
+lines += u"""\n<path d="M%(x0)s %(y0)s C %(x1)s %(y1)s %(x2)s %(y2)s %(x3)s %(y3)s" fill="none" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': xf, 'y0': yf, 'x1': xf+(xp-xf)/2 if fs != ps else xf+56*fs, 'y1': yf+(yp-yf)/2, 'x2': xf+(xp-xf)/3 if fs != ps else xp+56*ps, 'y2': yp, 'x3': xp, 'y3': yp, 'stroke_color': colors['leg_stroke_color']}
+path = arrow(xp,yp,ps,0)
+lines += u"""\n<path d="%(path)s" fill="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'stroke_color': colors['leg_stroke_color']}
+lines += u"""\n<circle cx="%(cx)s" cy="%(cy)s" r="1.5" stroke="%(stroke_color)s" stroke-width="1.5" fill="%(color)s"/>""" % {'cx': xf, 'cy': yf, 'stroke_color': colors['leg_stroke_color'], 'color': colors['leg_stroke_color']}
+(fs,ps) = (min([(1, 1), (-1, 1), (1, -1), (-1, -1)], key=lambda fs_ps: abs(cx[u"IsIn"]+48*fs_ps[0] - cx[u"Students"]-56*fs_ps[1])))
+(xf,yf,xp,yp) = (cx[u"IsIn"]+48*fs,cy[u"IsIn"]+5.0,cx[u"Students"]+56*ps,cy[u"Students"]+-13.0)
+lines += u"""\n<path d="M%(x0)s %(y0)s C %(x1)s %(y1)s %(x2)s %(y2)s %(x3)s %(y3)s" fill="none" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': xf, 'y0': yf, 'x1': xf+(xp-xf)/2 if fs != ps else xf+56*fs, 'y1': yf+(yp-yf)/2, 'x2': xf+(xp-xf)/3 if fs != ps else xp+56*ps, 'y2': yp, 'x3': xp, 'y3': yp, 'stroke_color': colors['leg_stroke_color']}
+path = arrow(xp,yp,ps,0)
+lines += u"""\n<path d="%(path)s" fill="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'stroke_color': colors['leg_stroke_color']}
+lines += u"""\n<circle cx="%(cx)s" cy="%(cy)s" r="1.5" stroke="%(stroke_color)s" stroke-width="1.5" fill="%(color)s"/>""" % {'cx': xf, 'cy': yf, 'stroke_color': colors['leg_stroke_color'], 'color': colors['leg_stroke_color']}
+(fs,ps) = (min([(-1, -1), (1, -1), (-1, 1), (1, 1)], key=lambda fs_ps: abs(cx[u"IsIn"]+48*fs_ps[0] - cx[u"Classes"]-44*fs_ps[1])))
+(xf,yf,xp,yp) = (cx[u"IsIn"]+48*fs,cy[u"IsIn"]+23.0,cx[u"Classes"]+44*ps,cy[u"Classes"]+5.0)
 lines += u"""\n<path d="M%(x0)s %(y0)s C %(x1)s %(y1)s %(x2)s %(y2)s %(x3)s %(y3)s" fill="none" stroke="%(stroke_color)s" stroke-width="1"/>""" % {'x0': xf, 'y0': yf, 'x1': xf+(xp-xf)/2 if fs != ps else xf+56*fs, 'y1': yf+(yp-yf)/2, 'x2': xf+(xp-xf)/3 if fs != ps else xp+56*ps, 'y2': yp, 'x3': xp, 'y3': yp, 'stroke_color': colors['leg_stroke_color']}
 path = arrow(xp,yp,ps,0)
 lines += u"""\n<path d="%(path)s" fill="%(stroke_color)s" stroke-width="0"/>""" % {'path': path, 'stroke_color': colors['leg_stroke_color']}
