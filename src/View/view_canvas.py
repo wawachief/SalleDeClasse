@@ -1,17 +1,17 @@
 from PySide2.QtWidgets import QWidget
-from PySide2.QtGui import QPainter, QColor, QPen, QPalette
+from PySide2.QtGui import QPainter, QColor, QPen, QPalette, QFont
 from PySide2.QtCore import QPoint, QRect, Qt, Signal, Slot, QTimer, QThread, QObject
 
 from time import sleep
 
 PADDING = 1  # Padding of each tile
 ANIMATE_REFRESH_RATE = 10  # In milliseconds
-ANIMATION_DURATION = .7  # In seconds
+ANIMATION_DURATION = .3  # In seconds
 
 
 class MoveAnimationThread(QThread):
 
-    def __init__(self, departure, arrival, sig_update):
+    def __init__(self, departure, arrival, sig_update, sig_end):
         """
         Handles the move animation of a tile
 
@@ -21,6 +21,8 @@ class MoveAnimationThread(QThread):
         :type arrival: tuple
         :param sig_update: Signal to emit when the coordinates changes
         :type sig_update: Signal
+        :param sig_update: Signal to emit when the animation is finished
+        :type sig_update: Signal
         """
         QThread.__init__(self)
 
@@ -29,6 +31,7 @@ class MoveAnimationThread(QThread):
         self.__current = departure
         self.__arrival = arrival
         self.__sig_update = sig_update
+        self.__sig_end = sig_end
 
         self.start()
 
@@ -45,6 +48,9 @@ class MoveAnimationThread(QThread):
 
         i = 0
         while self.running and i <= 100 and self.__current != self.__arrival:
+            sleep(t)  # 10 ms
+            i += 1
+
             y, x = self.__current
 
             y, x = t * vy + y, t * vx + x
@@ -55,13 +61,13 @@ class MoveAnimationThread(QThread):
             self.__sig_update.emit(y, x)
             self.__current = (y, x)
 
-            sleep(t)  # 10 ms
-            i += 1
+        self.__sig_end.emit()
 
 
 class ViewTile(QObject):
 
     sig_move_update = Signal(int, int)
+    sig_thread_finished = Signal()
 
     def __init__(self, row, column, square_size, sig_move_ended):
         """
@@ -85,6 +91,7 @@ class ViewTile(QObject):
         # Signals
         self.__sig_move_ended = sig_move_ended
         self.sig_move_update.connect(self.__on_move_updated)
+        self.sig_thread_finished.connect(self.__process_animation_ended)
 
         self.animate_thread = None
 
@@ -146,7 +153,7 @@ class ViewTile(QObject):
             # Convert grid positions into mouse positions for arrival position
             self.animate_thread = MoveAnimationThread(self.real_position(),
                                                       (new_column * self.__square_size, new_row * self.__square_size),
-                                                      self.sig_move_update)
+                                                      self.sig_move_update, self.sig_thread_finished)
         return True
 
     @Slot(int, int)
@@ -157,11 +164,9 @@ class ViewTile(QObject):
         :param y: new mouse position y coordinate
         :param x: new mouse position x coordinate
         """
-        if (x // self.__square_size, y // self.__square_size) == self.__move_end_pos:  # End condition
-            self.__process_animation_ended()
-        else:
-            self.__real_pos = (y, x)
+        self.__real_pos = (y, x)
 
+    @Slot()
     def __process_animation_ended(self):
         """
         Performs the operations needed when the move animation is finished
@@ -338,6 +343,8 @@ class ViewCanvas(QWidget):
         if not self.__running_animations:  # once all animations have ended, stop the timer
             self.update_timer.stop()
             self.update_timer = None
+
+            sleep(ANIMATE_REFRESH_RATE / 1000)
             self.repaint()
 
     def application_closing(self):
@@ -373,8 +380,11 @@ class ViewCanvas(QWidget):
             painter.drawLine(QPoint(c * self.square_size, 0),
                              QPoint(c * self.square_size, self.square_size * self.nb_rows))
 
+        # Update painter color and font size for tiles
         pen.setColor(QColor(self.config.get('colors', 'tile_text')))
         painter.setPen(pen)
+
+        painter.setFont(QFont(pointSize=12))
 
         # Drawing of all the tiles
         for t in self.__tiles:
@@ -388,7 +398,7 @@ class ViewCanvas(QWidget):
                 color = QColor(self.config.get('colors', 'tile'))
             rect = self.__get_rect_at(y, x)
             painter.fillRect(rect, color)
-            painter.drawText(rect, Qt.AlignCenter | Qt.TextWordWrap, f"{t.firstname()}\n{t.lastname()}")
+            painter.drawText(rect, Qt.AlignCenter | Qt.TextWordWrap, f"{t.lastname()}\n{t.firstname()}")
 
         # Dragged tile
         if self.__click_pos != tile_hover_pos and tile_hover and self.__mouse_pos:
@@ -407,7 +417,7 @@ class ViewCanvas(QWidget):
         rect = QRect(QPoint(PADDING + y, PADDING + x),
                      QPoint(y + self.square_size - PADDING, x + self.square_size - PADDING))
         painter.fillRect(rect, QColor(self.config.get('colors', 'dragged_tile')))
-        painter.drawText(rect, Qt.AlignCenter | Qt.TextWordWrap, f"{tile.firstname()}\n{tile.lastname()}")
+        painter.drawText(rect, Qt.AlignCenter | Qt.TextWordWrap, f"{tile.lastname()}\n{tile.firstname()}")
 
     def mousePressEvent(self, event):
         """
