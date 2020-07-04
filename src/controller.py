@@ -63,8 +63,10 @@ class Controller(QObject):
         self.v_canvas.repaint()
         """
 
-        self.v_canvas.move_tile((1, 0), (2, 6), True)
-        self.v_canvas.move_tile((2, 3), (1, 4), True)
+        self.v_canvas.move_tile((1, 2), (0, 4), True)
+        self.v_canvas.move_tile((1, 3), (3, 0), True)
+        self.v_canvas.move_tile((2, 3), (0, 0), True)
+        self.v_canvas.move_tile((2, 4), (3, 5), True)
 
     @Slot(tuple)
     def add_desk(self, coords):

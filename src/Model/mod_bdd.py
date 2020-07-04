@@ -30,7 +30,7 @@ class ModBdd():
             req = "SELECT * FROM Desks WHERE IdCourse = ?;"
             self.__cursor.execute(req, [id_course])
             r = self.__cursor.fetchall()
-            for d in r :
+            for d in r:
                 dsk = Desk(d[0], d[1], d[2], d[3], d[4])
                 all_desks.append(dsk)
         return all_desks

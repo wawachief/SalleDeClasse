@@ -6,6 +6,7 @@ from time import sleep
 
 PADDING = 1  # Padding of each tile
 ANIMATE_REFRESH_RATE = 10  # In milliseconds
+ANIMATION_DURATION = .7  # In seconds
 
 
 class MoveAnimationThread(QThread):
@@ -37,16 +38,20 @@ class MoveAnimationThread(QThread):
 
         dy, dx = ty - sy, tx - sx
 
-        t = ANIMATE_REFRESH_RATE / 1000
+        t = ANIMATION_DURATION / 100
 
-        vy = dy//1  # 1 sec
-        vx = dx//1  # 1 sec
+        vy = dy/ANIMATION_DURATION
+        vx = dx/ANIMATION_DURATION
 
         i = 0
-        while self.running and i <= 100:
+        while self.running and i <= 100 and self.__current != self.__arrival:
             y, x = self.__current
 
             y, x = t * vy + y, t * vx + x
+
+            if abs(ty - y) <= 2 and abs(tx - x) <= 2:
+                y, x = ty, tx
+
             self.__sig_update.emit(y, x)
             self.__current = (y, x)
 
