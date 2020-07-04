@@ -1,11 +1,10 @@
 import sqlite3
+from random import randint
 
-from PySide2.QtCore import Signal, Slot, QObject
+from PySide2.QtCore import QObject, Signal, Slot
 
 from src.Model.mod_bdd import ModBdd
 from src.View.view_mainframe import ViewMainFrame
-
-from random import randint
 
 
 class Controller(QObject):

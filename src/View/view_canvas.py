@@ -39,8 +39,8 @@ class MoveAnimationThread(QThread):
 
         t = ANIMATE_REFRESH_RATE / 1000
 
-        vy = dy/1  # 1 sec
-        vx = dx/1  # 1 sec
+        vy = dy//1  # 1 sec
+        vx = dx//1  # 1 sec
 
         i = 0
         while self.running and i <= 100:
