@@ -67,6 +67,8 @@ class Controller(QObject):
         self.v_canvas.move_tile((2, 3), (0, 0), True)
         self.v_canvas.move_tile((2, 4), (3, 5), True)
 
+        self.gui.central_widget.view_changed()
+
     @Slot(tuple)
     def add_desk(self, coords):
         """Add a new desk at mouse place"""
