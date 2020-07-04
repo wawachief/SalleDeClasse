@@ -59,7 +59,7 @@ class Controller(QObject):
         if id_desk == 0:
             # The place is free, we create the desk
             id_desk = self.mod_bdd.create_new_desk_in_course(row, col, self.id_course)
-            self.v_canvas.new_tile(row, col)
+            self.v_canvas.new_tile(row, col, id_desk)
         self.v_canvas.repaint()
     
     @Slot(tuple, tuple)
@@ -76,15 +76,14 @@ class Controller(QObject):
             # We just change the coordinates
             self.mod_bdd.move_desk_by_id(id_desk_start, end[0], end[1])
             # We update the view
-            self.v_canvas.move_tile(start, end)
+            self.v_canvas.move_tile(id_desk_start, end)
         else:
             # We swap the two desks
             self.mod_bdd.move_desk_by_id(id_desk_start, end[0], end[1])
             self.mod_bdd.move_desk_by_id(id_desk_end, start[0], start[1])
             # We update the view
-            self.v_canvas.move_tile(start, (0, 0))
-            self.v_canvas.move_tile(end, start, True)
-            self.v_canvas.move_tile((0, 0), end)
+            self.v_canvas.move_tile(id_desk_start, end)
+            self.v_canvas.move_tile(id_desk_end, start, True)
         self.v_canvas.repaint()
 
     @Slot()
@@ -98,9 +97,9 @@ class Controller(QObject):
         for d in all_desks:
             std = self.mod_bdd.get_student_by_id(d.id_student)
             if std :
-                self.v_canvas.new_tile(d.row, d.col, firstname=std.firstname, lastname=std.lastname)
+                self.v_canvas.new_tile(d.row, d.col, d.id, firstname=std.firstname, lastname=std.lastname)
             else:
-                self.v_canvas.new_tile(d.row, d.col)
+                self.v_canvas.new_tile(d.row, d.col, d.id)
         self.v_canvas.repaint()
 
     def set_course(self, course_name):

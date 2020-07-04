@@ -69,9 +69,10 @@ class ViewTile(QObject):
     sig_move_update = Signal(int, int)
     sig_thread_finished = Signal()
 
-    def __init__(self, row, column, square_size, sig_move_ended):
+    def __init__(self, row, column, square_size, sig_move_ended, desk_id):
         """
-        Description object, contains the information that needs to be displayed in the associated tile's position
+        Description object, contains the information that needs to be displayed in the associated tile's position.
+        This is the UI twin of Model's Desk object.
 
         :param row: row coordinate
         :type row: int
@@ -81,10 +82,15 @@ class ViewTile(QObject):
         :type square_size: int
         :param sig_move_ended: Signal to emit when an animated move ends.
         :type sig_move_ended: Signal
+        :param desk_id: unique identifier
+        :type desk_id: int
         """
         QObject.__init__(self)
+
         self.__firstname = ""
         self.__lastname = ""
+
+        self.__desk_id = desk_id
 
         self.__square_size = square_size
 
@@ -101,6 +107,9 @@ class ViewTile(QObject):
         self.__move_end_pos = ()  # row/column position
 
         self.__set_position(row, column)
+
+    def __str__(self):
+        return f"{self.firstname()}, {self.lastname()}, {self.grid_position()}"
 
     def set_student(self, firstname, lastname):
         """
@@ -125,6 +134,12 @@ class ViewTile(QObject):
         :return: Student's last name
         """
         return self.__lastname
+
+    def id(self):
+        """
+        :return: Desk id
+        """
+        return self.__desk_id
 
     def move(self, new_row, new_column, animate=False):
         """
@@ -173,9 +188,8 @@ class ViewTile(QObject):
         """
         self.__set_position(self.__move_end_pos[0], self.__move_end_pos[1])  # Update final position
         self.__move_end_pos = ()  # Reset move position
-        self.__sig_move_ended.emit()
-        # Oublié par Thomas. Que cela passe à la postérité que C wawa K corigé ce beug !!!
         self.animate_thread = None
+        self.__sig_move_ended.emit()
 
     def abort_animation(self):
         """
@@ -235,6 +249,9 @@ class ViewCanvas(QWidget):
 
         self.__tiles = []  # List of all drawn tiles
 
+        self.is_view_students = True
+        self.__do_switch = False
+
         self.sig_canvas_click = None  # Signal triggered when a click is performed on a desk
         self.sig_canvas_drag = None  # Signal triggered when a drag operation is performed on the canvas
 
@@ -273,7 +290,7 @@ class ViewCanvas(QWidget):
                 self.__tiles.remove(t)
                 break
 
-    def new_tile(self, row, column, firstname="", lastname=""):
+    def new_tile(self, row, column, desk_id, firstname="", lastname=""):
         """
         Creates a new tile at the given position.
 
@@ -281,12 +298,14 @@ class ViewCanvas(QWidget):
         :type row: int
         :param column: column coordinate
         :type column: int
+        :param desk_id: desk id
+        :type desk_id: int
         :param firstname: Student's first name
         :type firstname: str
         :param lastname: Student's last name
         :type lastname: str
         """
-        new_tile = ViewTile(row, column, self.square_size, self.sig_move_ended)
+        new_tile = ViewTile(row, column, self.square_size, self.sig_move_ended, desk_id)
         self.__tiles.append(new_tile)
         new_tile.set_student(firstname, lastname)
 
@@ -306,12 +325,12 @@ class ViewCanvas(QWidget):
                 t.set_student(firstname, lastname)
                 break
 
-    def move_tile(self, current_pos, new_pos, animate=False):
+    def move_tile(self, desk_id, new_pos, animate=False):
         """
         Moves the specified tile from its original position to the new given one.
 
-        :param current_pos: Current grid's position of the tile (row, column)
-        :type current_pos: tuple
+        :param desk_id: Tile's associated id
+        :type desk_id: int
         :param new_pos: New grid position (row, column)
         :type new_pos: tuple
         :param animate: trigger animation between the current position and the new one
@@ -320,7 +339,7 @@ class ViewCanvas(QWidget):
         # Look for the tile to animate
         ok = False
         for t in self.__tiles:
-            if t.grid_position() == current_pos:
+            if t.id() == desk_id:
                 ok = t.move(new_pos[0], new_pos[1], animate)  # Check that the animation is running
                 break
 
@@ -347,6 +366,16 @@ class ViewCanvas(QWidget):
             self.update_timer = None
 
             sleep(ANIMATE_REFRESH_RATE / 1000)
+
+            if self.__do_switch:
+
+                self.is_view_students = not self.is_view_students
+
+                for t in self.__tiles:
+                    self.move_tile(t.id(), self.__relative_grid_position(t.grid_position(), True))
+
+                self.__do_switch = False
+
             self.repaint()
 
     def application_closing(self):
@@ -362,10 +391,6 @@ class ViewCanvas(QWidget):
         Draws the desks and students' names given the self.tiles list
         """
         super().paintEvent(event)
-
-        # Current tile hovered by the mouse
-        tile_hover_pos = self.__convert_point(self.__mouse_pos[0], self.__mouse_pos[1]) if self.__mouse_pos else None
-        tile_hover = None
 
         painter = QPainter(self)
         pen = QPen()
@@ -390,13 +415,17 @@ class ViewCanvas(QWidget):
         font.setPixelSize(10)
         painter.setFont(font)
 
+        # Current tile selected by the mouse
+        tile_selected_pos = self.__convert_point(self.__mouse_pos[0], self.__mouse_pos[1]) if self.__mouse_pos else None
+        tile_selected = None
+
         # Drawing of all the tiles
         for t in self.__tiles:
-            y, x = t.real_position()
-            if t.grid_position() == self.__click_pos:  # If the tile is selected
-                tile_hover = t
+            y, x = self.__relative_mouse_position(t.real_position())
+            if self.__relative_grid_position(t.grid_position()) == self.__click_pos:  # If the tile is selected
+                tile_selected = t
                 color = QColor(self.config.get('colors', 'selected_tile'))
-            elif t.grid_position() == tile_hover_pos:  # If the mouse is hover
+            elif self.__relative_grid_position(t.grid_position()) == tile_selected_pos:  # If the mouse is hover
                 color = QColor(self.config.get('colors', 'hovered_tile'))
             else:  # Regular tile
                 color = QColor(self.config.get('colors', 'tile'))
@@ -405,9 +434,10 @@ class ViewCanvas(QWidget):
             painter.drawText(rect, Qt.AlignCenter | Qt.TextWordWrap, f"{t.lastname()}\n{t.firstname()}")
 
         # Dragged tile
-        if self.__click_pos != tile_hover_pos and tile_hover and self.__mouse_pos:
+        if self.__click_pos != self.__relative_grid_position(tile_selected_pos) \
+                and tile_selected and self.__mouse_pos:
             # If the mouse is no longer hover the clicked tile we draw the dragged tile
-            self.__draw_dragged_tile(painter, tile_hover, self.__mouse_pos[0], self.__mouse_pos[1])
+            self.__draw_dragged_tile(painter, tile_selected, self.__mouse_pos[0], self.__mouse_pos[1])
 
     def __draw_dragged_tile(self, painter, tile, x, y):
         """
@@ -432,6 +462,9 @@ class ViewCanvas(QWidget):
             self.__click_pos = self.__convert_point(event.y(), event.x())  # Register the click point
 
     def mouseMoveEvent(self, event):
+        """
+        Updates the mouse position
+        """
         if not self.__click_pos:  # The drag operation is performed only with a left click
             return
 
@@ -448,15 +481,62 @@ class ViewCanvas(QWidget):
 
         click_end_pos = self.__convert_point(event.y(), event.x())
 
-        if click_end_pos == self.__click_pos:
-            self.sig_canvas_click.emit(self.__convert_point(event.y(), event.x()))
+        rel_end_pos = self.__relative_grid_position(click_end_pos)
+        rel_start_pos = self.__relative_grid_position(self.__click_pos)
+
+        if rel_end_pos == rel_start_pos:
+            self.sig_canvas_click.emit(rel_end_pos)
         else:
-            # print(self.__click_pos, click_end_pos)
-            self.sig_canvas_drag.emit(self.__click_pos, click_end_pos)
+            self.sig_canvas_drag.emit(rel_start_pos, rel_end_pos)
 
         self.__click_pos = ()
         self.__mouse_pos = ()
         self.repaint()
+
+    def perspective_changed(self):
+        """
+        Changes the view perspective of the class
+        """
+        # Perform the swicth animation
+        self.__do_switch = True
+        for t in self.__tiles:
+            self.move_tile(t.id(), self.__relative_grid_position(t.grid_position(), True), True)
+
+    def __relative_mouse_position(self, mouse_pos):
+        """
+        Gets the relative position of the mouse given the inversion of the tiles.
+
+        If we are in student's view, nothing is changed.
+
+        :param mouse_pos: mouse coordinates (y, x)
+        :type mouse_pos: tuple
+        """
+        if not mouse_pos or self.is_view_students:
+            return mouse_pos
+
+        y, x = mouse_pos
+
+        # Calculate reversed position using the canvas' dimensions
+        return self.square_size * (self.nb_columns - 1) - y, self.square_size * (self.nb_rows - 1) - x
+
+    def __relative_grid_position(self, grid_pos, get_opposite=False):
+        """
+        Gets the relative position inside the grid given the inversion of the tiles.
+
+        If we are in student's view, nothing is changed.
+
+        :param grid_pos: grid coordinates (row, column)
+        :type grid_pos: tuple
+        :param get_opposite: 'Overrides' the view checks and always returns the opposite coordinates as if the
+        perspective was changed
+        :type get_opposite: bool
+        """
+        if not get_opposite and (not grid_pos or self.is_view_students):
+            return grid_pos
+        row, column = grid_pos
+
+        # Calculate reversed positions given the number of rows and columns
+        return self.nb_rows - 1 - row, self.nb_columns - 1 - column
 
     def __convert_point(self, x, y):
         """

@@ -21,14 +21,17 @@ class CentralWidget(QWidget):
         self.btn = QPushButton("** Magic Button **")  # Debug btn
         self.btn.clicked.connect(self.do_magic)
 
-        self.view_students = ViewTeacherDeskLabel("Vue des élèves", config.get('colors', 'board_bg'))
-        self.view_teacher = ViewTeacherDeskLabel("Vue de l'enseignant.e", config.get('colors', 'board_bg'))
-        self.is_view_students = False  # Current view
+        self.btn_perspective = QPushButton("Switch perspective")  # Perspective view button
+        self.btn_perspective.clicked.connect(self.on_perspective_changed)
+
+        self.view_students = ViewTeacherDeskLabel("Vue élève", config.get('colors', 'board_bg'))
+        self.view_teacher = ViewTeacherDeskLabel("Vue prof", config.get('colors', 'board_bg'))
+        self.is_view_students = None  # Current view
 
         self.sig_add_tile = None
 
         self.__set_layout()
-        self.view_changed()  # This will switch the is_view_student flag and display the students' view
+        self.on_perspective_changed()  # This will switch the is_view_student flag and display the students' view
 
     def __set_layout(self):
         """
@@ -41,6 +44,7 @@ class CentralWidget(QWidget):
         layout.addWidget(self.v_canvas)
         layout.addWidget(self.view_teacher)
         layout.addWidget(self.btn)
+        layout.addWidget(self.btn_perspective)
 
         # Alignments
         layout.setAlignment(self.view_students, Qt.AlignCenter)
@@ -48,11 +52,15 @@ class CentralWidget(QWidget):
 
         self.setLayout(layout)
 
-    def view_changed(self):
+    def on_perspective_changed(self):
         """
-        Switches the current view and updates boards display
+        Switches the current view perspective and updates boards display and canvas
         """
-        self.is_view_students = not self.is_view_students
+        if self.is_view_students is None:  # To prevent updating the canvas for the initialization
+            self.is_view_students = True
+        else:
+            self.is_view_students = not self.is_view_students
+            self.v_canvas.perspective_changed()
 
         self.view_students.activate(self.is_view_students)
         self.view_teacher.activate(not self.is_view_students)
