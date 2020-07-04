@@ -1,4 +1,4 @@
-INSERT INTO Course 
+INSERT INTO Courses
     (CourseName) 
 VALUES 
     ("Maths_2DE11"),
