@@ -35,7 +35,7 @@ class Controller(QObject):
         self.v_canvas.sig_canvas_click = self.sig_canvas_click
 
         # Signals connection
-        self.sig_add_tile.connect(self.create_desk)
+        self.sig_add_tile.connect(self.test_buttton)
         self.sig_quit.connect(self.do_quit)
         self.sig_canvas_click.connect(self.add_desk)
 
@@ -44,7 +44,7 @@ class Controller(QObject):
         self.show_course()
 
     @Slot()
-    def create_desk(self):
+    def test_buttton(self):
         """Create dummy desk at random place"""
 
         """
@@ -88,7 +88,11 @@ class Controller(QObject):
     def show_course(self):
         all_desks = self.mod_bdd.get_course_all_desks(self.id_course)
         for d in all_desks:
-            self.v_canvas.new_tile(d.row, d.col)
+            std = self.mod_bdd.get_student_by_id(d.id_student)
+            if std :
+                self.v_canvas.new_tile(d.row, d.col, firstname=std.firstname, lastname=std.lastname)
+            else:
+                self.v_canvas.new_tile(d.row, d.col)
         self.v_canvas.repaint()
 
     def set_course(self, course_name):
