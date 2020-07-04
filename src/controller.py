@@ -40,9 +40,8 @@ class Controller(QObject):
         self.sig_canvas_click.connect(self.add_desk)
 
         # properties
-        self.id_course = 1
-
-        self.show_room("Maths_2DE11")
+        self.set_course("Maths_2DE11")
+        self.show_course()
 
     @Slot()
     def create_desk(self):
@@ -86,8 +85,11 @@ class Controller(QObject):
         self.v_canvas.application_closing()
         self.__bdd.close()
 
-    def show_room(self, room_name):
+    def show_course(self):
         all_desks = self.mod_bdd.get_course_all_desks(self.id_course)
         for d in all_desks:
             self.v_canvas.new_tile(d.row, d.col)
         self.v_canvas.repaint()
+
+    def set_course(self, course_name):
+        self.id_course = self.mod_bdd.create_course_with_name(course_name)
