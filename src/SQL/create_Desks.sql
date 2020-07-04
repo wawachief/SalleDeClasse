@@ -1,7 +1,9 @@
 CREATE TABLE Desks (
     IdDesk INTEGER PRIMARY KEY,
-    CoordX INTEGER,
-    CoordY INTEGER,
-    IdRoom INTEGER,
-    FOREIGN KEY (IdRoom) REFERENCES Rooms(IdRoom)
+    DeskRow INTEGER,
+    DeskCol INTEGER,
+    IdCourse INTEGER,
+    IdStudent INTEGER,
+    FOREIGN KEY (IdCourse) REFERENCES Rooms(IdCourse)
+    FOREIGN KEY (IdStudent) REFERENCES Students(IdStudent)
 );

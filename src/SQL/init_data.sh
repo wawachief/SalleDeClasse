@@ -1,10 +1,16 @@
 #!/bin/bash
 /bin/rm sdc_db
 
+echo "Create Students"
 sqlite3 sdc_db < create_Students.sql
-sqlite3 sdc_db < create_Rooms.sql
+echo "Create Courses"
+sqlite3 sdc_db < create_Courses.sql
+echo "Create Desks"
 sqlite3 sdc_db < create_Desks.sql
-sqlite3 sdc_db < create_RelStdDsk.sql
 
+echo "Populate Students"
 sqlite3 sdc_db < insert_Students.sql
-sqlite3 sdc_db < insert_RelStdDsk.sql
+echo "Populate Courses"
+sqlite3 sdc_db < insert_Courses.sql
+echo "Populate Desks"
+sqlite3 sdc_db < insert_Desks.sql

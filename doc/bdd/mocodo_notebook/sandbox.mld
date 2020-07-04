@@ -1,0 +1,8 @@
+%%mocodo
+:
+Students: IdStudent, StdFirstname, StdLastname
+:
+Desks: IdDesk, DeskRow, DeskCol, #IdStudent->Students->IdStudent, #IdCourse->Courses->IdCourse
+:
+Courses: IdCourse, CourseName
+:

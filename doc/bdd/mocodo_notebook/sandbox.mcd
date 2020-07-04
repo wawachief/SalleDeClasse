@@ -1,0 +1,6 @@
+
+Students: IdStudent, StdFirstname, StdLastname
+sitsAt, 0N Students, 11 Desks
+Desks: IdDesk, DeskRow, DeskCol
+belongs to, 1N Courses, 11 Desks
+Courses: IdCourse, CourseName

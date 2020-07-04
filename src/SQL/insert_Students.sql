@@ -1,4 +1,4 @@
-INSERT INTO Students (StdName, StdSurname) VALUES
+INSERT INTO Students (StdFirstname, StdLastname) VALUES
     ("MANFIN", "Gérard"),
     ("MANIVELLE", "Jessie"),
     ("MEMPAFROY", "Ella"),

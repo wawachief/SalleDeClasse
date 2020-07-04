@@ -1,0 +1,62 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+
+<svg width="520" height="142" view_box="0 0 520 142"
+xmlns="http://www.w3.org/2000/svg"
+xmlns:link="http://www.w3.org/1999/xlink">\n\n<desc>Généré par Mocodo 2.3.7 le Sat, 04 Jul 2020 10:57:44</desc>
+
+<rect id="frame" x="0" y="0" width="520" height="142" fill="#f5f5f5" stroke="none" stroke-width="0"/>
+
+<!-- Entity Students -->
+<g id="entity-Students">
+	<g id="frame-Students">
+		<rect x="42" y="27" width="112" height="26" fill="#80cdc1" stroke="#80cdc1" stroke-width="0"/>
+		<rect x="42" y="53.0" width="112" height="62" fill="#c7eae5" stroke="#c7eae5" stroke-width="0"/>
+		<rect x="42" y="27" width="112" height="88" fill="none" stroke="#35978f" stroke-width="1.5"/>
+		<line x1="42" y1="53" x2="154" y2="53" stroke="#35978f" stroke-width="1"/>
+	</g>
+	<text x="64" y="45.6" fill="#000000" font-family="Courier New" font-size="14">Students</text>
+	<text x="47" y="71.6" fill="#000000" font-family="Courier New" font-size="14">IdStudent</text>
+	<line x1="47" y1="74.0" x2="124" y2="74.0" stroke="#000000" stroke-width="1"/>
+	<text x="47" y="89.6" fill="#000000" font-family="Courier New" font-size="14">StdFirstname</text>
+	<text x="47" y="107.6" fill="#000000" font-family="Courier New" font-size="14">StdLastname</text>
+</g>
+
+<!-- Entity Desks -->
+<g id="entity-Desks">
+	<g id="frame-Desks">
+		<rect x="220" y="9" width="96" height="26" fill="#80cdc1" stroke="#80cdc1" stroke-width="0"/>
+		<rect x="220" y="35.0" width="96" height="98" fill="#c7eae5" stroke="#c7eae5" stroke-width="0"/>
+		<rect x="220" y="9" width="96" height="124" fill="none" stroke="#35978f" stroke-width="1.5"/>
+		<line x1="220" y1="35" x2="316" y2="35" stroke="#35978f" stroke-width="1"/>
+	</g>
+	<text x="246" y="27.6" fill="#000000" font-family="Courier New" font-size="14">Desks</text>
+	<text x="225" y="53.6" fill="#000000" font-family="Courier New" font-size="14">IdDesk</text>
+	<line x1="225" y1="56.0" x2="277" y2="56.0" stroke="#000000" stroke-width="1"/>
+	<text x="225" y="71.6" fill="#000000" font-family="Courier New" font-size="14">DeskRow</text>
+	<text x="225" y="89.6" fill="#000000" font-family="Courier New" font-size="14">DeskCol</text>
+	<text x="225" y="107.6" fill="#000000" font-family="Courier New" font-size="14">#IdStudent</text>
+	<text x="225" y="125.6" fill="#000000" font-family="Courier New" font-size="14">#IdCourse</text>
+</g>
+
+<!-- Entity Courses -->
+<g id="entity-Courses">
+	<g id="frame-Courses">
+		<rect x="382" y="36" width="96" height="26" fill="#80cdc1" stroke="#80cdc1" stroke-width="0"/>
+		<rect x="382" y="62.0" width="96" height="44" fill="#c7eae5" stroke="#c7eae5" stroke-width="0"/>
+		<rect x="382" y="36" width="96" height="70" fill="none" stroke="#35978f" stroke-width="1.5"/>
+		<line x1="382" y1="62" x2="478" y2="62" stroke="#35978f" stroke-width="1"/>
+	</g>
+	<text x="400" y="54.6" fill="#000000" font-family="Courier New" font-size="14">Courses</text>
+	<text x="387" y="80.6" fill="#000000" font-family="Courier New" font-size="14">IdCourse</text>
+	<line x1="387" y1="83.0" x2="455" y2="83.0" stroke="#000000" stroke-width="1"/>
+	<text x="387" y="98.6" fill="#000000" font-family="Courier New" font-size="14">CourseName</text>
+</g>
+<path d="M220 103.0 C 187.0 85.0 198.0 67.0 154 67.0" fill="none" stroke="#bf812d" stroke-width="1"/>
+<path d="M 154 67.0 L 166.0 61.0 L 162.0 67.0 L 166.0 73.0 Z" fill="#bf812d" stroke-width="0"/>
+<circle cx="220" cy="103.0" r="1.5" stroke="#bf812d" stroke-width="1.5" fill="#bf812d"/>
+<path d="M316 121.0 C 349.0 98.5 338.0 76.0 382 76.0" fill="none" stroke="#bf812d" stroke-width="1"/>
+<path d="M 382 76.0 L 370.0 82.0 L 374.0 76.0 L 370.0 70.0 Z" fill="#bf812d" stroke-width="0"/>
+<circle cx="316" cy="121.0" r="1.5" stroke="#bf812d" stroke-width="1.5" fill="#bf812d"/>
+</svg>

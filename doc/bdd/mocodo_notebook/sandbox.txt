@@ -1,0 +1,3 @@
+Students (_IdStudent_, StdFirstname, StdLastname)
+Desks (_IdDesk_, DeskRow, DeskCol, #IdStudent, #IdCourse)
+Courses (_IdCourse_, CourseName)

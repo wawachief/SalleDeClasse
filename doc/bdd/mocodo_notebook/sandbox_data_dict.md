@@ -1,0 +1,8 @@
+- IdStudent
+- StdFirstname
+- StdLastname
+- IdDesk
+- DeskRow
+- DeskCol
+- IdCourse
+- CourseName

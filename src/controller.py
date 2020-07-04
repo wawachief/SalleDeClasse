@@ -2,7 +2,7 @@ import sqlite3
 
 from PySide2.QtCore import Signal, Slot, QObject
 
-from src.Model.mod_room import ModRoom
+from src.Model.mod_bdd import ModBdd
 from src.View.view_mainframe import ViewMainFrame
 
 from random import randint
@@ -25,6 +25,7 @@ class Controller(QObject):
 
         # BDD connection
         self.__bdd = sqlite3.connect("src/SQL/sdc_db")
+        self.mod_bdd = ModBdd(self.__bdd)
 
         # Create the Views
         self.gui = ViewMainFrame(self.sig_quit, self.config)
@@ -34,14 +35,15 @@ class Controller(QObject):
         self.gui.sig_quit = self.sig_quit
         self.v_canvas.sig_canvas_click = self.sig_canvas_click
 
-        # Create the Models
-        self.m_room = self.show_room("s 314")
-
         # Signals connection
         self.sig_add_tile.connect(self.create_desk)
         self.sig_quit.connect(self.do_quit)
         self.sig_canvas_click.connect(self.add_desk)
 
+        # properties
+        self.id_course = 1
+
+        self.show_room("Maths_2DE11")
 
     @Slot()
     def create_desk(self):
@@ -70,10 +72,10 @@ class Controller(QObject):
         """Add a new desk at mouse place"""
         x = coords[0]
         y = coords[1]
-        id_desk = self.m_room.get_desk_id(x, y)
+        id_desk = self.mod_bdd.get_desk_id_in_course_by_coords(self.id_course, x, y)
         if id_desk == 0:
             # The place is free, we create the desk
-            id_desk = self.m_room.add_desk(x, y)
+            id_desk = self.mod_bdd.create_new_desk_in_course(x, y, self.id_course)
             self.v_canvas.new_tile(x, y)
         self.v_canvas.repaint()
 
@@ -84,9 +86,7 @@ class Controller(QObject):
         self.__bdd.close()
 
     def show_room(self, room_name):
-        room = ModRoom(self.__bdd, room_name)
-        all_desks = room.get_all_desks()
+        all_desks = self.mod_bdd.get_course_all_desks(self.id_course)
         for d in all_desks:
-            self.v_canvas.new_tile(d.cx, d.cy)
+            self.v_canvas.new_tile(d.row, d.col)
         self.v_canvas.repaint()
-        return room

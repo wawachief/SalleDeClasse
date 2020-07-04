@@ -1,0 +1,37 @@
+<html>
+<head>
+<meta charset='utf-8'>
+<style>
+  #mld .relation { font-variant: small-caps; font-weight: bold }
+  #mld .primary { text-decoration: underline }
+  #mld .foreign { font-style: oblique }
+  #mld .normal { }
+</style>
+</head>
+<body>
+<div id='mld'>
+<div>
+  <span class='relation'>Students</span> (
+    <span class='primary'>IdStudent</span>,
+    <span class='normal'>StdFirstname</span>,
+    <span class='normal'>StdLastname</span>
+  )
+</div>
+<div>
+  <span class='relation'>Desks</span> (
+    <span class='primary'>IdDesk</span>,
+    <span class='normal'>DeskRow</span>,
+    <span class='normal'>DeskCol</span>,
+    <span class='normal'>#IdStudent</span>,
+    <span class='normal'>#IdCourse</span>
+  )
+</div>
+<div>
+  <span class='relation'>Courses</span> (
+    <span class='primary'>IdCourse</span>,
+    <span class='normal'>CourseName</span>
+  )
+</div>
+</div>
+</body>
+</html>
