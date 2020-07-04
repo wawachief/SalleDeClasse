@@ -384,7 +384,9 @@ class ViewCanvas(QWidget):
         pen.setColor(QColor(self.config.get('colors', 'tile_text')))
         painter.setPen(pen)
 
-        painter.setFont(QFont(pointSize=12))
+        font = QFont()
+        font.setPixelSize(10)
+        painter.setFont(font)
 
         # Drawing of all the tiles
         for t in self.__tiles:
