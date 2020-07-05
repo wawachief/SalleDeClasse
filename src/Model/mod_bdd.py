@@ -2,7 +2,8 @@ from src.Model.mod_types import Desk, Student
 
 
 class ModBdd():
-    """This class deals with SQL requests"""
+    """This class deals with SQL requests
+    All commits are done by the controller"""
 
     def __init__(self, bdd):
         self.__bdd = bdd
@@ -58,7 +59,6 @@ class ModBdd():
             req = "INSERT INTO Rooms (CourseName) VALUES (?)"
             self.__cursor.execute(req, [name])
             id = self.__cursor.lastrowid
-            self.__bdd.commit()
         return id
     
     def create_new_desk_in_course(self, row, col, id_course):
@@ -72,11 +72,19 @@ class ModBdd():
             self.__cursor.execute(req, [row, col, id_course, 0])
             id_dsk = self.__cursor.lastrowid
             dsk = Desk(id_dsk, row, col, id_course, 0)
-            self.__bdd.commit()
             return id_dsk
         else:
             raise ValueError('new_desk error : invalid course id')
             return 0
+
+    def remove_desk_by_id(self, id_desk):
+        """Removes a desk
+        Input : id_desk
+        Output : None"""
+
+        req = "DELETE FROM Desks WHERE IdDesk = ?"
+        self.__cursor.execute(req, [id_desk])
+        return None
 
     def move_desk_by_id(self, id_desk, row, col):
         """Moves a desk to a new destination
@@ -85,7 +93,6 @@ class ModBdd():
         Output : None"""
         req = "UPDATE Desks SET DeskRow = ?, DeskCol = ?  WHERE IdDesk = ?"
         self.__cursor.execute(req, [row, col, id_desk])
-        self.__bdd.commit()
         return None
 
     def set_student_in_desk_by_id(self, id_std, id_desk):
@@ -97,7 +104,6 @@ class ModBdd():
         if id_std*id_desk != 0:
             req = "UPDATE Desks SET IdStudent = ? WHERE IdDesk = ?"
             self.__cursor.execute (req, [id_std, id_desk])
-            self.__bdd.commit()
 
     #
     # Student relative requests

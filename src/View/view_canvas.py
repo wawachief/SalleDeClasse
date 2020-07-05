@@ -295,14 +295,14 @@ class ViewCanvas(QWidget):
         pal.setColor(QPalette.Background, self.config.get('colors', 'room_bg'))
         self.setPalette(pal)
 
-    def remove_tile(self, desk_it):
+    def remove_tile(self, desk_id):
         """
         Removes the tile at the given row/column position
 
         :param desk_it: tile's ID
         :type desk_it: int
         """
-        self.__tiles.pop(desk_it)
+        self.__tiles.pop(desk_id)
 
     def new_tile(self, row, column, desk_id, firstname="", lastname=""):
         """

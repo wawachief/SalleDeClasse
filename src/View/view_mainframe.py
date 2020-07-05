@@ -70,8 +70,7 @@ class CentralWidget(QWidget):
         self.sig_add_tile.emit()
 
     def do_shuffle(self):
-        print("shuffle")
-        #self.sig_shuffle.emit()
+        self.sig_shuffle.emit()
 
 
 class ViewMainFrame(QMainWindow):
