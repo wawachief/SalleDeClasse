@@ -1,0 +1,4 @@
+QToolBar {
+    background-color: QLinearGradient(x1: 0, y1: 1, x2: 0, y2: 0, stop: 0 #BDBDBD, stop: 1 #AAAAAA);
+    border: none;
+}

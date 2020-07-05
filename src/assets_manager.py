@@ -2,8 +2,10 @@ from PySide2.QtGui import QIcon
 
 ASSETS_PATH = "assets/"
 ICONS_PATH = "icons/"
+STYLE_PATH = "styles/"
 
 ICONS_EXT = ".png"
+STYLE_EXT = ".qss"
 
 
 def get_icon(name):
@@ -16,3 +18,14 @@ def get_icon(name):
     :rtype: QIcon
     """
     return QIcon(f"{ASSETS_PATH}{ICONS_PATH}{name}{ICONS_EXT}")
+
+
+def get_stylesheet(file):
+    """
+    Gets the qss content into a string
+
+    :param file: file name (without extension)
+    :return: stylesheet content
+    """
+    with open(ASSETS_PATH + STYLE_PATH + file + STYLE_EXT, "r") as f:
+        return f.read()

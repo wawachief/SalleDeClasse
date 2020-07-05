@@ -1,7 +1,8 @@
-from PySide2.QtWidgets import QMainWindow, QWidget, QPushButton, QVBoxLayout
-from PySide2.QtCore import Qt, Signal, Slot
+from PySide2.QtWidgets import QMainWindow, QWidget, QDockWidget, QVBoxLayout
+from PySide2.QtCore import Qt, Signal
 
 from src.View.view_canvas import ViewCanvas
+from src.View.view_sidepanel import ViewSidePanel
 from src.View.widgets.view_board import ViewTeacherDeskLabel
 from src.View.widgets.view_toolbar import ViewMainToolBar
 
@@ -74,6 +75,23 @@ class CentralWidget(QWidget):
         self.sig_shuffle.emit()
 
 
+class SideDockWidget(QDockWidget):
+
+    def __init__(self, config):
+        """
+        Dockable widget containing the Side Panel
+
+        :param config: application's parsed configuration
+        """
+        QDockWidget.__init__(self)
+
+        self.sidepanel = ViewSidePanel(config)
+
+        self.setWidget(self.sidepanel)
+        self.setAllowedAreas(Qt.LeftDockWidgetArea)
+        self.setFeatures(QDockWidget.DockWidgetFloatable)
+
+
 class ViewMainFrame(QMainWindow):
 
     def __init__(self, sig_quit, config):
@@ -88,12 +106,16 @@ class ViewMainFrame(QMainWindow):
         # Widgets
         self.maintoolbar = ViewMainToolBar(config)
         self.central_widget = CentralWidget(config)
+        self.sidewidget = SideDockWidget(config)
+
+        self.sidewidget.dockLocationChanged.connect(self.on_side_widget_docked_state_changed)
 
         self.__init_callbacks()
 
         # Layout
         self.setCentralWidget(self.central_widget)
-        self.addToolBar(self.maintoolbar)
+        self.addDockWidget(Qt.LeftDockWidgetArea, self.sidewidget)
+        self.addToolBar(Qt.RightToolBarArea, self.maintoolbar)
 
         self.sig_quit = sig_quit
 
@@ -109,6 +131,13 @@ class ViewMainFrame(QMainWindow):
         self.maintoolbar.on_btn_shuffle_clicked = self.central_widget.do_shuffle
 
         self.central_widget.sig_enable_animation_btns = self.maintoolbar.sig_enable_animation_btns
+
+    def on_side_widget_docked_state_changed(self):
+        """
+        Triggered when the side dockable widget has been docked or undocked
+        """
+        if self.sidewidget.isFloating():
+            self.adjustSize()
 
     def closeEvent(self, event):
         """

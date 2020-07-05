@@ -1,7 +1,7 @@
 from PySide2.QtWidgets import QToolBar, QPushButton
 from PySide2.QtCore import Signal, Slot, QSize
 
-from src.assets_manager import get_icon
+from src.assets_manager import get_icon, get_stylesheet
 
 BUTTON_SIZE = QSize(60, 60)
 ICON_SIZE = QSize(45, 45)
@@ -46,11 +46,7 @@ class ViewMainToolBar(QToolBar):
         """
         Inits the stylesheet of this widget
         """
-        # Toolbar
-        grad_toolbar = "background-color:QLinearGradient(x1: 0, y1: 1, x2: 0, y2: 0, stop: 0 #BDBDBD, stop: 1 #AAAAAA);"
-        bg_toolbar = "QToolBar { " + grad_toolbar + " border:none; }"
-
-        self.setStyleSheet(f"{bg_toolbar}")
+        self.setStyleSheet(get_stylesheet("toolbar"))
 
     @Slot(bool)
     def enable_animation_btns(self, do_enable):
@@ -71,6 +67,32 @@ class ViewMainToolBar(QToolBar):
 
     def on_btn_shuffle_clicked(self):
         pass
+
+
+class ViewCourseListToolbar(QToolBar):
+
+    def __init__(self, config):
+        """
+        Toolbar for the Room list side panel tab
+
+        :param config: application's parsed configuration
+        """
+        QToolBar.__init__(self)
+        self.config = config
+
+        self.btn = QPushButton("test")
+        self.btn.clicked.connect(lambda: print("wesh wesh"))
+
+        self.addWidget(self.btn)
+
+        self.__set_style()
+
+    def __set_style(self):
+        """
+        Inits the stylesheet of this widget
+        """
+        # Toolbar
+        self.setStyleSheet(get_stylesheet("toolbar"))
 
 
 class ToolBarButton(QPushButton):
