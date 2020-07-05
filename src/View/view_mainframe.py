@@ -70,6 +70,7 @@ class CentralWidget(QWidget):
         self.sig_add_tile.emit()
 
     def do_shuffle(self):
+        self.sig_enable_animation_btns.emit(False)
         self.sig_shuffle.emit()
 
 

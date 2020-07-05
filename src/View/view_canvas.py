@@ -183,6 +183,7 @@ class ViewTile(QObject):
             self.animate_thread = MoveAnimationThread(self.real_position(),
                                                       (new_column * self.__square_size, new_row * self.__square_size),
                                                       self.sig_move_update, self.sig_thread_finished)
+            self.animate_thread.finished.connect(self.animate_thread_finished)
         return True
 
     @Slot(int, int)
@@ -202,8 +203,11 @@ class ViewTile(QObject):
         """
         self.__set_position(self.__move_end_pos[0], self.__move_end_pos[1])  # Update final position
         self.__move_end_pos = ()  # Reset move position
-        self.animate_thread = None
         self.__sig_move_ended.emit()
+
+    @Slot()
+    def animate_thread_finished(self):
+        self.animate_thread = None
 
     def abort_animation(self):
         """
@@ -383,7 +387,7 @@ class ViewCanvas(QWidget):
                     self.move_tile(t.id(), self.__relative_grid_position(t.grid_position(), True))
 
                 self.__do_switch = False
-                self.sig_move_animation_ended.emit()
+            self.sig_move_animation_ended.emit()
 
             self.repaint()
 
