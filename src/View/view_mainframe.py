@@ -10,13 +10,11 @@ class CentralWidget(QWidget):
 
     sig_move_animation_ended = Signal()
 
-    def __init__(self, config, sig_enable_perspective_btn):
+    def __init__(self, config):
         """
         Application's central widget, contains all the app's widgets.
 
         :param config: application's parsed configuration
-        :param sig_enable_perspective_btn: Signal to emit to update the enable state of the change perspective button
-        :type sig_enable_perspective_btn: Signal
         """
         QWidget.__init__(self)
 
@@ -29,9 +27,10 @@ class CentralWidget(QWidget):
         self.is_view_students = None  # Current view
 
         self.sig_add_tile = None
-        self.sig_enable_perspective_btn = sig_enable_perspective_btn
-        # When the move animation ends, we can re-activate the button
-        self.sig_move_animation_ended.connect(lambda: self.sig_enable_perspective_btn.emit(True))
+        self.sig_shuffle = None
+        self.sig_enable_animation_btns = None
+        # When the move animation ends, we can re-activate the buttons
+        self.sig_move_animation_ended.connect(lambda: self.sig_enable_animation_btns.emit(True))
 
         self.__set_layout()
         self.on_perspective_changed()  # This will switch the is_view_student flag and display the students' view
@@ -60,7 +59,7 @@ class CentralWidget(QWidget):
         if self.is_view_students is None:  # To prevent updating the canvas for the initialization
             self.is_view_students = True
         else:
-            self.sig_enable_perspective_btn.emit(False)  # Freeze btn for preventing multiple clicks
+            self.sig_enable_animation_btns.emit(False)  # Freeze btn for preventing multiple clicks
             self.is_view_students = not self.is_view_students
             self.v_canvas.perspective_changed()
 
@@ -69,6 +68,10 @@ class CentralWidget(QWidget):
 
     def do_magic(self):
         self.sig_add_tile.emit()
+
+    def do_shuffle(self):
+        print("shuffle")
+        #self.sig_shuffle.emit()
 
 
 class ViewMainFrame(QMainWindow):
@@ -84,7 +87,7 @@ class ViewMainFrame(QMainWindow):
 
         # Widgets
         self.maintoolbar = ViewMainToolBar(config)
-        self.central_widget = CentralWidget(config, self.maintoolbar.sig_enable_perspective_btn)
+        self.central_widget = CentralWidget(config)
 
         self.__init_callbacks()
 
@@ -98,10 +101,14 @@ class ViewMainFrame(QMainWindow):
 
     def __init_callbacks(self):
         """
-        Dispatches the callbacks from the toolbar to the handling widgets
+        Dispatches the callbacks from the toolbar to the handling widgets. Also init the signal triggered to enable
+        or disable some buttons.
         """
         self.maintoolbar.on_btn_magic_clicked = self.central_widget.do_magic
         self.maintoolbar.on_btn_perspective_clicked = self.central_widget.on_perspective_changed
+        self.maintoolbar.on_btn_shuffle_clicked = self.central_widget.do_shuffle
+
+        self.central_widget.sig_enable_animation_btns = self.maintoolbar.sig_enable_animation_btns
 
     def closeEvent(self, event):
         """

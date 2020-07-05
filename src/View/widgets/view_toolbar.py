@@ -9,7 +9,7 @@ ICON_SIZE = QSize(45, 45)
 
 class ViewMainToolBar(QToolBar):
 
-    sig_enable_perspective_btn = Signal(bool)
+    sig_enable_animation_btns = Signal(bool)
 
     def __init__(self, config):
         """
@@ -25,9 +25,10 @@ class ViewMainToolBar(QToolBar):
         # Buttons
         self.__btn_magic = ToolBarButton("magic", "Abracadabra !", self.on_btn_magic_clicked)  # Debug btn
         self.__btn_perspective = ToolBarButton("teacher", "Changer de perspective", self.on_btn_perspective_clicked)
+        self.__btn_shuffle = ToolBarButton("shuffle", "Mélanger", self.on_btn_shuffle_clicked)
 
         # Signals
-        self.sig_enable_perspective_btn.connect(self.enable_perspective_btn)
+        self.sig_enable_animation_btns.connect(self.enable_animation_btns)
 
         # Layout
         self.__set_widgets()
@@ -39,6 +40,7 @@ class ViewMainToolBar(QToolBar):
         """
         self.addWidget(self.__btn_magic)
         self.addWidget(self.__btn_perspective)
+        self.addWidget(self.__btn_shuffle)
 
     def __set_style(self):
         """
@@ -51,19 +53,23 @@ class ViewMainToolBar(QToolBar):
         self.setStyleSheet(f"{bg_toolbar}")
 
     @Slot(bool)
-    def enable_perspective_btn(self, do_enable):
+    def enable_animation_btns(self, do_enable):
         """
-        Enables or disables the change-perspective button to prevent several animation at a time
+        Enables or disables the change-perspective and shuffle buttons to prevent several animation at a time
 
         :param do_enable: True to enable
         :type do_enable: bool
         """
         self.__btn_perspective.setEnabled(do_enable)
+        self.__btn_shuffle.setEnabled(do_enable)
 
     def on_btn_perspective_clicked(self):
         pass
 
     def on_btn_magic_clicked(self):
+        pass
+
+    def on_btn_shuffle_clicked(self):
         pass
 
 
