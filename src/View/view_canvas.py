@@ -94,6 +94,8 @@ class ViewTile(QObject):
 
         self.__square_size = square_size
 
+        self.__is_selected = False
+
         # Signals
         self.__sig_move_ended = sig_move_ended
         self.sig_move_update.connect(self.__on_move_updated)
@@ -122,6 +124,18 @@ class ViewTile(QObject):
         """
         self.__firstname = firstname
         self.__lastname = lastname
+
+    def update_selection(self):
+        """
+        Switches the current selection value
+        """
+        self.__is_selected = not self.__is_selected
+
+    def is_selected(self):
+        """
+        :return: True if this tile is selected
+        """
+        return self.__is_selected
 
     def firstname(self):
         """
@@ -234,11 +248,13 @@ class ViewCanvas(QWidget):
 
     sig_move_ended = Signal()
 
-    def __init__(self, config):
+    def __init__(self, config, sig_move_animation_ended):
         """
         Application's main canvas, in which is drawn desks and student's names.
 
         :param config: application's parsed configuration
+        :param sig_move_animation_ended: signal to trigger when the move animation ends
+        :type sig_move_animation_ended: Signal
         """
         QWidget.__init__(self)
 
@@ -247,13 +263,14 @@ class ViewCanvas(QWidget):
         self.square_size = int(config.get('size', 'desk'))
         self.setAutoFillBackground(True)
 
-        self.__tiles = []  # List of all drawn tiles
+        self.__tiles = {}  # All drawn tiles
 
         self.is_view_students = True
         self.__do_switch = False
 
         self.sig_canvas_click = None  # Signal triggered when a click is performed on a desk
         self.sig_canvas_drag = None  # Signal triggered when a drag operation is performed on the canvas
+        self.sig_move_animation_ended = sig_move_animation_ended
 
         # Tracking for drag/drop operation
         self.__click_pos = ()  # Stored (row, column) position
@@ -278,17 +295,14 @@ class ViewCanvas(QWidget):
         pal.setColor(QPalette.Background, self.config.get('colors', 'room_bg'))
         self.setPalette(pal)
 
-    def remove_tile(self, row, column):
+    def remove_tile(self, desk_it):
         """
         Removes the tile at the given row/column position
 
-        :param row: tile's row
-        :param column: tile's column
+        :param desk_it: tile's ID
+        :type desk_it: int
         """
-        for t in self.__tiles:
-            if t.grid_position() == (row, column):
-                self.__tiles.remove(t)
-                break
+        self.__tiles.pop(desk_it)
 
     def new_tile(self, row, column, desk_id, firstname="", lastname=""):
         """
@@ -306,24 +320,22 @@ class ViewCanvas(QWidget):
         :type lastname: str
         """
         new_tile = ViewTile(row, column, self.square_size, self.sig_move_ended, desk_id)
-        self.__tiles.append(new_tile)
         new_tile.set_student(firstname, lastname)
 
-    def set_student(self, pos, firstname, lastname):
+        self.__tiles[desk_id] = new_tile
+
+    def set_student(self, desk_id, firstname, lastname):
         """
         Sets the student's information at the given position
 
-        :param pos: tile's position (row, column)
-        :type pos: tuple
+        :param desk_id: desk id
+        :type desk_id: int
         :param firstname: Student's first name
         :type firstname: str
         :param lastname: Student's last name
         :type lastname: str
         """
-        for t in self.__tiles:
-            if t.grid_position() == pos:
-                t.set_student(firstname, lastname)
-                break
+        self.__tiles[desk_id].set_student(firstname, lastname)
 
     def move_tile(self, desk_id, new_pos, animate=False):
         """
@@ -337,11 +349,7 @@ class ViewCanvas(QWidget):
         :type animate: bool
         """
         # Look for the tile to animate
-        ok = False
-        for t in self.__tiles:
-            if t.id() == desk_id:
-                ok = t.move(new_pos[0], new_pos[1], animate)  # Check that the animation is running
-                break
+        ok = self.__tiles[desk_id].move(new_pos[0], new_pos[1], animate)  # Check that the animation is running
 
         if animate and ok:
             if not self.__running_animations:  # If this is the first animation, start the update timer
@@ -371,10 +379,11 @@ class ViewCanvas(QWidget):
 
                 self.is_view_students = not self.is_view_students
 
-                for t in self.__tiles:
+                for t in list(self.__tiles.values()):
                     self.move_tile(t.id(), self.__relative_grid_position(t.grid_position(), True))
 
                 self.__do_switch = False
+                self.sig_move_animation_ended.emit()
 
             self.repaint()
 
@@ -383,7 +392,7 @@ class ViewCanvas(QWidget):
         Calls abort processes on tiles in case there are animation running
         """
         if self.__running_animations:
-            for t in self.__tiles:
+            for t in list(self.__tiles.values()):
                 t.abort_animation()
 
     def paintEvent(self, event):
@@ -420,13 +429,15 @@ class ViewCanvas(QWidget):
         tile_selected = None
 
         # Drawing of all the tiles
-        for t in self.__tiles:
+        for t in list(self.__tiles.values()):
             y, x = self.__relative_mouse_position(t.real_position())
             if self.__relative_grid_position(t.grid_position()) == self.__click_pos:  # If the tile is selected
                 tile_selected = t
-                color = QColor(self.config.get('colors', 'selected_tile'))
+                color = QColor(self.config.get('colors', 'drag_selected_tile'))
             elif self.__relative_grid_position(t.grid_position()) == tile_selected_pos:  # If the mouse is hover
                 color = QColor(self.config.get('colors', 'hovered_tile'))
+            elif t.is_selected():
+                color = QColor(self.config.get('colors', 'selected_tile'))
             else:  # Regular tile
                 color = QColor(self.config.get('colors', 'tile'))
             rect = self.__get_rect_at(y, x)
@@ -453,12 +464,26 @@ class ViewCanvas(QWidget):
         painter.fillRect(rect, QColor(self.config.get('colors', 'dragged_tile')))
         painter.drawText(rect, Qt.AlignCenter | Qt.TextWordWrap, f"{tile.lastname()}\n{tile.firstname()}")
 
+    def get_selected_tiles(self):
+        """
+        Gets the list of all selected tiles
+
+        :return: Selected tiles IDs (using the ID_Desk that was used for their creation)
+        :rtype list
+        """
+        ids = []
+        for t in list(self.__tiles.values()):
+            if t.is_selected():
+                ids.append(t.id())
+
+        return ids
+
     def mousePressEvent(self, event):
         """
         Intercepts the mousePressEvent in order to get where the user clicked. We will compare this in the
         mouseReleaseEvent to process the event.
         """
-        if event.button() == Qt.LeftButton:
+        if event.button() == Qt.LeftButton and not self.__running_animations:  # We don't allow clicks during animations
             self.__click_pos = self.__convert_point(event.y(), event.x())  # Register the click point
 
     def mouseMoveEvent(self, event):
@@ -485,8 +510,19 @@ class ViewCanvas(QWidget):
         rel_start_pos = self.__relative_grid_position(self.__click_pos)
 
         if rel_end_pos == rel_start_pos:
-            self.sig_canvas_click.emit(rel_end_pos)
-        else:
+            selected_tile = None
+            for t in list(self.__tiles.values()):
+                # Check if the click position is on an existing tile
+                if t.grid_position() == rel_end_pos:
+                    selected_tile = t
+                    break
+
+            # We emit the signal only if we clicked on an empty tile (e.g. no tile is selected)
+            if not selected_tile:
+                self.sig_canvas_click.emit(rel_end_pos)
+            else:
+                selected_tile.update_selection()
+        else:  # Drag/Drop operation
             self.sig_canvas_drag.emit(rel_start_pos, rel_end_pos)
 
         self.__click_pos = ()
@@ -499,7 +535,7 @@ class ViewCanvas(QWidget):
         """
         # Perform the swicth animation
         self.__do_switch = True
-        for t in self.__tiles:
+        for t in list(self.__tiles.values()):
             self.move_tile(t.id(), self.__relative_grid_position(t.grid_position(), True), True)
 
     def __relative_mouse_position(self, mouse_pos):

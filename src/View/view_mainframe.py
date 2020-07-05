@@ -1,11 +1,14 @@
 from PySide2.QtWidgets import QMainWindow, QWidget, QPushButton, QVBoxLayout
-from PySide2.QtCore import Qt
+from PySide2.QtCore import Qt, Signal, Slot
 
 from src.View.view_canvas import ViewCanvas
 from src.View.widgets.view_board import ViewTeacherDeskLabel
 
 
 class CentralWidget(QWidget):
+
+    sig_move_animation_ended = Signal()
+
     def __init__(self, config):
         """
         Application's central widget, contains all the app's widgets.
@@ -16,7 +19,7 @@ class CentralWidget(QWidget):
 
         self.config = config
 
-        self.v_canvas = ViewCanvas(config)  # Central canvas
+        self.v_canvas = ViewCanvas(config, self.sig_move_animation_ended)  # Central canvas
 
         self.btn = QPushButton("** Magic Button **")  # Debug btn
         self.btn.clicked.connect(self.do_magic)
@@ -29,6 +32,7 @@ class CentralWidget(QWidget):
         self.is_view_students = None  # Current view
 
         self.sig_add_tile = None
+        self.sig_move_animation_ended.connect(self.on_move_animation_ended)
 
         self.__set_layout()
         self.on_perspective_changed()  # This will switch the is_view_student flag and display the students' view
@@ -59,11 +63,19 @@ class CentralWidget(QWidget):
         if self.is_view_students is None:  # To prevent updating the canvas for the initialization
             self.is_view_students = True
         else:
+            self.btn_perspective.setEnabled(False)  # Freeze btn for preventing multiple clicks
             self.is_view_students = not self.is_view_students
             self.v_canvas.perspective_changed()
 
         self.view_students.activate(self.is_view_students)
         self.view_teacher.activate(not self.is_view_students)
+
+    @Slot()
+    def on_move_animation_ended(self):
+        """
+        When the move animation ends, we can re-activate the button
+        """
+        self.btn_perspective.setEnabled(True)
 
     def do_magic(self):
         self.sig_add_tile.emit()
