@@ -1,5 +1,10 @@
 from PySide2.QtWidgets import QToolBar, QPushButton
-from PySide2.QtCore import Signal, Slot
+from PySide2.QtCore import Signal, Slot, QSize
+
+from src.assets_manager import get_icon
+
+BUTTON_SIZE = QSize(60, 60)
+ICON_SIZE = QSize(45, 45)
 
 
 class ViewMainToolBar(QToolBar):
@@ -18,12 +23,8 @@ class ViewMainToolBar(QToolBar):
         self.config = config
 
         # Buttons
-        self.__btn_magic = QPushButton("** Magic Button **")  # Debug btn
-        self.__btn_magic.clicked.connect(self.on_btn_magic_clicked)
-
-        self.__btn_perspective = QPushButton("Switch perspective")  # Perspective view button
-        self.__btn_perspective.setToolTip("Changer de perspective")
-        self.__btn_perspective.clicked.connect(self.on_btn_perspective_clicked)
+        self.__btn_magic = ToolBarButton("magic", "Abracadabra !", self.on_btn_magic_clicked)  # Debug btn
+        self.__btn_perspective = ToolBarButton("teacher", "Changer de perspective", self.on_btn_perspective_clicked)
 
         # Signals
         self.sig_enable_perspective_btn.connect(self.enable_perspective_btn)
@@ -47,10 +48,7 @@ class ViewMainToolBar(QToolBar):
         grad_toolbar = "background-color:QLinearGradient(x1: 0, y1: 1, x2: 0, y2: 0, stop: 0 #BDBDBD, stop: 1 #AAAAAA);"
         bg_toolbar = "QToolBar { " + grad_toolbar + " border:none; }"
 
-        # Buttons
-        btns = "QPushButton:hover {background-color: #CEECF5;} QPushButton {border: none; height: 2em; margin: 5px;}"
-
-        self.setStyleSheet(f"{bg_toolbar} {btns}")
+        self.setStyleSheet(f"{bg_toolbar}")
 
     @Slot(bool)
     def enable_perspective_btn(self, do_enable):
@@ -69,3 +67,18 @@ class ViewMainToolBar(QToolBar):
         pass
 
 
+class ToolBarButton(QPushButton):
+
+    def __init__(self, icon, tooltip, callback):
+        """
+        Button widget for the toolbar
+        """
+        QPushButton.__init__(self)
+
+        self.setIcon(get_icon(icon))
+        self.setToolTip(tooltip)
+        self.setFixedSize(BUTTON_SIZE)
+        self.setIconSize(ICON_SIZE)
+        self.clicked.connect(callback)
+
+        self.setStyleSheet("QPushButton:hover {background-color: #F2F2F2;} QPushButton {border: none; margin: 5px;}")
