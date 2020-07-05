@@ -132,7 +132,7 @@ class Controller(QObject):
             # update the model
             self.mod_bdd.set_student_in_desk_by_id(student.id, dsk[0])
             # update the view
-            self.v_canvas.set_student((dsk[1], dsk[2]), student.firstname, student.lastname)
+            self.v_canvas.set_student(dsk[0], student.firstname, student.lastname)
             self.v_canvas.repaint()
             
             index_std += 1

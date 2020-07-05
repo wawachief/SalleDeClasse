@@ -18,6 +18,8 @@ class ViewTeacherDeskLabel(QLabel):
         self.setFixedSize(QSize(200, 30))
         self.setAlignment(Qt.AlignCenter)
 
+        self.setToolTip("Position du tableau")
+
         self.__is_active = False
         self.__bg_color = bg_color
 
