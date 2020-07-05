@@ -111,7 +111,8 @@ class ViewTile(QObject):
         self.__set_position(row, column)
 
     def __str__(self):
-        return f"{self.firstname()}, {self.lastname()}, {self.grid_position()}"
+        return f"ID: {self.id()}, First name: {self.firstname()}, Last name: {self.lastname()}, " \
+               f"Grid Position: {self.grid_position()}"
 
     def set_student(self, firstname, lastname):
         """
@@ -168,15 +169,16 @@ class ViewTile(QObject):
         :return if the move operation could be performed
         :rtype: bool
         """
-        if self.animate_thread:  # If there is already a move animation, we don't do anything
-            return False
-
         if self.__grid_pos == (new_row, new_column):  # Position is the same
             return False
 
         if not animate:
             self.__set_position(new_row, new_column)
         else:
+            if self.animate_thread:  # If there is already a move animation, we don't do anything
+                print("[TILE-DEBUG] - Can't move, an animation is still in motion:", self)
+                return False
+
             self.__move_end_pos = (new_row, new_column)
 
             # Convert grid positions into mouse positions for arrival position
@@ -184,6 +186,7 @@ class ViewTile(QObject):
                                                       (new_column * self.__square_size, new_row * self.__square_size),
                                                       self.sig_move_update, self.sig_thread_finished)
             self.animate_thread.finished.connect(self.animate_thread_finished)
+
         return True
 
     @Slot(int, int)
@@ -268,6 +271,7 @@ class ViewCanvas(QWidget):
         self.setAutoFillBackground(True)
 
         self.__tiles = {}  # All drawn tiles
+        self.tmp = {}
 
         self.is_view_students = True
         self.__do_switch = False
@@ -303,8 +307,8 @@ class ViewCanvas(QWidget):
         """
         Removes the tile at the given row/column position
 
-        :param desk_it: tile's ID
-        :type desk_it: int
+        :param desk_id: tile's ID
+        :type desk_id: int
         """
         self.__tiles.pop(desk_id)
 
@@ -374,21 +378,22 @@ class ViewCanvas(QWidget):
         # print("[CANVAS-DEBUG] - Animation ended, left:", self.__running_animations)
 
         if not self.__running_animations:  # once all animations have ended, stop the timer
-            self.update_timer.stop()
-            self.update_timer = None
-
             sleep(ANIMATE_REFRESH_RATE / 1000)
 
             if self.__do_switch:
 
-                self.is_view_students = not self.is_view_students
+                self.is_view_students = not self.is_view_students  # Switch the flag
 
+                # Put the tiles to their regular coordinates
                 for t in list(self.__tiles.values()):
                     self.move_tile(t.id(), self.__relative_grid_position(t.grid_position(), True))
 
                 self.__do_switch = False
-            self.sig_move_animation_ended.emit()
 
+            self.update_timer.stop()
+            self.update_timer = None
+
+            self.sig_move_animation_ended.emit()
             self.repaint()
 
     def application_closing(self):
@@ -539,7 +544,9 @@ class ViewCanvas(QWidget):
         """
         # Perform the swicth animation
         self.__do_switch = True
+
         for t in list(self.__tiles.values()):
+            self.tmp[t.id()] = t.grid_position()
             self.move_tile(t.id(), self.__relative_grid_position(t.grid_position(), True), True)
 
     def __relative_mouse_position(self, mouse_pos):
