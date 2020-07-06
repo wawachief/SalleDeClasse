@@ -3,13 +3,27 @@
 Students: IdStudent, StdFirstname, StdLastname, OrderKey
 :::
 Desks: IdDesk, DeskRow, DeskCol, #IdStudent->Students->IdStudent, #IdCourse->Courses->IdCourse
-:
-Courses: IdCourse, CourseName
+:::
+Courses: IdCourse, CourseName, #IdTopic->Topics->IdTopic
 :
 
 
 :::
-IsIn: #IdStudent->Students->IdStudent, _#IdClass->Classes->IdClass
+IsIn: #IdStudent->Students->IdStudent, _#IdGroup->Groups->IdGroup
 :
-Classes: IdClass, ClassName
+Groups: IdGroup, GroupName
+:::::
+
+
 :::
+StdAttrs: IdStdAttr, StdAttrValue, #IdStudent->Students->IdStudent, #IdAttr->Attributes->IdAttr, #IdTopic->Topics->IdTopic
+:::
+Topics: IdTopic, TopicName
+:::
+
+
+:
+Attributes: IdAttr, AttrName, #IdAttrType->AttrTypes->IdAttrType
+:::
+AttrTypes: IdAttrType, AttrTypeName
+:::::

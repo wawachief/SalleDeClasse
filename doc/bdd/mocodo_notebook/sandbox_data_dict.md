@@ -7,5 +7,13 @@
 - DeskCol
 - IdCourse
 - CourseName
-- IdClass
-- ClassName
+- IdGroup
+- GroupName
+- IdStdAttr
+- StdAttrValue
+- IdTopic
+- TopicName
+- IdAttr
+- AttrName
+- IdAttrType
+- AttrTypeName

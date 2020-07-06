@@ -127,12 +127,12 @@ class ModBdd():
         r = self.__cursor.fetchall()
         return [] if r is None else [Student(t[0], t[1], t[2]) for t in r ]
 
-    def get_students_in_class(self, id_class):
+    def get_students_in_group(self, id_group):
         """Returns an array of Students in the room
-        Input : id_class - the class id
-        Output : a list (maybe empty) of students in the class"""
-        req = """SELECT * from Students JOIN IsIn USING (idStudent) WHERE IsIn.IdClass = ? ORDER BY OrderKey"""
-        self.__cursor.execute(req, [id_class])
+        Input : id_group - the group id
+        Output : a list (maybe empty) of students in the group"""
+        req = """SELECT * from Students JOIN IsIn USING (idStudent) WHERE IsIn.IdGroup = ? ORDER BY OrderKey"""
+        self.__cursor.execute(req, [id_group])
         r = self.__cursor.fetchall()
         return [] if r is None else [Student(t[0], t[1], t[2]) for t in r ]
 

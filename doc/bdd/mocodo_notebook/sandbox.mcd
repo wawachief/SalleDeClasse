@@ -4,6 +4,19 @@ sitsAt, 0N Students, 11 Desks
 Desks: IdDesk, DeskRow, DeskCol
 belongs to, 1N Courses, 11 Desks
 Courses: IdCourse, CourseName
+
+    :
+IsIn, 1N Students, 1N Groups
+Groups: IdGroup, GroupName
+:
+IsAbout, 11 Courses, 1N Topics
+
+HasAttributes,  11 StdAttrs, 1N Students, NN Attributes, 1N Topics
+StdAttrs: IdStdAttr, StdAttrValue
+    :
+Topics: IdTopic, TopicName
     
-IsIn, 1N Students, 1N Classes
-Classes: IdClass, ClassName
+Attributes: IdAttr, AttrName
+IsOfType, 1N AttrTypes, 11 Attributes
+AttrTypes: IdAttrType, AttrTypeName
+:

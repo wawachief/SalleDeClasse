@@ -1,5 +1,5 @@
 INSERT INTO IsIn
-    (IdStudent, IdCLass)
+    (IdStudent, IdGroup)
 VALUES
     (1,1),
     (2,1),

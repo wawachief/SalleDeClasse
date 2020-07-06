@@ -23,26 +23,55 @@
     <span class='primary'>IdDesk</span>,
     <span class='normal'>DeskRow</span>,
     <span class='normal'>DeskCol</span>,
-    <span class='normal'>#IdStudent</span>,
-    <span class='normal'>#IdCourse</span>
+    <span class='foreign'>IdStudent</span>,
+    <span class='foreign'>IdCourse</span>
   )
 </div>
 <div>
   <span class='relation'>Courses</span> (
     <span class='primary'>IdCourse</span>,
-    <span class='normal'>CourseName</span>
+    <span class='normal'>CourseName</span>,
+    <span class='foreign'>IdTopic</span>
   )
 </div>
 <div>
   <span class='relation'>IsIn</span> (
-    <span class='primary'>#IdStudent</span>,
-    <span class='primary'>#IdClass</span>
+    <span class='foreign primary'>IdStudent</span>,
+    <span class='foreign primary'>IdGroup</span>
   )
 </div>
 <div>
-  <span class='relation'>Classes</span> (
-    <span class='primary'>IdClass</span>,
-    <span class='normal'>ClassName</span>
+  <span class='relation'>Groups</span> (
+    <span class='primary'>IdGroup</span>,
+    <span class='normal'>GroupName</span>
+  )
+</div>
+<div>
+  <span class='relation'>StdAttrs</span> (
+    <span class='primary'>IdStdAttr</span>,
+    <span class='normal'>StdAttrValue</span>,
+    <span class='foreign'>IdStudent</span>,
+    <span class='foreign'>IdAttr</span>,
+    <span class='foreign'>IdTopic</span>
+  )
+</div>
+<div>
+  <span class='relation'>Topics</span> (
+    <span class='primary'>IdTopic</span>,
+    <span class='normal'>TopicName</span>
+  )
+</div>
+<div>
+  <span class='relation'>Attributes</span> (
+    <span class='primary'>IdAttr</span>,
+    <span class='normal'>AttrName</span>,
+    <span class='foreign'>IdAttrType</span>
+  )
+</div>
+<div>
+  <span class='relation'>AttrTypes</span> (
+    <span class='primary'>IdAttrType</span>,
+    <span class='normal'>AttrTypeName</span>
   )
 </div>
 </div>

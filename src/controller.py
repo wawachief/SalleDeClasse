@@ -52,7 +52,7 @@ class Controller(QObject):
 
     @Slot()
     def test_buttton(self):
-        self.auto_place()
+        self.auto_place(1)
         
     @Slot(tuple)
     def add_desk(self, coords):
@@ -77,11 +77,8 @@ class Controller(QObject):
         max_col = int(self.config.get("size", "default_room_columns"))
 
         id_desk_start = self.mod_bdd.get_desk_id_in_course_by_coords(self.id_course, start[0], start[1])
-        if id_desk_start == 0:
-            # Houston, we have a situation
-            print("Houston, we have a situation")
-            return None
-        if 0 <= end[0] <= max_row and 0 <= end[1] <= max_col:
+        if 0 <= end[0] < max_row and 0 <= end[1] < max_col:
+            # Destination is in the canvas
             id_desk_end = self.mod_bdd.get_desk_id_in_course_by_coords(self.id_course, end[0], end[1])
             if id_desk_end == 0:
                 # We just change the coordinates
@@ -139,11 +136,11 @@ class Controller(QObject):
         self.id_course = self.mod_bdd.create_course_with_name(course_name)
         self.__bdd.commit()
 
-    def auto_place(self):
+    def auto_place(self, id_group):
         """Autoplacement of students on the free tiles"""
         maxRow = int(self.config.get("size", "default_room_rows"))
         maxCol = int(self.config.get("size", "default_room_columns"))
-        list_students = self.mod_bdd.get_students_in_class(self.id_course)
+        list_students = self.mod_bdd.get_students_in_group(id_group)
         list_available_desks = []
         list_to_remove = []
         for row in range(maxRow):
