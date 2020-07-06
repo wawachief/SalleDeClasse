@@ -1,0 +1,16 @@
+QTabBar::tab:hover {
+    background-color: #BDBDBD;
+}
+
+QTabBar::tab:selected{
+    background-color: #E0F2F7;
+}
+
+QTabBar::tab {
+    width: 100;
+    height: 70;
+    background: QLinearGradient(x1: 0, y1: 1, x2: 0, y2: 0, stop: 0 #BDBDBD, stop: 1 #AAAAAA);
+    margin: 0px;
+    padding-left: 27px;
+    padding-right: -27px;
+}

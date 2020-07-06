@@ -95,6 +95,48 @@ class ViewCourseListToolbar(QToolBar):
         self.setStyleSheet(get_stylesheet("toolbar"))
 
 
+class ViewStudentListToolbar(QToolBar):
+
+    def __init__(self, config):
+        """
+        Toolbar for the students list side panel tab
+
+        :param config: application's parsed configuration
+        """
+        QToolBar.__init__(self)
+        self.config = config
+
+        self.__set_style()
+
+    def __set_style(self):
+        """
+        Inits the stylesheet of this widget
+        """
+        # Toolbar
+        self.setStyleSheet(get_stylesheet("toolbar"))
+
+
+class ViewAttributeListToolbar(QToolBar):
+
+    def __init__(self, config):
+        """
+        Toolbar for the attributes list side panel tab
+
+        :param config: application's parsed configuration
+        """
+        QToolBar.__init__(self)
+        self.config = config
+
+        self.__set_style()
+
+    def __set_style(self):
+        """
+        Inits the stylesheet of this widget
+        """
+        # Toolbar
+        self.setStyleSheet(get_stylesheet("toolbar"))
+
+
 class ToolBarButton(QPushButton):
 
     def __init__(self, icon, tooltip, callback):
@@ -109,4 +151,4 @@ class ToolBarButton(QPushButton):
         self.setIconSize(ICON_SIZE)
         self.clicked.connect(callback)
 
-        self.setStyleSheet("QPushButton:hover {background-color: #F2F2F2;} QPushButton {border: none; margin: 5px;}")
+        self.setStyleSheet("QPushButton:hover {background-color: #E0F2F7;} QPushButton {border: none; margin: 5px;}")

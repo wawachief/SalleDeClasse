@@ -49,6 +49,7 @@ class CentralWidget(QWidget):
 
         # Alignments
         layout.setAlignment(self.view_students, Qt.AlignCenter)
+        layout.setAlignment(self.v_canvas, Qt.AlignCenter)
         layout.setAlignment(self.view_teacher, Qt.AlignCenter)
 
         self.setLayout(layout)
