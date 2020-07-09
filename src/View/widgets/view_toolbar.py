@@ -2,6 +2,7 @@ from PySide2.QtWidgets import QToolBar, QPushButton
 from PySide2.QtCore import Signal, Slot, QSize
 
 from src.assets_manager import get_icon, get_stylesheet
+from src.View.widgets.view_add_widget import ViewAddWidget
 
 BUTTON_SIZE = QSize(60, 60)
 ICON_SIZE = QSize(45, 45)
@@ -80,10 +81,9 @@ class ViewCourseListToolbar(QToolBar):
         QToolBar.__init__(self)
         self.config = config
 
-        self.btn = QPushButton("test")
-        self.btn.clicked.connect(lambda: print("wesh wesh"))
+        self.add_widget = ViewAddWidget(config)
 
-        self.addWidget(self.btn)
+        self.addWidget(self.add_widget)
 
         self.__set_style()
 

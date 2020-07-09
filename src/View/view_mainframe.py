@@ -5,6 +5,9 @@ from src.View.view_canvas import ViewCanvas
 from src.View.view_sidepanel import ViewSidePanel
 from src.View.widgets.view_board import ViewTeacherDeskLabel
 from src.View.widgets.view_toolbar import ViewMainToolBar
+from src.View.widgets.view_courses import ViewCoursePanel
+from src.View.widgets.view_students import ViewStudentPanel
+from src.View.widgets.view_attributes import ViewAttributePanel
 
 
 class CentralWidget(QWidget):
@@ -91,6 +94,27 @@ class SideDockWidget(QDockWidget):
         self.setWidget(self.sidepanel)
         self.setAllowedAreas(Qt.LeftDockWidgetArea)
         self.setFeatures(QDockWidget.DockWidgetFloatable)
+
+    def courses(self):
+        """
+        Getter for the courses panel
+        :rtype: ViewCoursePanel
+        """
+        return self.sidepanel.courses_panel
+
+    def students(self):
+        """
+        Getter for the students panel
+        :rtype: ViewStudentPanel
+        """
+        return self.sidepanel.students_panel
+
+    def attributes(self):
+        """
+        Getter for the attributes panel
+        :rtype: ViewAttributePanel
+        """
+        return self.sidepanel.attributes_panel
 
 
 class ViewMainFrame(QMainWindow):

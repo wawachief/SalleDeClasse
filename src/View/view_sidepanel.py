@@ -41,4 +41,3 @@ class ViewSidePanel(QTabWidget):
         self.setTabToolTip(2, "Attributs")
 
         self.setStyleSheet(get_stylesheet("tabbar"))
-

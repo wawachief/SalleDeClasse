@@ -8,12 +8,17 @@ from src.View.view_mainframe import ViewMainFrame
 
 from random import shuffle
 
+
 class Controller(QObject):
+
     sig_add_tile = Signal()
     sig_quit = Signal()
     sig_shuffle = Signal()
     sig_canvas_click = Signal(tuple)
     sig_canvas_drag = Signal(tuple, tuple)
+
+    sig_course_changed = Signal(str)
+    sig_create_course = Signal(str)
 
     def __init__(self, config):
         """
@@ -31,13 +36,15 @@ class Controller(QObject):
 
         # Create the Views
         self.gui = ViewMainFrame(self.sig_quit, self.config)
-        self.gui.central_widget.sig_add_tile = self.sig_add_tile
-        self.gui.central_widget.sig_shuffle = self.sig_shuffle
         self.v_canvas = self.gui.central_widget.v_canvas
         # Plugs the signals
+        self.gui.central_widget.sig_add_tile = self.sig_add_tile
+        self.gui.central_widget.sig_shuffle = self.sig_shuffle
         self.gui.sig_quit = self.sig_quit
         self.v_canvas.sig_canvas_click = self.sig_canvas_click
         self.v_canvas.sig_canvas_drag = self.sig_canvas_drag
+        self.gui.sidewidget.courses().sig_course_changed = self.sig_course_changed
+        self.gui.sidewidget.courses().courses_toolbar.add_widget.sig_new_element = self.sig_create_course
 
         # Signals connection
         self.sig_add_tile.connect(self.test_buttton)
@@ -45,6 +52,8 @@ class Controller(QObject):
         self.sig_canvas_click.connect(self.add_desk)
         self.sig_canvas_drag.connect(self.move_desk)
         self.sig_shuffle.connect(self.desk_shuffle)
+        self.sig_course_changed.connect(self.on_course_changed)
+        self.sig_create_course.connect(self.on_create_course)
 
         # properties
         self.set_course("Maths_2DE3")
@@ -169,3 +178,29 @@ class Controller(QObject):
             index_std += 1
         
         self.__bdd.commit()
+
+    @Slot(str)
+    def on_course_changed(self, new_course):
+        """
+        Triggered when the current course selection changed
+
+        :param new_course: new selected course name
+        :type new_course: str
+        """
+        print(new_course)
+
+    @Slot(str)
+    def on_create_course(self, new_course):
+        """
+        Triggered when a new course is to be created
+
+        :param new_course: new course name to create
+        :type new_course: str
+        """
+        self.gui.sidewidget.courses().add(new_course)  # Add the course to listview
+        self.gui.sidewidget.courses().select_last()
+
+        # Manually call the course changed update (manual set to selection does not trigger the signal emit)
+        self.on_course_changed(new_course)
+
+        # TODO add course to database
