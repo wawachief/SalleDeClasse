@@ -154,10 +154,11 @@ class Controller(QObject):
     def show_all_courses(self):
         courses = self.mod_bdd.get_courses()
 
-        self.gui.sidewidget.courses().init_table(list_courses = courses, 
-            selected_id = None if self.id_course == 0 else self.id_course)
         if self.id_course == 0:
             self.id_course = courses[0][0]
+
+        self.gui.sidewidget.courses().init_table(
+            list_courses=courses, selected_id=None if self.id_course == 0 else self.id_course)
 
     def auto_place(self, id_group):
         """Autoplacement of students on the free tiles"""

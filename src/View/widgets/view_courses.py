@@ -1,6 +1,6 @@
 import typing
 
-from PySide2.QtWidgets import QWidget, QTableView, QVBoxLayout, QAbstractItemView, QPushButton, QHeaderView
+from PySide2.QtWidgets import QWidget, QTableView, QVBoxLayout, QAbstractItemView, QHeaderView
 from PySide2.QtCore import QAbstractTableModel, Qt, QModelIndex
 
 from src.View.widgets.view_toolbar import ViewCourseListToolbar
@@ -32,15 +32,12 @@ class ViewCoursePanel(QWidget):
 
         # Toolbar
         self.courses_toolbar = ViewCourseListToolbar(config)
+        self.courses_toolbar.add_widget.get_prefix = self.get_new_course_prefix
 
         # DataModel and additional info
-        self.datamodel = None  # TableView datamodel
-        self.current_selection = None  # Stores the selected course ID
+        self.datamodel: CustomTableModel = None  # TableView datamodel
+        self.current_selection: int = None  # Stores the selected course ID
         self.items = {}  # All the displayed courses items -> {(name, topic): id, ...}
-
-        btn = QPushButton("test")
-        btn.clicked.connect(self.debug)
-        self.courses_toolbar.addWidget(btn)
 
         # Signals
         self.sig_course_changed = None
@@ -49,9 +46,6 @@ class ViewCoursePanel(QWidget):
         # layout
         self.__set_layout()
         self.init_table()
-
-    def debug(self):
-        self.init_table([(1, "A315", "Maths"), (2, "C314", "Info"), (3, "B013", "Maths")], 2)
 
     def __set_layout(self):
         """
@@ -112,6 +106,27 @@ class ViewCoursePanel(QWidget):
         if selected_id and selected_id != self.current_selection:
             self.sig_course_changed.emit(selected_id)
             self.current_selection = selected_id
+
+    def get_new_course_prefix(self):
+        """
+        Gets the prefix to use when creating a new course
+
+        :rtype: str
+        """
+        current_course: str = None
+
+        for c in self.items:
+            if self.items[c] == self.current_selection:
+                current_course = c[0]
+                break
+
+        if not current_course:
+            return ""
+
+        if current_course.startswith('_'):  # remove leading '_'
+            current_course = current_course[1:]
+
+        return current_course.split('_')[0] + '_'  # get the first block before any other '_' and add a default '_'
 
 
 class CustomTableModel(QAbstractTableModel):

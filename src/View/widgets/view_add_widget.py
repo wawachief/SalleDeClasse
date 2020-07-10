@@ -1,5 +1,6 @@
-from PySide2.QtWidgets import QWidget, QPushButton, QLineEdit, QHBoxLayout
+from PySide2.QtWidgets import QWidget, QPushButton, QLineEdit, QHBoxLayout, QShortcut
 from PySide2.QtCore import QSize, Qt
+from PySide2.QtGui import QKeySequence
 
 from src.assets_manager import get_icon
 
@@ -34,6 +35,7 @@ class ViewAddWidget(QWidget):
         self.add_btn.clicked.connect(self.__on_add_pressed)
         self.sig_new_element = None  # Signal emitted when a new element is created
         self.field.returnPressed.connect(self.__on_field_enter)
+        QShortcut(QKeySequence("Escape"), self.field).activated.connect(lambda: self.__on_add_pressed())  # Cancel
 
         # Layout
         self.__init_layout()
@@ -63,11 +65,21 @@ class ViewAddWidget(QWidget):
 
             self.field.setVisible(True)
             self.field.setFocus()
+            self.field.setText(self.get_prefix())
         else:
+            self.field.clear()
             self.add_btn.setIcon(get_icon("add"))
             self.add_btn.setToolTip("Créer")
 
             self.field.setVisible(False)
+
+    def get_prefix(self):
+        """
+        Gets the prefix to put in the field when appears
+
+        :rtype: str
+        """
+        return ""
 
     def __on_field_enter(self):
         """
