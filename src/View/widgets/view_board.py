@@ -1,4 +1,4 @@
-from PySide2.QtWidgets import QLabel
+from PySide2.QtWidgets import QLabel, QWidget, QComboBox, QHBoxLayout
 from PySide2.QtCore import QSize, Qt
 
 
@@ -43,3 +43,74 @@ class ViewTeacherDeskLabel(QLabel):
         """
         self.__is_active = do_activate
         self.repaint()
+
+
+class ViewTopics(QWidget):
+
+    def __init__(self):
+        """
+        Widget displaying a combo with all available topics
+        """
+        QWidget.__init__(self)
+
+        self.setFixedWidth(200)
+
+        # Widgets
+        self.label = QLabel("Discipline :")
+        self.combo = QComboBox()
+
+        # Signal
+        self.sig_topic_changed = None
+        self.combo.activated.connect(lambda: self.__on_topic_changed())
+
+        # Init
+        self.current_topic: str = None
+        self.topics: list = []
+        self.set_topics([])
+        self.__init_layout()
+
+    def __init_layout(self):
+        """
+        Sets this widget's layout: label next to combo
+        """
+        layout = QHBoxLayout()
+        layout.setMargin(0)
+
+        layout.addWidget(self.label)
+        layout.addWidget(self.combo)
+
+        self.setLayout(layout)
+
+    def set_topics(self, topics: list, selection: str=None):
+        """
+        Sets the given topics in the combo box
+
+        :param topics: topics to set
+        :param selection: topic selection (topic name)
+        """
+        self.topics = topics
+
+        self.combo.clear()
+        self.combo.addItems(self.topics)
+
+        if selection:
+            self.select_topic(selection)
+
+        self.repaint()
+
+    def select_topic(self, selection: str):
+        """
+        Selects the given topic name
+
+        :param selection: topic selection (topic name)
+        """
+        self.combo.setCurrentIndex(self.topics.index(selection))
+
+    def __on_topic_changed(self):
+        """
+        Triggered when the combo is activated. Emits only if the value changed
+        """
+        text = self.combo.currentText()
+        if text != self.current_topic:
+            self.current_topic = text
+            self.sig_topic_changed.emit(text)

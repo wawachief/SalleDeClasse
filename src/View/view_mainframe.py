@@ -1,9 +1,9 @@
-from PySide2.QtWidgets import QMainWindow, QWidget, QDockWidget, QVBoxLayout
+from PySide2.QtWidgets import QMainWindow, QWidget, QDockWidget, QGridLayout
 from PySide2.QtCore import Qt, Signal
 
 from src.View.view_canvas import ViewCanvas
 from src.View.view_sidepanel import ViewSidePanel
-from src.View.widgets.view_board import ViewTeacherDeskLabel
+from src.View.widgets.view_board import ViewTeacherDeskLabel, ViewTopics
 from src.View.widgets.view_toolbar import ViewMainToolBar
 from src.View.widgets.view_courses import ViewCoursePanel
 from src.View.widgets.view_students import ViewStudentPanel
@@ -28,8 +28,11 @@ class CentralWidget(QWidget):
 
         self.view_students = ViewTeacherDeskLabel("Vue élève", config.get('colors', 'board_bg'))
         self.view_teacher = ViewTeacherDeskLabel("Vue prof", config.get('colors', 'board_bg'))
-        self.is_view_students = None  # Current view
+        self.is_view_students: bool = None  # Current view
 
+        self.topic = ViewTopics()
+
+        # Signals
         self.sig_add_tile = None
         self.sig_shuffle = None
         self.sig_enable_animation_btns = None
@@ -43,14 +46,16 @@ class CentralWidget(QWidget):
         """
         Initializes the layout of this widget
         """
-        layout = QVBoxLayout()
+        layout = QGridLayout()
 
         # Widgets
-        layout.addWidget(self.view_students)
-        layout.addWidget(self.v_canvas)
-        layout.addWidget(self.view_teacher)
+        layout.addWidget(self.topic, 0, 0)
+        layout.addWidget(self.view_students, 0, 1)
+        layout.addWidget(self.v_canvas, 1, 0, 1, 3)
+        layout.addWidget(self.view_teacher, 2, 0, 1, 3)
 
         # Alignments
+        layout.setAlignment(self.topic, Qt.AlignLeft)
         layout.setAlignment(self.view_students, Qt.AlignCenter)
         layout.setAlignment(self.v_canvas, Qt.AlignCenter)
         layout.setAlignment(self.view_teacher, Qt.AlignCenter)
