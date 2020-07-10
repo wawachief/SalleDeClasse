@@ -128,7 +128,7 @@ class CustomTableModel(QAbstractTableModel):
         QAbstractTableModel.__init__(self, parent)
 
         self.data_list = data_list
-        self.header = ("Cours", "Sujets")
+        self.header = ("Cours", "Discipline")
 
         parent.setModel(self)
 

@@ -1,4 +1,4 @@
 CREATE TABLE Topics (
     IdTopic INTEGER PRIMARY KEY,
-    TopicName TEXT
+    TopicName VARCHAR(30)
 );

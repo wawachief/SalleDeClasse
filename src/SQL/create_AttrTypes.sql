@@ -1,4 +1,4 @@
 CREATE TABLE AttrTypes (
     IdAttrType INTEGER PRIMARY KEY,
-    AttrTypeName TEXT
+    AttrTypeName VARCHAR(30)
 );

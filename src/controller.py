@@ -56,7 +56,10 @@ class Controller(QObject):
         self.sig_create_course.connect(self.on_create_course)
 
         # properties
-        #self.show_all_courses() TODO change add method to init_table
+        self.id_topic = 1
+        self.id_course = 0
+        
+        self.show_all_courses()
 
     @Slot()
     def test_buttton(self):
@@ -142,15 +145,19 @@ class Controller(QObject):
         self.v_canvas.repaint()
 
     def set_course(self, course_name):
-        self.id_course = self.mod_bdd.create_course_with_name(course_name)
-        self.__bdd.commit()
+        """Sets current course to course_name
+        if course_name does not exisis, creates it, with current topic id
+        YOU MUST CALL commit after !
+        """
+        self.id_course = self.mod_bdd.create_course_with_name(course_name, self.id_topic)
     
     def show_all_courses(self):
         courses = self.mod_bdd.get_courses()
-        for c in courses:
-            self.gui.sidewidget.courses().add(c[0]) 
-        self.id_course = courses[-1][1]
-        self.gui.sidewidget.courses().select_last()
+
+        self.gui.sidewidget.courses().init_table(list_courses = courses, 
+            selected_id = None if self.id_course == 0 else self.id_course)
+        if self.id_course == 0:
+            self.id_course = courses[0][0]
 
     def auto_place(self, id_group):
         """Autoplacement of students on the free tiles"""
@@ -205,10 +212,19 @@ class Controller(QObject):
         :param new_course: new course name to create
         :type new_course: str
         """
-        # TODO Call self.gui.sidewidget.courses().init_table(...) with the list of courses to set
-        self.gui.sidewidget.courses().add(new_course)  # Add the course to listview
 
-        # Manually call the course changed update (manual set to selection does not trigger the signal emit)
+        old_course_id = self.id_course
         self.set_course(new_course)
-        # TODO Call with new course ID --> self.on_course_changed(new_course)
+        self.show_all_courses()
+        # Manually call the course changed update (manual set to selection does not trigger the signal emit)
+        self.on_course_changed(self.id_course)
+
+        # Copy the Desk disposition of the old course_id
+        old_desks = self.mod_bdd.get_course_all_desks(old_course_id)
+        for d in  old_desks:
+            id_desk = self.mod_bdd.create_new_desk_in_course(d.row, d.col, self.id_course)
+            self.v_canvas.new_tile(d.row, d.col, id_desk)
+        
+        self.__bdd.commit()
+        self.v_canvas.repaint()
 

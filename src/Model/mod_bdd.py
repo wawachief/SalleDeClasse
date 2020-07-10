@@ -18,12 +18,12 @@ class ModBdd():
         Input : 
         Output : list of tuples (course_name, course_id) """
 
-        req = "SELECT CourseName, IdCourse FROM Courses ORDER BY CourseName"
+        req = "SELECT IdCourse, CourseName, Topics.TopicName FROM Courses JOIN Topics USING (IdTopic) ORDER BY CourseName"
         self.__cursor.execute(req)
         r = self.__cursor.fetchall()
         result = []
         for c in r:
-            result.append((c[0], c[1]))
+            result.append((c[0], c[1], c[2]))
         return result
 
     def get_course_id_by_name(self, name):
@@ -61,17 +61,18 @@ class ModBdd():
         r = self.__cursor.fetchone()
         return 0 if r is None else r[0]
 
-    def create_course_with_name(self, name):
+    def create_course_with_name(self, name, id_topic):
         """Creates a new room.
         Input : name - course name
+                id_topic - topic Id
         Output : idCourse 
             if name already exist, idCourse is the id of the existing course
             if name doesn't exist, idCourse is the id of the course just created
         If the name exists already, just return the room id"""
         id = self.get_course_id_by_name(name)
         if id == 0:
-            req = "INSERT INTO Rooms (CourseName) VALUES (?)"
-            self.__cursor.execute(req, [name])
+            req = "INSERT INTO Courses (CourseName, IdTopic) VALUES (?, ?)"
+            self.__cursor.execute(req, [name, id_topic])
             id = self.__cursor.lastrowid
         return id
     
@@ -159,3 +160,16 @@ class ModBdd():
         self.__cursor.execute(req, [id_desk])
         r = self.__cursor.fetchone()
         return r if r is None else Student(r[0], r[1], r[2])
+
+    #
+    # Topic relative requests
+    #
+    def get_topic_by_id(self, id_topic):
+        """Returns a Student object
+        Input : id_topic - topic id
+        Output : topic name or '' """
+
+        req = "SELECT TopicName FROM Topics WHERE IdTopic = ?"
+        self.__cursor.execute(req, [id_topic])
+        r = self.__cursor.fetchone()
+        return "" if r is None else r[0]
