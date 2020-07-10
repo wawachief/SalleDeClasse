@@ -28,7 +28,7 @@ class ViewSidePanel(QTabWidget):
         self.tabBar().setIconSize(QSize(46, 46))
 
         # widgets
-        self.courses_panel = ViewCoursePanel(config)
+        self.courses_panel = ViewCoursePanel(config, self.minimumWidth())
         self.students_panel = ViewStudentPanel(config)
         self.attributes_panel = ViewAttributePanel(config)
 

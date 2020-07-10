@@ -17,7 +17,7 @@ class Controller(QObject):
     sig_canvas_click = Signal(tuple)
     sig_canvas_drag = Signal(tuple, tuple)
 
-    sig_course_changed = Signal(str)
+    sig_course_changed = Signal(int)
     sig_create_course = Signal(str)
 
     def __init__(self, config):
@@ -56,7 +56,7 @@ class Controller(QObject):
         self.sig_create_course.connect(self.on_create_course)
 
         # properties
-        self.show_all_courses()
+        #self.show_all_courses() TODO change add method to init_table
 
     @Slot()
     def test_buttton(self):
@@ -135,7 +135,7 @@ class Controller(QObject):
         all_desks = self.mod_bdd.get_course_all_desks(self.id_course)
         for d in all_desks:
             std = self.mod_bdd.get_student_by_id(d.id_student)
-            if std :
+            if std:
                 self.v_canvas.new_tile(d.row, d.col, d.id, firstname=std.firstname, lastname=std.lastname)
             else:
                 self.v_canvas.new_tile(d.row, d.col, d.id)
@@ -186,15 +186,15 @@ class Controller(QObject):
         
         self.__bdd.commit()
 
-    @Slot(str)
+    @Slot(int)
     def on_course_changed(self, new_course):
         """
         Triggered when the current course selection changed
 
         :param new_course: new selected course name
-        :type new_course: str
+        :type new_course: int
         """
-        self.id_course = self.mod_bdd.get_course_id_by_name(new_course)
+        self.id_course = new_course
         self.show_course()
 
     @Slot(str)
@@ -205,10 +205,10 @@ class Controller(QObject):
         :param new_course: new course name to create
         :type new_course: str
         """
+        # TODO Call self.gui.sidewidget.courses().init_table(...) with the list of courses to set
         self.gui.sidewidget.courses().add(new_course)  # Add the course to listview
-        self.gui.sidewidget.courses().select_last()
 
         # Manually call the course changed update (manual set to selection does not trigger the signal emit)
         self.set_course(new_course)
-        self.on_course_changed(new_course)
+        # TODO Call with new course ID --> self.on_course_changed(new_course)
 
