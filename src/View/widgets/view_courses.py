@@ -29,6 +29,7 @@ class ViewCoursePanel(QWidget):
         self.tableview.setSelectionMode(QAbstractItemView.SingleSelection)
         self.tableview.horizontalHeader().setStretchLastSection(True)
         self.tableview.horizontalHeader().setSectionResizeMode(QHeaderView.Fixed)
+        self.tableview.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
         # Toolbar
         self.courses_toolbar = ViewCourseListToolbar(config)
