@@ -10,8 +10,22 @@ class ModBdd():
         self.__cursor = self.__bdd.cursor()
     
     #
-    # Room related requests
+    # Courses related requests
     #
+
+    def get_courses(self):
+        """Gets all the courses
+        Input : 
+        Output : list of tuples (course_name, course_id) """
+
+        req = "SELECT CourseName, IdCourse FROM Courses ORDER BY CourseName"
+        self.__cursor.execute(req)
+        r = self.__cursor.fetchall()
+        result = []
+        for c in r:
+            result.append((c[0], c[1]))
+        return result
+
     def get_course_id_by_name(self, name):
         """Gets the course Id from the name
         Input : name - course name

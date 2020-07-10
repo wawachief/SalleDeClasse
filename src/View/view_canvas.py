@@ -311,6 +311,15 @@ class ViewCanvas(QWidget):
         :type desk_id: int
         """
         self.__tiles.pop(desk_id)
+    
+    def delete_all_tiles(self):
+        """
+        Removes the tile at the given row/column position
+
+        :param desk_id: 
+        :type desk_id:
+        """
+        self.__tiles = {}
 
     def new_tile(self, row, column, desk_id, firstname="", lastname=""):
         """

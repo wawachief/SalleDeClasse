@@ -56,8 +56,7 @@ class Controller(QObject):
         self.sig_create_course.connect(self.on_create_course)
 
         # properties
-        self.set_course("Maths_2DE3")
-        self.show_course()
+        self.show_all_courses()
 
     @Slot()
     def test_buttton(self):
@@ -132,6 +131,7 @@ class Controller(QObject):
         self.__bdd.close()
 
     def show_course(self):
+        self.v_canvas.delete_all_tiles()
         all_desks = self.mod_bdd.get_course_all_desks(self.id_course)
         for d in all_desks:
             std = self.mod_bdd.get_student_by_id(d.id_student)
@@ -144,6 +144,13 @@ class Controller(QObject):
     def set_course(self, course_name):
         self.id_course = self.mod_bdd.create_course_with_name(course_name)
         self.__bdd.commit()
+    
+    def show_all_courses(self):
+        courses = self.mod_bdd.get_courses()
+        for c in courses:
+            self.gui.sidewidget.courses().add(c[0]) 
+        self.id_course = courses[-1][1]
+        self.gui.sidewidget.courses().select_last()
 
     def auto_place(self, id_group):
         """Autoplacement of students on the free tiles"""
@@ -187,7 +194,8 @@ class Controller(QObject):
         :param new_course: new selected course name
         :type new_course: str
         """
-        print(new_course)
+        self.id_course = self.mod_bdd.get_course_id_by_name(new_course)
+        self.show_course()
 
     @Slot(str)
     def on_create_course(self, new_course):
@@ -201,6 +209,6 @@ class Controller(QObject):
         self.gui.sidewidget.courses().select_last()
 
         # Manually call the course changed update (manual set to selection does not trigger the signal emit)
+        self.set_course(new_course)
         self.on_course_changed(new_course)
 
-        # TODO add course to database
