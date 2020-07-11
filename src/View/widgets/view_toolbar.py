@@ -111,7 +111,8 @@ class ViewStudentListToolbar(QToolBar):
         # Widgets
         self.combo_groups = QComboBox()
         self.action_menu = ViewMenuButton("Actions", [("Import Pronote", "import_csv"),
-                                                      ("Créer un sous-groupe", "create_subgroup")])
+                                                      ("Créer un groupe", "create_group"),
+                                                      ("Placement automatique", "auto_place")])
 
         self.addWidget(self.combo_groups)
         self.addWidget(self.action_menu)

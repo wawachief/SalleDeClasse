@@ -38,7 +38,8 @@ class Controller(QObject):
         self.config = config
 
         self.actions_table = {"import_csv": self.import_pronote,
-                              "create_subgroup": self.create_subgroup}
+                              "create_group": self.create_group,
+                              "auto_place": self.auto_place}
 
         # BDD connection
         self.__bdd = sqlite3.connect("src/SQL/sdc_db")
@@ -82,7 +83,7 @@ class Controller(QObject):
 
     @Slot()
     def test_buttton(self):
-        self.auto_place(1)
+        self.auto_place()
         
     @Slot(tuple)
     def add_desk(self, coords):
@@ -223,14 +224,16 @@ class Controller(QObject):
         self.gui.sidewidget.students().students_toolbar.init_groups(groups) 
         if groups:
             self.on_student_group_changed(groups[0])
+            self.mod_bdd.get_group_id_by_name(groups[0])
 
         self.gui.central_widget.topic.set_topics(topic_names, topic_name)
 
-    def auto_place(self, id_group):
+    def auto_place(self):
         """Autoplacement of students on the free tiles"""
         maxRow = int(self.config.get("size", "default_room_rows"))
         maxCol = int(self.config.get("size", "default_room_columns"))
-        list_students = self.mod_bdd.get_students_in_group(id_group)
+        group_name = self.mod_bdd.get_group_name_by_id(self.id_group)
+        list_students = self.mod_bdd.get_students_in_group(group_name)
         list_available_desks = []
         list_to_remove = []
         for row in range(maxRow):
@@ -323,5 +326,5 @@ class Controller(QObject):
             groups = self.mod_bdd.get_groups()
             self.gui.sidewidget.students().students_toolbar.init_groups(groups)
 
-    def create_subgroup(self) -> None:
-        print("Create subgroup")
+    def create_group(self) -> None:
+        print("Create group")

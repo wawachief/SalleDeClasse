@@ -148,6 +148,16 @@ class ModBdd():
         r = self.__cursor.fetchone()
         return 0 if r is None else r[0]
 
+    def get_group_name_by_id(self, group_id):
+        """Returns the group id
+        Input : group_id - group id
+        Output : Group name"""
+
+        req = "SELECT GroupName FROM Groups WHERE IdGroup = ?"
+        self.__cursor.execute(req, [group_id])
+        r = self.__cursor.fetchone()
+        return "" if r is None else r[0]
+
     def insert_student_in_group_id(self, firstname, lastname, order, id_group):
         req = "INSERT INTO Students (StdFirstName, StdLastName, OrderKey) VALUES (?, ?, ?)"
         self.__cursor.execute(req, [firstname, lastname, order])
@@ -165,7 +175,7 @@ class ModBdd():
         r = self.__cursor.fetchone()
         return r if r is None else Student(id, r[1], r[2])
         
-    def get_students_in_course(self, id_course):
+    def get_students_in_course_by_id(self, id_course):
         """Returns an array of Students in the room
         Input : id_course - the course id
         Output : a list (maybe empty) of students in the course"""
