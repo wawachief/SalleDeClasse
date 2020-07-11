@@ -551,12 +551,17 @@ class ViewCanvas(QWidget):
         """
         Changes the view perspective of the class
         """
-        # Perform the swicth animation
-        self.__do_switch = True
+        # In case there is no tiles, no move will be performed, hence no animation, so the switch would not be done.
+        if not self.__tiles:
+            self.is_view_students = not self.is_view_students  # Switch the flag
+            self.sig_move_animation_ended.emit()
+        else:
+            # Perform the swicth animation
+            self.__do_switch = True
 
-        for t in list(self.__tiles.values()):
-            self.tmp[t.id()] = t.grid_position()
-            self.move_tile(t.id(), self.__relative_grid_position(t.grid_position(), True), True)
+            for t in list(self.__tiles.values()):
+                self.tmp[t.id()] = t.grid_position()
+                self.move_tile(t.id(), self.__relative_grid_position(t.grid_position(), True), True)
 
     def __relative_mouse_position(self, mouse_pos):
         """
