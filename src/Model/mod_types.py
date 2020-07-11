@@ -9,10 +9,12 @@ class Desk:
         status = "Free" if self.id_student == 0 else "Occupied"
         return f"Desk [{self.row} - {self.col} ] Course {self.id_course} - {status}"
 
-class Student():
+
+class Student:
     def __init__(self, id=0, firstname="", lastname=""):
         self.id = id
         self.firstname = firstname
         self.lastname = lastname
+
     def __str__(self):
         return f"{self.lastname} {self.firstname} ({self.id})"

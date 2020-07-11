@@ -4,6 +4,7 @@ from PySide2.QtWidgets import QWidget, QTableView, QVBoxLayout, QAbstractItemVie
 from PySide2.QtCore import QAbstractTableModel, Qt, QModelIndex
 
 from src.View.widgets.view_toolbar import ViewCourseListToolbar
+from src.View.widgets.view_table import CustomTableModel, CustomTableView
 
 
 class ViewCoursePanel(QWidget):
@@ -21,15 +22,8 @@ class ViewCoursePanel(QWidget):
         self.config = config
         self.default_width = width
 
-        # Table configuration
-        self.tableview = QTableView()
-        self.tableview.verticalHeader().hide()
-        self.tableview.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.tableview.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.tableview.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.tableview.horizontalHeader().setStretchLastSection(True)
-        self.tableview.horizontalHeader().setSectionResizeMode(QHeaderView.Fixed)
-        self.tableview.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        # Table
+        self.tableview = CustomTableView()
 
         # Toolbar
         self.courses_toolbar = ViewCourseListToolbar(config)
@@ -89,7 +83,7 @@ class ViewCoursePanel(QWidget):
             if course_id == selected_id:
                 selection = len(data_list) - 1
 
-        self.datamodel = CustomTableModel(self.tableview, data_list)
+        self.datamodel = CustomTableModel(self.tableview, data_list, ("Cours", "Discipline"))
         self.tableview.setCurrentIndex(self.datamodel.index(selection, 0))
         self.current_selection = selected_id
 
@@ -97,7 +91,7 @@ class ViewCoursePanel(QWidget):
 
     def on_selection_changed(self, item):
         """
-        Triggered when a click is performed in the listview
+        Triggered when a click is performed in the tableview
 
         :param item: selected item (not used, we use the current selection, in order to retrieve the index)
         """
@@ -128,38 +122,3 @@ class ViewCoursePanel(QWidget):
             current_course = current_course[1:]
 
         return current_course.split('_')[0] + '_'  # get the first block before any other '_' and add a default '_'
-
-
-class CustomTableModel(QAbstractTableModel):
-
-    def __init__(self, parent, data_list):
-        """
-        Custom table model for the courses table view
-
-        :param parent: parent table view object
-        :type parent: QTableView
-        :param data_list: list of objects to set in this model
-        :type data_list: list
-        """
-        QAbstractTableModel.__init__(self, parent)
-
-        self.data_list = data_list
-        self.header = ("Cours", "Discipline")
-
-        parent.setModel(self)
-
-    def rowCount(self, parent: QModelIndex = ...) -> int:
-        return len(self.data_list)
-
-    def columnCount(self, parent: QModelIndex = ...) -> int:
-        return len(self.header)
-
-    def data(self, index: QModelIndex, role: int = ...) -> typing.Any:
-        if not index.isValid() or role != Qt.DisplayRole:
-            return None
-        return self.data_list[index.row()][index.column()]
-
-    def headerData(self, section: int, orientation: Qt.Orientation, role: int = ...) -> typing.Any:
-        if orientation == Qt.Horizontal and role == Qt.DisplayRole:
-            return self.header[section]
-        return None

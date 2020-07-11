@@ -61,15 +61,17 @@ class ViewTopics(QWidget):
 
         # Signal
         self.sig_topic_changed = None
-        self.combo.activated.connect(lambda: self.__on_topic_changed())
+        self.combo.activated.connect(self.__on_topic_changed)
 
         # Init
         self.current_topic: str = None
         self.topics: list = []
         self.set_topics([])
-        self.__init_layout()
 
-    def __init_layout(self):
+        self.__init_layout()
+        self.__init_style()
+
+    def __init_layout(self) -> None:
         """
         Sets this widget's layout: label next to combo
         """
@@ -81,7 +83,13 @@ class ViewTopics(QWidget):
 
         self.setLayout(layout)
 
-    def set_topics(self, topics: list, selection: str=None):
+    def __init_style(self) -> None:
+        """
+        Inits this widget's style
+        """
+        self.setStyleSheet("QLabel {color: black;}")
+
+    def set_topics(self, topics: list, selection: str=None) -> None:
         """
         Sets the given topics in the combo box
 
@@ -98,7 +106,7 @@ class ViewTopics(QWidget):
 
         self.repaint()
 
-    def select_topic(self, selection: str):
+    def select_topic(self, selection: str) -> None:
         """
         Selects the given topic name
 
@@ -106,7 +114,7 @@ class ViewTopics(QWidget):
         """
         self.combo.setCurrentIndex(self.topics.index(selection))
 
-    def __on_topic_changed(self):
+    def __on_topic_changed(self) -> None:
         """
         Triggered when the combo is activated. Emits only if the value changed
         """

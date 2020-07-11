@@ -1,4 +1,4 @@
-from PySide2.QtWidgets import QToolBar, QPushButton
+from PySide2.QtWidgets import QToolBar, QPushButton, QComboBox
 from PySide2.QtCore import Signal, Slot, QSize
 
 from src.assets_manager import get_icon, get_stylesheet
@@ -105,15 +105,61 @@ class ViewStudentListToolbar(QToolBar):
         """
         QToolBar.__init__(self)
         self.config = config
+        self.current_group: str = None
+
+        # Widgets
+        self.combo_groups = QComboBox()
+
+        self.addWidget(self.combo_groups)
+
+        # Signals
+        self.sig_combo_changed: Signal = None
+        self.combo_groups.activated.connect(self.on_group_changed)
 
         self.__set_style()
 
-    def __set_style(self):
+    def __set_style(self) -> None:
         """
         Inits the stylesheet of this widget
         """
         # Toolbar
         self.setStyleSheet(get_stylesheet("toolbar"))
+
+    def on_group_changed(self) -> None:
+        """
+        Triggered when the combo selection changed, emits the signal if the selected group was updated.
+        """
+        text = self.combo_groups.currentText()
+
+        if text and text != self.current_group:
+            self.current_group = text
+            self.sig_combo_changed.emit(text)
+
+    def init_groups(self, groups: list) -> None:
+        """
+        Resets the combo box before adding all the groups to the combo.
+
+        :param groups: groups names list
+        :type groups: list
+        """
+        self.reset_groups()
+        self.__add_groups([c[1] for c in groups])
+        self.repaint()
+
+    def __add_groups(self, list_groups: list) -> None:
+        """
+        Adds the list of all specified groups inside the combo.
+
+        :param list_groups: All the groups to add
+        :type list_groups: list
+        """
+        self.combo_groups.addItems(list_groups)
+
+    def reset_groups(self) -> None:
+        """
+        Resets the groups combo (clears it)
+        """
+        self.combo_groups.clear()
 
 
 class ViewAttributeListToolbar(QToolBar):

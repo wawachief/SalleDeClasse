@@ -19,6 +19,8 @@ class Controller(QObject):
 
     sig_course_changed = Signal(int)
     sig_create_course = Signal(str)
+    sig_student_group_changed = Signal(str)
+    sig_student_selected = Signal(int)
 
     sig_topic_changed = Signal(str)
 
@@ -48,6 +50,8 @@ class Controller(QObject):
         self.gui.sidewidget.courses().sig_course_changed = self.sig_course_changed
         self.gui.sidewidget.courses().courses_toolbar.add_widget.sig_new_element = self.sig_create_course
         self.gui.central_widget.topic.sig_topic_changed = self.sig_topic_changed
+        self.gui.sidewidget.students().students_toolbar.sig_combo_changed = self.sig_student_group_changed
+        self.gui.sidewidget.students().sig_student_changed = self.sig_student_selected
 
         # Signals connection
         self.sig_add_tile.connect(self.test_buttton)
@@ -58,6 +62,8 @@ class Controller(QObject):
         self.sig_course_changed.connect(self.on_course_changed)
         self.sig_create_course.connect(self.on_create_course)
         self.sig_topic_changed.connect(self.on_topic_changed)
+        self.sig_student_group_changed.connect(self.on_student_group_changed)
+        self.sig_student_selected.connect(self.on_student_selected)
 
         # properties
         self.id_course = 0
@@ -148,6 +154,28 @@ class Controller(QObject):
         self.__bdd.commit()
         self.show_all_courses()
 
+    @Slot(str)
+    def on_student_group_changed(self, new_group: str) -> None:
+        """
+        Triggered when the self.sig_student_group_changed is emitted. Updates the list of displayed students given
+        the new selected group
+
+        :param new_group: Course in which are the students to display
+        :type new_group: str
+        """
+        # Todo self.gui.sidewidget.students().set_students_list(...)
+        print(new_group)
+
+    @Slot(int)
+    def on_student_selected(self, student_id: int) -> None:
+        """
+        Triggered when the student selection changed.
+
+        :param student_id: new selected student id
+        :type student_id: int
+        """
+        print(student_id)
+
     def show_course(self):
         """DIsplays a the course defined by the id_course property"""
         self.v_canvas.delete_all_tiles()
@@ -180,6 +208,7 @@ class Controller(QObject):
 
         self.gui.sidewidget.courses().init_table(
             list_courses=courses, selected_id=None if self.id_course == 0 else self.id_course)
+        self.gui.sidewidget.students().students_toolbar.init_groups(courses)
 
         self.gui.central_widget.topic.set_topics(topic_names, topic_name)
 
@@ -245,7 +274,7 @@ class Controller(QObject):
 
         # Copy the Desk disposition of the old course_id
         old_desks = self.mod_bdd.get_course_all_desks(old_course_id)
-        for d in  old_desks:
+        for d in old_desks:
             id_desk = self.mod_bdd.create_new_desk_in_course(d.row, d.col, self.id_course)
             self.v_canvas.new_tile(d.row, d.col, id_desk)
         
