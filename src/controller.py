@@ -309,13 +309,17 @@ class Controller(QObject):
         self.actions_table[action_key]()
 
     def import_pronote(self) -> None:
-        dlg = DialogImportCsv(self.gui, ["TS4", "2nd3"])
+        groups = self.mod_bdd.get_groups()
+        dlg = DialogImportCsv(self.gui, ["Nouveau Groupe"] + groups)
 
         if dlg.exec_():
             name_group = dlg.selected_group()
             file_path = dlg.selected_file()
-
-            names = import_csv(file_path, ";")
+            if name_group == "Nouveau Groupe":
+                f = file_path.split("/")[-1].upper()
+                name_group = f[0:f.index(".CSV")]
+            csv_sep = self.config.get("main", "csv_separator")
+            names = import_csv(file_path, csv_sep)
             id_group = self.mod_bdd.create_group(name_group)
             order = 0
             for std in names:
@@ -325,6 +329,7 @@ class Controller(QObject):
 
             groups = self.mod_bdd.get_groups()
             self.gui.sidewidget.students().students_toolbar.init_groups(groups)
+            self.on_student_group_changed(self.mod_bdd.get_group_name_by_id(self.id_group))
 
     def create_group(self) -> None:
         print("Create group")
