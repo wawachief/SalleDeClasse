@@ -5,6 +5,7 @@ from PySide2.QtCore import QObject, Signal, Slot
 from src.Model.mod_bdd import ModBdd
 from src.View.view_mainframe import ViewMainFrame
 from src.View.widgets.view_menubutton import ViewMenuButton
+from src.View.popup.view_import_csv import DialogImportCsv
 
 from random import shuffle
 
@@ -75,6 +76,7 @@ class Controller(QObject):
         self.id_course = 0
         
         self.show_all_courses()
+        self.gui.update()
 
     @Slot()
     def test_buttton(self):
@@ -300,8 +302,11 @@ class Controller(QObject):
         """
         self.actions_table[action_key]()
 
-    def import_pronote(self) -> None:
-        print("Import pronote")
+    def import_pronote1(self) -> None:
+        dlg = DialogImportCsv(self.gui, ["TS4", "2nd3"])
+
+        if dlg.exec_():
+            print("Import pronote: " + dlg.selected_file() + " " + dlg.selected_group())
 
     def create_subgroup(self) -> None:
         print("Create subgroup")
