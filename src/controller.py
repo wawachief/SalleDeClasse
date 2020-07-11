@@ -5,6 +5,7 @@ from PySide2.QtCore import QObject, Signal, Slot
 from src.Model.mod_bdd import ModBdd
 from src.View.view_mainframe import ViewMainFrame
 from src.View.widgets.view_menubutton import ViewMenuButton
+from src.Model.import_csv import import_csv
 
 from random import shuffle
 
@@ -73,6 +74,7 @@ class Controller(QObject):
 
         # properties
         self.id_course = 0
+        self.id_group = 0
         
         self.show_all_courses()
 
@@ -169,6 +171,7 @@ class Controller(QObject):
         :param new_group: Course in which are the students to display
         :type new_group: str
         """
+        self.id_group = self.mod_bdd.get_group_id_by_name(new_group)
         self.gui.sidewidget.students().set_students_list(self.mod_bdd.get_students_in_group(new_group))
 
     @Slot(int)
@@ -301,7 +304,18 @@ class Controller(QObject):
         self.actions_table[action_key]()
 
     def import_pronote(self) -> None:
-        print("Import pronote")
+        name_group = "TS4"
+        file_path = "/home/wawa/Bureau/TS4.csv"
+        names = import_csv(file_path, ";")
+        id_group = self.mod_bdd.create_group(name_group)
+        order = 0
+        for std in names:
+            self.mod_bdd.insert_student_in_group_id(std[1], std[0], order, id_group)
+            order += 1
+        self.__bdd.commit()
+
+        groups = self.mod_bdd.get_groups()
+        self.gui.sidewidget.students().students_toolbar.init_groups(groups) 
 
     def create_subgroup(self) -> None:
         print("Create subgroup")

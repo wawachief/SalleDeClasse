@@ -132,6 +132,28 @@ class ModBdd():
         self.__cursor.execute(req)
         r = self.__cursor.fetchall()
         return [] if r is None else [ c[0] for c in r ]
+    
+    def create_group(self, group_name):
+        req = "INSERT INTO Groups (GroupName) VALUES (?)"
+        self.__cursor.execute(req, [group_name])
+        return self.__cursor.lastrowid
+
+    def get_group_id_by_name(self, group_name):
+        """Returns the group id
+        Input : group_name - group name
+        Output : Group id"""
+
+        req = "SELECT IdGroup FROM Groups WHERE GroupName = ?"
+        self.__cursor.execute(req, [group_name])
+        r = self.__cursor.fetchone()
+        return 0 if r is None else r[0]
+
+    def insert_student_in_group_id(self, firstname, lastname, order, id_group):
+        req = "INSERT INTO Students (StdFirstName, StdLastName, OrderKey) VALUES (?, ?, ?)"
+        self.__cursor.execute(req, [firstname, lastname, order])
+        id_std = self.__cursor.lastrowid
+        req = "INSERT INTO IsIn (IdStudent, IdGroup) VALUES (?, ?)"
+        self.__cursor.execute(req, [id_std, id_group])
 
     def get_student_by_id(self, id_std):
         """Returns a Student object
