@@ -1,5 +1,5 @@
 from PySide2.QtWidgets import QMainWindow, QWidget, QDockWidget, QGridLayout
-from PySide2.QtCore import Qt, Signal
+from PySide2.QtCore import Qt, Signal, QTimer
 
 from src.View.view_canvas import ViewCanvas
 from src.View.view_sidepanel import ViewSidePanel
@@ -8,6 +8,8 @@ from src.View.widgets.view_toolbar import ViewMainToolBar
 from src.View.widgets.view_courses import ViewCoursePanel
 from src.View.widgets.view_students import ViewStudentPanel
 from src.View.widgets.view_attributes import ViewAttributePanel
+
+import platform
 
 
 class CentralWidget(QWidget):
@@ -151,6 +153,10 @@ class ViewMainFrame(QMainWindow):
 
         self.setStyleSheet("QMainWindow {" + f"background-color: {config.get('colors', 'main_bg')};" + "}")
 
+        self.test_timer = None  # Initialization in the constructor, even if it used only on OSX
+        if "Darwin" in platform.system():
+            self.osx_test()
+
     def __init_callbacks(self):
         """
         Dispatches the callbacks from the toolbar to the handling widgets. Also init the signal triggered to enable
@@ -174,4 +180,32 @@ class ViewMainFrame(QMainWindow):
         Triggered on a close operation. Signals to the controller the event
         """
         self.sig_quit.emit()
+        print(self.isEnabled())
         event.accept()
+
+    # ------------
+    # OSX bug
+    # ------------
+
+    def osx_test(self):
+        """
+        There is a BUG on OSX, where for some reason sometimes the QTimer doesn't start. In that case, QActions can't
+        trigger neither, nor animations.
+
+        To see that, we disable the main widget and activated only if the QTimer could start.
+        """
+        self.setEnabled(False)
+        self.repaint()
+
+        self.test_timer = QTimer(parent=self)
+        self.test_timer.timeout.connect(self.ready)
+        self.test_timer.start(1)
+
+    def ready(self):
+        """
+        Triggered when the test_timer starts. It will then stop and re-enable the main frame.
+        """
+        self.test_timer.stop()
+        self.test_timer = None
+        self.setEnabled(True)
+        self.repaint()
