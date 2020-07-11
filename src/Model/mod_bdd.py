@@ -134,9 +134,13 @@ class ModBdd():
         return [] if r is None else [ c[0] for c in r ]
     
     def create_group(self, group_name):
-        req = "INSERT INTO Groups (GroupName) VALUES (?)"
-        self.__cursor.execute(req, [group_name])
-        return self.__cursor.lastrowid
+        group_id = self.get_group_id_by_name(group_name)
+        if group_id != 0:
+            return group_id
+        else:
+            req = "INSERT INTO Groups (GroupName) VALUES (?)"
+            self.__cursor.execute(req, [group_name])
+            return self.__cursor.lastrowid
 
     def get_group_id_by_name(self, group_name):
         """Returns the group id
