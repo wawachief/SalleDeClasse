@@ -2,4 +2,5 @@ INSERT INTO Topics
     (TopicName) 
 VALUES 
     ("Maths"),
-    ("Informatique")
+    ("Informatique"),
+    ("Vide classe")

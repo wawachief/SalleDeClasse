@@ -3,4 +3,5 @@ INSERT INTO AttrTypes
 VALUES 
     ("Couleur"),
     ("Compteur"),
-    ("Texte");
+    ("Texte"),
+    ("Note");
