@@ -208,7 +208,8 @@ class Controller(QObject):
 
         self.gui.sidewidget.courses().init_table(
             list_courses=courses, selected_id=None if self.id_course == 0 else self.id_course)
-        self.gui.sidewidget.students().students_toolbar.init_groups(courses)
+
+        self.gui.sidewidget.students().students_toolbar.init_groups(courses)  # TODO init group
 
         self.gui.central_widget.topic.set_topics(topic_names, topic_name)
 

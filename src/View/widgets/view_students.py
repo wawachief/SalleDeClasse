@@ -1,5 +1,4 @@
 from PySide2.QtWidgets import QWidget, QVBoxLayout
-from PySide2.QtCore import Qt, QModelIndex
 
 from src.View.widgets.view_toolbar import ViewStudentListToolbar
 from src.View.widgets.view_table import CustomTableModel, CustomTableView

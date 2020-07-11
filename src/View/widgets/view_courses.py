@@ -1,7 +1,4 @@
-import typing
-
-from PySide2.QtWidgets import QWidget, QTableView, QVBoxLayout, QAbstractItemView, QHeaderView
-from PySide2.QtCore import QAbstractTableModel, Qt, QModelIndex
+from PySide2.QtWidgets import QWidget, QVBoxLayout
 
 from src.View.widgets.view_toolbar import ViewCourseListToolbar
 from src.View.widgets.view_table import CustomTableModel, CustomTableView
