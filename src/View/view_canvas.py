@@ -417,8 +417,6 @@ class ViewCanvas(QWidget):
         """
         Draws the desks and students' names given the self.tiles list
         """
-        super().paintEvent(event)
-
         painter = QPainter(self)
         pen = QPen()
         pen.setColor(QColor(self.config.get('colors', 'room_grid')))

@@ -2,7 +2,7 @@ from PySide2.QtWidgets import QLabel, QWidget, QComboBox, QHBoxLayout
 from PySide2.QtCore import QSize, Qt
 
 
-class ViewTeacherDeskLabel(QLabel):
+class ViewTeacherDeskLabel(QWidget):
 
     def __init__(self, text, bg_color):
         """
@@ -13,36 +13,28 @@ class ViewTeacherDeskLabel(QLabel):
         :param bg_color: background color (when activated)
         :type bg_color: QColor
         """
-        QLabel.__init__(self, text)
+        QWidget.__init__(self)
 
         self.setFixedSize(QSize(200, 30))
-        self.setAlignment(Qt.AlignCenter)
 
-        self.setToolTip("Position du tableau")
+        self.label = QLabel(text)
+        self.label.setToolTip("Position du tableau")
+        self.label.setStyleSheet(f"border-radius: 5px; background: {bg_color}; color: white;")
+        self.label.setAlignment(Qt.AlignCenter)
+        self.label.setFixedSize(QSize(200, 30))
 
-        self.__is_active = False
-        self.__bg_color = bg_color
+        layout = QHBoxLayout()
+        layout.setMargin(0)
+        layout.addWidget(self.label)
+        self.setLayout(layout)
 
-        self.__additionnal_style = "border-radius: 5px;"
-
-    def paintEvent(self, event):
+    def set_label_visible(self, b_visible: bool):
         """
-        Paints this widget whereas it's associated meaning is active or not.
-        """
-        if self.__is_active:
-            super().paintEvent(event)
-            self.setStyleSheet(f"{self.__additionnal_style} background: {self.__bg_color};")
-        else:
-            self.setStyleSheet("background: transparent;")
+        Sets the visibility state of the label
 
-    def activate(self, do_activate):
+        :param b_visible: True shows the label
         """
-        Activates or dis-activates this board
-
-        :type do_activate: bool
-        """
-        self.__is_active = do_activate
-        self.repaint()
+        self.label.setVisible(b_visible)
 
 
 class ViewTopics(QWidget):
