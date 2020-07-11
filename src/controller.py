@@ -1,6 +1,7 @@
 import sqlite3
+import platform
 
-from PySide2.QtCore import QObject, Signal, Slot
+from PySide2.QtCore import QObject, Signal, Slot, QTimer
 
 from src.Model.mod_bdd import ModBdd
 from src.View.view_mainframe import ViewMainFrame
@@ -80,6 +81,10 @@ class Controller(QObject):
         
         self.show_all_courses()
         self.gui.update()
+
+        self.test_timer = None  # Initialization in the constructor, even if it used only on OSX
+        if "Darwin" in platform.system():
+            self.osx_test()
 
     @Slot()
     def test_buttton(self):
@@ -333,3 +338,30 @@ class Controller(QObject):
 
     def create_group(self) -> None:
         print("Create group")
+
+    # ------------
+    # OSX bug
+    # ------------
+
+    def osx_test(self):
+        """
+        There is a BUG on OSX, where for some reason sometimes the QTimer doesn't start. In that case, QActions can't
+        trigger neither, nor animations.
+
+        To see that, we disable the main widget and activated only if the QTimer could start.
+        """
+        self.gui.setEnabled(False)
+        self.gui.repaint()
+
+        self.test_timer = QTimer(parent=self)
+        self.test_timer.timeout.connect(self.ready)
+        self.test_timer.start(1)
+
+    def ready(self):
+        """
+        Triggered when the test_timer starts. It will then stop and re-enable the main frame.
+        """
+        self.test_timer.stop()
+        self.test_timer = None
+        self.gui.setEnabled(True)
+        self.gui.repaint()
