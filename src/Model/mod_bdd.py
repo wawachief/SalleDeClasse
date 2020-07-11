@@ -61,18 +61,17 @@ class ModBdd():
         r = self.__cursor.fetchone()
         return 0 if r is None else r[0]
 
-    def create_course_with_name(self, name, id_topic):
+    def create_course_with_name(self, name):
         """Creates a new room.
         Input : name - course name
-                id_topic - topic Id
         Output : idCourse 
             if name already exist, idCourse is the id of the existing course
             if name doesn't exist, idCourse is the id of the course just created
-        If the name exists already, just return the room id"""
+        The topic id of the new course is 1 (main topic)"""
         id = self.get_course_id_by_name(name)
         if id == 0:
-            req = "INSERT INTO Courses (CourseName, IdTopic) VALUES (?, ?)"
-            self.__cursor.execute(req, [name, id_topic])
+            req = "INSERT INTO Courses (CourseName, IdTopic) VALUES (?, 1)"
+            self.__cursor.execute(req, [name])
             id = self.__cursor.lastrowid
         return id
     
@@ -164,12 +163,24 @@ class ModBdd():
     #
     # Topic relative requests
     #
-    def get_topic_by_id(self, id_topic):
+    def get_topic_from_course_id(self, id_course):
         """Returns a Student object
-        Input : id_topic - topic id
+        Input : id_course - course id
         Output : topic name or '' """
 
-        req = "SELECT TopicName FROM Topics WHERE IdTopic = ?"
-        self.__cursor.execute(req, [id_topic])
+        req = "SELECT TopicName FROM Topics JOIN Courses USING (IdTopic) WHERE Courses.IdCourse = ?"
+        self.__cursor.execute(req, [id_course])
         r = self.__cursor.fetchone()
         return "" if r is None else r[0]
+
+    def get_topics_names(self):
+        """Returns a Student object"""
+
+        req = "SELECT TopicName FROM Topics"
+        self.__cursor.execute(req)
+        r = self.__cursor.fetchall()
+        return ["Cueillette de fraises"] if r is None else [ t[0] for t in r ]
+    
+    def set_topic_to_course_id(self, id_course, new_topic):
+        req = "UPDATE Courses SET IdTopic = ( SELECT Topics.IdTopic FROM Topics WHERE Topics.TopicName = ? ) WHERE IdCourse = ?"
+        self.__cursor.execute(req, [new_topic, id_course])

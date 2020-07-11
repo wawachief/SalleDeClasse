@@ -60,7 +60,6 @@ class Controller(QObject):
         self.sig_topic_changed.connect(self.on_topic_changed)
 
         # properties
-        self.id_topic = 1
         self.id_course = 0
         
         self.show_all_courses()
@@ -145,11 +144,15 @@ class Controller(QObject):
         :param new_topic: new selected topic
         :type new_topic: str
         """
-        print(new_topic)
+        self.mod_bdd.set_topic_to_course_id(self.id_course, new_topic)
+        self.__bdd.commit()
+        self.show_all_courses()
 
     def show_course(self):
+        """DIsplays a the course defined by the id_course property"""
         self.v_canvas.delete_all_tiles()
         all_desks = self.mod_bdd.get_course_all_desks(self.id_course)
+        topic_name = self.mod_bdd.get_topic_from_course_id(self.id_course)
         for d in all_desks:
             std = self.mod_bdd.get_student_by_id(d.id_student)
             if std:
@@ -157,27 +160,28 @@ class Controller(QObject):
             else:
                 self.v_canvas.new_tile(d.row, d.col, d.id)
         self.v_canvas.repaint()
-
-        # TODO self.gui.central_widget.topic.select_topic(...) call with the topic to select (by name)
+        # Display course's topic
+        self.gui.central_widget.topic.select_topic(topic_name)
 
     def set_course(self, course_name):
         """Sets current course to course_name
         if course_name does not exisis, creates it, with current topic id
         YOU MUST CALL commit after !
+        The new course have topic_id of 1 (main topic)
         """
-        self.id_course = self.mod_bdd.create_course_with_name(course_name, self.id_topic)
+        self.id_course = self.mod_bdd.create_course_with_name(course_name)
     
     def show_all_courses(self):
         courses = self.mod_bdd.get_courses()
-
+        topic_names = self.mod_bdd.get_topics_names()
         if self.id_course == 0:
             self.id_course = courses[0][0]
+        topic_name = self.mod_bdd.get_topic_from_course_id(self.id_course)
 
         self.gui.sidewidget.courses().init_table(
             list_courses=courses, selected_id=None if self.id_course == 0 else self.id_course)
 
-        # TODO self.gui.central_widget.topic.set_topics(...) call with all topics and the one to select (by name)
-        # TODO example : self.gui.central_widget.topic.set_topics(["Maths", "Info", "Français"], "Info")
+        self.gui.central_widget.topic.set_topics(topic_names, topic_name)
 
     def auto_place(self, id_group):
         """Autoplacement of students on the free tiles"""
