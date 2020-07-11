@@ -232,6 +232,7 @@ class Controller(QObject):
             self.mod_bdd.get_group_id_by_name(groups[0])
 
         self.gui.central_widget.topic.set_topics(topic_names, topic_name)
+        self.show_course()
 
     def auto_place(self):
         """Autoplacement of students on the free tiles"""
