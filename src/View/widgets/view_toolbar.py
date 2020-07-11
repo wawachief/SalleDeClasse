@@ -3,6 +3,7 @@ from PySide2.QtCore import Signal, Slot, QSize
 
 from src.assets_manager import get_icon, get_stylesheet
 from src.View.widgets.view_add_widget import ViewAddWidget
+from src.View.widgets.view_menubutton import ViewMenuButton
 
 BUTTON_SIZE = QSize(60, 60)
 ICON_SIZE = QSize(45, 45)
@@ -109,8 +110,11 @@ class ViewStudentListToolbar(QToolBar):
 
         # Widgets
         self.combo_groups = QComboBox()
+        self.action_menu = ViewMenuButton("Actions", [("Import Pronote", "import_csv"),
+                                                      ("Créer un sous-groupe", "create_subgroup")])
 
         self.addWidget(self.combo_groups)
+        self.addWidget(self.action_menu)
 
         # Signals
         self.sig_combo_changed: Signal = None

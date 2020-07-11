@@ -1,10 +1,10 @@
 import sqlite3
-from random import randint
 
 from PySide2.QtCore import QObject, Signal, Slot
 
 from src.Model.mod_bdd import ModBdd
 from src.View.view_mainframe import ViewMainFrame
+from src.View.widgets.view_menubutton import ViewMenuButton
 
 from random import shuffle
 
@@ -23,6 +23,7 @@ class Controller(QObject):
     sig_student_selected = Signal(int)
 
     sig_topic_changed = Signal(str)
+    sig_action_triggered = Signal(str)
 
     def __init__(self, config):
         """
@@ -33,6 +34,9 @@ class Controller(QObject):
         QObject.__init__(self)
 
         self.config = config
+
+        self.actions_table = {"import_csv": self.import_pronote,
+                              "create_subgroup": self.create_subgroup}
 
         # BDD connection
         self.__bdd = sqlite3.connect("src/SQL/sdc_db")
@@ -52,6 +56,7 @@ class Controller(QObject):
         self.gui.central_widget.topic.sig_topic_changed = self.sig_topic_changed
         self.gui.sidewidget.students().students_toolbar.sig_combo_changed = self.sig_student_group_changed
         self.gui.sidewidget.students().sig_student_changed = self.sig_student_selected
+        ViewMenuButton.sig_action = self.sig_action_triggered
 
         # Signals connection
         self.sig_add_tile.connect(self.test_buttton)
@@ -64,6 +69,7 @@ class Controller(QObject):
         self.sig_topic_changed.connect(self.on_topic_changed)
         self.sig_student_group_changed.connect(self.on_student_group_changed)
         self.sig_student_selected.connect(self.on_student_selected)
+        self.sig_action_triggered.connect(self.action_triggered)
 
         # properties
         self.id_course = 0
@@ -284,3 +290,18 @@ class Controller(QObject):
         self.__bdd.commit()
         self.v_canvas.repaint()
 
+    @Slot(str)
+    def action_triggered(self, action_key: str) -> None:
+        """
+        Triggered when an action signal is emitted. Looks in the actions lookup table and calls the associated method.
+
+        :param action_key: action triggered key
+        :type action_key: str
+        """
+        self.actions_table[action_key]()
+
+    def import_pronote(self) -> None:
+        print("Import pronote")
+
+    def create_subgroup(self) -> None:
+        print("Create subgroup")
