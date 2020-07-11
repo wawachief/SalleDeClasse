@@ -122,6 +122,17 @@ class ModBdd():
     #
     # Student relative requests
     #
+
+    def get_groups(self):
+        """Returns the group list
+        Input : 
+        Output : list of group names"""
+
+        req = "SELECT GroupName FROM Groups ORDER BY GroupName"
+        self.__cursor.execute(req)
+        r = self.__cursor.fetchall()
+        return [] if r is None else [ c[0] for c in r ]
+
     def get_student_by_id(self, id_std):
         """Returns a Student object
         Input : idStd - student id
@@ -141,12 +152,12 @@ class ModBdd():
         r = self.__cursor.fetchall()
         return [] if r is None else [Student(t[0], t[1], t[2]) for t in r ]
 
-    def get_students_in_group(self, id_group):
+    def get_students_in_group(self, group_name):
         """Returns an array of Students in the room
         Input : id_group - the group id
         Output : a list (maybe empty) of students in the group"""
-        req = """SELECT * from Students JOIN IsIn USING (idStudent) WHERE IsIn.IdGroup = ? ORDER BY OrderKey"""
-        self.__cursor.execute(req, [id_group])
+        req = """SELECT * from Students JOIN IsIn USING (idStudent) JOIN Groups USING (IdGroup) WHERE Groups.GroupName = ? ORDER BY OrderKey"""
+        self.__cursor.execute(req, [group_name])
         r = self.__cursor.fetchall()
         return [] if r is None else [Student(t[0], t[1], t[2]) for t in r ]
 

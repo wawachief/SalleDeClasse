@@ -163,8 +163,7 @@ class Controller(QObject):
         :param new_group: Course in which are the students to display
         :type new_group: str
         """
-        # Todo self.gui.sidewidget.students().set_students_list(...)
-        print(new_group)
+        self.gui.sidewidget.students().set_students_list(self.mod_bdd.get_students_in_group(new_group))
 
     @Slot(int)
     def on_student_selected(self, student_id: int) -> None:
@@ -201,6 +200,7 @@ class Controller(QObject):
     
     def show_all_courses(self):
         courses = self.mod_bdd.get_courses()
+        groups = self.mod_bdd.get_groups()
         topic_names = self.mod_bdd.get_topics_names()
         if self.id_course == 0:
             self.id_course = courses[0][0]
@@ -209,7 +209,9 @@ class Controller(QObject):
         self.gui.sidewidget.courses().init_table(
             list_courses=courses, selected_id=None if self.id_course == 0 else self.id_course)
 
-        self.gui.sidewidget.students().students_toolbar.init_groups(courses)  # TODO init group
+        self.gui.sidewidget.students().students_toolbar.init_groups(groups) 
+        if groups:
+            self.on_student_group_changed(groups[0])
 
         self.gui.central_widget.topic.set_topics(topic_names, topic_name)
 

@@ -143,7 +143,7 @@ class ViewStudentListToolbar(QToolBar):
         :type groups: list
         """
         self.reset_groups()
-        self.__add_groups([c[1] for c in groups])
+        self.__add_groups(groups)
         self.repaint()
 
     def __add_groups(self, list_groups: list) -> None:
