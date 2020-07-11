@@ -73,8 +73,12 @@ class CentralWidget(QWidget):
             self.is_view_students = not self.is_view_students
             self.v_canvas.perspective_changed()
 
-        self.view_students.activate(self.is_view_students)
-        self.view_teacher.activate(not self.is_view_students)
+        if self.is_view_students:
+            self.view_students.set_label_visible(True)
+            self.view_teacher.set_label_visible(False)
+        else:
+            self.view_students.set_label_visible(False)
+            self.view_teacher.set_label_visible(True)
 
     def do_magic(self):
         self.sig_add_tile.emit()
@@ -174,5 +178,4 @@ class ViewMainFrame(QMainWindow):
         Triggered on a close operation. Signals to the controller the event
         """
         self.sig_quit.emit()
-        print(self.isEnabled())
         event.accept()
