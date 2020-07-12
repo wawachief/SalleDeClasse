@@ -1,4 +1,4 @@
-from PySide2.QtWidgets import QDialog, QFileDialog, QVBoxLayout, QComboBox
+from PySide2.QtWidgets import QDialog, QFileDialog, QGridLayout, QComboBox, QLabel
 from PySide2.QtCore import Qt
 
 
@@ -20,8 +20,17 @@ class DialogImportCsv(QDialog):
         self.fileDialog.setNameFilter("Fichiers excel (*.csv)")
         self.fileDialog.finished.connect(self.done)
 
+        self.lab_sep = QLabel()  # Separator
+        self.lab_sep.setFixedHeight(3)
+        self.lab_sep.setStyleSheet("background: QLinearGradient(x1: 0, y1: 0, x2: 1, y2: 0, "
+                                   "stop: 0 #283747, stop: 0.25 #1A5276, stop: 0.5 #2980B9, "
+                                   "stop: 0.75 #1A5276, stop: 1 #283747);")
+
+        self.lab_group = QLabel("Ajouter au groupe :")
+
         self.combo_group = QComboBox()
         self.combo_group.addItems(groups)
+        self.combo_group.setFixedWidth(200)
 
         # Layout
         self.__set_layout()
@@ -30,10 +39,12 @@ class DialogImportCsv(QDialog):
         """
         Sets this widget's layout
         """
-        layout = QVBoxLayout()
+        layout = QGridLayout()
 
-        layout.addWidget(self.fileDialog)
-        layout.addWidget(self.combo_group)
+        layout.addWidget(self.fileDialog, 0, 0, 1, 2)
+        layout.addWidget(self.lab_sep, 1, 0, 1, 2)
+        layout.addWidget(self.lab_group, 2, 0, alignment=Qt.AlignRight)
+        layout.addWidget(self.combo_group, 2, 1, alignment=Qt.AlignLeft)
 
         self.setLayout(layout)
 
