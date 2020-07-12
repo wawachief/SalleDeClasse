@@ -1,8 +1,8 @@
-from PySide2.QtWidgets import QToolBar, QPushButton, QComboBox
+from PySide2.QtWidgets import QToolBar, QPushButton, QComboBox, QLineEdit
 from PySide2.QtCore import Signal, Slot, QSize
 
 from src.assets_manager import get_icon, get_stylesheet
-from src.View.widgets.view_add_widget import ViewAddWidget
+from src.View.widgets.view_add_widget import ViewAddWidget, ViewAddLine
 from src.View.widgets.view_menubutton import ViewMenuButton
 
 BUTTON_SIZE = QSize(60, 60)
@@ -113,20 +113,25 @@ class ViewStudentListToolbar(QToolBar):
 
         # Widgets
         self.combo_groups = QComboBox()
-        self.action_menu = ViewMenuButton("Actions", [("Import Pronote", "import_csv"),
-                                                      ("Créer un groupe", "create_group"),
-                                                      'sep',
-                                                      ("Placement automatique", "auto_place"),
-                                                      'sep',
-                                                      ("Tri alphabétique croissant", "sort_asc"),
-                                                      ("Tri alphabétique décroissant", "sort_desc")])
-
-        self.addWidget(self.combo_groups)
-        self.addWidget(self.action_menu)
+        self.create_field = ViewAddLine()
+        self.action_menu = ViewMenuButton("Actions", self.create_field.show_field,
+                                          [("Import Pronote", "import_csv"),
+                                           ("Créer un groupe", "create_group"),
+                                           ("Créer un élève", "create_student"),
+                                           'sep',
+                                           ("Placement automatique", "auto_place"),
+                                           'sep',
+                                           ("Tri alphabétique croissant", "sort_asc"),
+                                           ("Tri alphabétique décroissant", "sort_desc")])
 
         # Signals
         self.sig_combo_changed: Signal = None
         self.combo_groups.activated.connect(self.on_group_changed)
+
+        # Layout
+        self.addWidget(self.combo_groups)
+        self.addWidget(self.action_menu)
+        self.addWidget(self.create_field)
 
         self.__set_style()
 

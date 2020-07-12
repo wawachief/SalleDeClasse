@@ -1,5 +1,5 @@
 from PySide2.QtWidgets import QWidget, QPushButton, QLineEdit, QHBoxLayout, QShortcut
-from PySide2.QtCore import QSize, Qt
+from PySide2.QtCore import QSize, Qt, Signal
 from PySide2.QtGui import QKeySequence
 
 from src.assets_manager import get_icon
@@ -90,3 +90,69 @@ class ViewAddWidget(QWidget):
 
         self.field.clear()
         self.__on_add_pressed()  # Updates the state and hides the entry field
+
+
+class ViewAddLine(QWidget):
+
+    def __init__(self):
+        """
+        Widget with a single edit line that can be displayed or hidden at wish. A press on <Enter> displays it, and
+        <Escape> hides it.
+        """
+        QWidget.__init__(self)
+
+        self.sig_create: Signal = None
+        self.creator: str = None
+
+        self.create_field = QLineEdit()
+
+        # Shortcuts
+        self.create_field.returnPressed.connect(self.__on_create)
+        QShortcut(QKeySequence("Escape"), self.create_field).activated.connect(lambda: self.hide_field())  # Cancel
+
+        # Layout
+        layout = QHBoxLayout()
+        layout.setMargin(0)
+        layout.addWidget(self.create_field)
+        self.setLayout(layout)
+
+        self.hide_field()
+
+    def show_field(self, origin: str) -> None:
+        """
+        Shows and focus the creation field
+
+        :param origin: action that triggered the displayal
+        """
+        self.creator = origin
+        self.create_field.setVisible(True)
+        self.create_field.setFocus()
+
+        if origin == 'create_group':
+            self.create_field.setPlaceholderText("Nom du groupe")
+        elif origin == 'create_student':
+            self.create_field.setPlaceholderText("Nom/Prénom de l'élève")
+
+    def hide_field(self) -> None:
+        """
+        Hides the creation field
+        """
+        self.creator = None
+        self.create_field.clear()
+        self.create_field.setVisible(False)
+
+    def __on_create(self) -> None:
+        """
+        Triggered when enter is pressed on the creation field. Emits the entered text with creator action as prefix.
+        """
+        res = ""
+
+        if self.creator == "create_group":
+            res += "grp "
+        elif self.creator == "create_student":
+            res += "std "
+
+        res += self.create_field.text()
+        self.sig_create.emit(res)
+
+        self.hide_field()

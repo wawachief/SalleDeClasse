@@ -7,7 +7,7 @@ class ViewMenuButton(QPushButton):
 
     sig_action = None
 
-    def __init__(self, btn_name: str, actions_map: list):
+    def __init__(self, btn_name: str, show_field, actions_map: list):
         """
         Creates a QPushButton with a dropdown menu on it.
 
@@ -15,6 +15,8 @@ class ViewMenuButton(QPushButton):
         :type btn_name: str
         :param actions_map: list of actions to put in the dropdown menu [(action_name, action_key), (separator_name), ...]
         :type actions_map: list
+        :param show_field: entry field to display on create operations
+        :type show_field: function
         """
         QPushButton.__init__(self, btn_name)
 
@@ -25,7 +27,10 @@ class ViewMenuButton(QPushButton):
                 self.menu.addSeparator()
             else:  # Regular action
                 t, k = a
-                self.menu.addAction(t, lambda k=k: self.sig_action.emit(k))
+                if k.startswith('create_'):  # If we have a create feature, we display the entry field
+                    self.menu.addAction(t, lambda k=k: show_field(k))
+                else:
+                    self.menu.addAction(t, lambda k=k: self.sig_action.emit(k))
 
         self.setMenu(self.menu)
         self.menu.setStyleSheet(get_stylesheet("menu"))

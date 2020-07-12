@@ -33,6 +33,8 @@ class Controller(QObject):
     sig_topic_changed = Signal(str)
     sig_action_triggered = Signal(str)
 
+    sig_create_grp_std = Signal(str)
+
     def __init__(self, config):
         """
         Application main controller.
@@ -45,7 +47,6 @@ class Controller(QObject):
 
         self.actions_table = {  # Action buttons
                                 "import_csv": self.import_pronote,
-                                "create_group": self.create_group,
                                 "auto_place": self.auto_place,
                                 "sort_asc": self.sort_asc,
                                 "sort_desc": self.sort_desc,
@@ -76,6 +77,7 @@ class Controller(QObject):
         self.gui.sidewidget.students().students_toolbar.sig_combo_changed = self.sig_student_group_changed
         ViewMenuButton.sig_action = self.sig_action_triggered
         self.gui.maintoolbar.sig_TBbutton = self.sig_TBbutton
+        self.gui.sidewidget.students().students_toolbar.create_field.sig_create = self.sig_create_grp_std
 
         # Signals connection
         self.sig_add_tile.connect(self.test_buttton)
@@ -89,6 +91,7 @@ class Controller(QObject):
         self.sig_student_group_changed.connect(self.on_student_group_changed)
         self.sig_action_triggered.connect(self.action_triggered)
         self.sig_TBbutton.connect(self.action_triggered)
+        self.sig_create_grp_std.connect(self.on_create_grp_std)
 
         # properties
         self.id_course = 0
@@ -364,9 +367,6 @@ class Controller(QObject):
             self.gui.sidewidget.students().students_toolbar.init_groups(groups)
             self.on_student_group_changed(self.mod_bdd.get_group_name_by_id(self.id_group))
 
-    def create_group(self) -> None:
-        print(self.gui.sidewidget.students().selected_students())  # TODO
-
     def select(self) -> None:
         """Select Desks, rotate selection mode
         - 0 = all, 
@@ -407,6 +407,22 @@ class Controller(QObject):
 
         self.__bdd.commit()
         self.v_canvas.repaint()
+
+    @Slot(str)
+    def on_create_grp_std(self, new_grp_std: str):
+        """
+        Creates a new group or a new student with the specified name.
+
+        It is a group if the received string starts with 'grp '. It is a student if it starts with 'std '.
+        """
+        prefix = new_grp_std[:4]
+
+        if prefix == 'grp ':  # Group creation
+            print("create group " + new_grp_std[4:])
+        elif prefix == 'std ':  # Student creation
+            print("create student " + new_grp_std[4:])
+
+        print(self.gui.sidewidget.students().selected_students())  # TODO
 
 # TODO Sorting
     def sort_asc(self):
