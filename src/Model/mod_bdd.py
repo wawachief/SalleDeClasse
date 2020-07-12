@@ -60,6 +60,16 @@ class ModBdd():
         self.__cursor.execute(req, [id_course, row, col])
         r = self.__cursor.fetchone()
         return 0 if r is None else r[0]
+    
+    def get_desk_by_id(self, id_desk):
+        """Returns the desk designed by id_desk
+        Input : id_cdesk - if of the desk
+        Output : Desk object or None"""
+
+        req = "SELECT * FROM Desks WHERE IdDesk = ?"
+        self.__cursor.execute(req, [id_desk])
+        r = self.__cursor.fetchone()
+        return r if r is None else Desk(r[0], r[1], r[2], r[3], r[4])
 
     def create_course_with_name(self, name):
         """Creates a new room.
@@ -115,7 +125,7 @@ class ModBdd():
                 id_desk : id of the desk
         Output : None"""
 
-        if id_std*id_desk != 0:
+        if id_desk != 0:
             req = "UPDATE Desks SET IdStudent = ? WHERE IdDesk = ?"
             self.__cursor.execute (req, [id_std, id_desk])
 

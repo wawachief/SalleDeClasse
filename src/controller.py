@@ -11,9 +11,14 @@ from src.Model.import_csv import import_csv
 
 from random import shuffle
 
-
 class Controller(QObject):
+    # Constants
+    SEL_NONE = 0
+    SEL_EMPTY = 1
+    SEL_OCCUPIED = 2
+    SEL_ALL = 3
 
+    # Signals
     sig_add_tile = Signal()
     sig_quit = Signal()
     sig_shuffle = Signal()
@@ -48,7 +53,7 @@ class Controller(QObject):
                                 "magic": self.debug,
                                 "select": self.select,
                                 "choix": self.debug,
-                                "delete": self.debug
+                                "delete": self.delete
                               }
 
         # BDD connection
@@ -89,7 +94,7 @@ class Controller(QObject):
         # properties
         self.id_course = 0
         self.id_group = 0
-        self.selection_mode = 0 # 0 = all, 1 = occupied desks, 2 = empty desks, 3 = none
+        self.selection_mode = self.SEL_ALL
         
         self.show_all_courses()
         self.show_all_groups()
@@ -143,12 +148,20 @@ class Controller(QObject):
                 self.v_canvas.move_tile(id_desk_start, end)
                 self.v_canvas.move_tile(id_desk_end, start, True)
         else:
-            # Desk is out of the caanvas, we remove it
             self.mod_bdd.remove_desk_by_id(id_desk_start)
-            # remove the tile as well
-            self.v_canvas.remove_tile(id_desk_start)
         self.__bdd.commit()
         self.v_canvas.repaint()
+
+    def remove_desk_by_id(self, id_desk):
+        """Removes the desk designed by id_desk
+        - removes the entry in the bdd
+        - removes the tile on viewcanvas
+        BDD commit MUST be called after removing desks !
+        """
+        # Desk is out of the caanvas, we remove it
+        self.mod_bdd.remove_desk_by_id(id_desk)
+        # remove the tile as well
+        self.v_canvas.remove_tile(id_desk)
 
     @Slot()
     def desk_shuffle(self):
@@ -229,6 +242,7 @@ class Controller(QObject):
         The new course have topic_id of 1 (main topic)
         """
         self.id_course = self.mod_bdd.create_course_with_name(course_name)
+        self.selection_mode = self.SEL_ALL
     
     def show_all_courses(self):
         """Initializes the contents of the widgets :
@@ -368,5 +382,36 @@ class Controller(QObject):
         - 2 = empty desks, 
         - 3 = none
         """
-        if self.selection_mode == 0:
-            
+        def get_desks(isFree):
+            all_desks = self.mod_bdd.get_course_all_desks(self.id_course)
+            if isFree:
+                return [d.id for d in all_desks if d.id_student == 0]
+            else:
+                return [d.id for d in all_desks if d.id_student != 0]
+
+        if self.selection_mode == self.SEL_NONE:
+            self.v_canvas.select_tiles_to(False)
+        elif self.selection_mode == self.SEL_EMPTY:
+            self.v_canvas.select_tiles_from_desks_ids(get_desks(True))
+        elif self.selection_mode == self.SEL_OCCUPIED:
+            self.v_canvas.select_tiles_from_desks_ids(get_desks(False))
+        else:
+            self.v_canvas.select_tiles_to(True)
+        self.selection_mode = (self.selection_mode+1) % 4
+
+        self.v_canvas.repaint()
+    
+
+    def delete(self) -> None:
+        desks_id = self.v_canvas.get_selected_tiles()
+        for d in desks_id:
+            id_student = self.mod_bdd.get_desk_by_id(d).id_student
+            if id_student == 0:
+                self.remove_desk_by_id(d)
+            else:
+                # We free the desk
+                self.v_canvas.set_student(d, "", "")
+                self.mod_bdd.set_student_in_desk_by_id(0, d)
+
+        self.__bdd.commit()
+        self.v_canvas.repaint()

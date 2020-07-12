@@ -504,17 +504,12 @@ class ViewCanvas(QWidget):
     def select_tiles_to(self, value):
         """sets tiles selection to value"""
         for t in list(self.__tiles.values()):
-            t.set_selection(True)
+            t.set_selection(value)
 
-    def select_occupied_tiles(self):
-        """select occupied tiles"""
+    def select_tiles_from_desks_ids(self, d_ids):
+        """select tiles according to desk ids"""
         for t in list(self.__tiles.values()):
-            t.set_selection(True)
-
-    def select_free_tiles(self):
-        """select free tiles"""
-        pass
-
+            t.set_selection(t.id() in d_ids)
 
     def mousePressEvent(self, event):
         """
