@@ -1,4 +1,5 @@
 from PySide2.QtWidgets import QWidget, QVBoxLayout
+from PySide2.QtCore import QModelIndex
 
 from src.View.widgets.view_toolbar import ViewStudentListToolbar
 from src.View.widgets.view_table import CustomTableModel, CustomTableView
@@ -18,6 +19,7 @@ class ViewStudentPanel(QWidget):
 
         # Widgets
         self.tableview = CustomTableView(False)
+        self.tableview.doubleClicked.connect(self.__on_double_clicked)
         self.students_toolbar = ViewStudentListToolbar(config)
 
         # DataModel and additional info
@@ -34,6 +36,13 @@ class ViewStudentPanel(QWidget):
         Always keep a half ratio for the first column size
         """
         self.tableview.setColumnWidth(0, int(self.width()/2))
+
+    def __on_double_clicked(self, model_index: QModelIndex):
+        """
+        Displays the creation field in order to edit the double-clicked student
+        """
+        data = (self.datamodel.index(model_index.row(), 0).data(), self.datamodel.index(model_index.row(), 1).data())
+        self.students_toolbar.edit_student(self.students[data], data[0] + " " + data[1])
 
     def __set_layout(self) -> None:
         """

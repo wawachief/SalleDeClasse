@@ -143,6 +143,15 @@ class ViewStudentListToolbar(QToolBar):
         # Toolbar
         self.setStyleSheet(get_stylesheet("toolbar"))
 
+    def edit_student(self, student_id: int, student_data: str) -> None:
+        """
+        Shows the creation field, with the student data (last name + first name) that can be edited.
+
+        :param student_id: student id
+        :param student_data: student last name + first name
+        """
+        self.create_field.show_field(str(student_id), student_data)
+
     def on_group_changed(self) -> None:
         """
         Triggered when the combo selection changed, emits the signal if the selected group was updated.
