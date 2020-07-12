@@ -182,7 +182,11 @@ class ModBdd():
         req = "INSERT INTO IsIn (IdStudent, IdGroup) VALUES (?, ?)"
         self.__cursor.execute(req, [id_std, id_group])
         return id_std
-    
+
+    def rename_student_by_id(self, is_std, firstname, lastname):
+        req = "UPDATE  Students SET StdFirstName = ?, StdLastName = ? WHERE IdStudent = ?"
+        self.__cursor.execute(req, [firstname, lastname, is_std])
+
     def insert_isin(self, id_std, id_group):
         """Insert the student id in the group id"""
         req = "INSERT INTO IsIn (IdStudent, IdGroup) VALUES (?, ?)"

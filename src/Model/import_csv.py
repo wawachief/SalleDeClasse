@@ -20,4 +20,4 @@ def import_csv(file_name, csv_sep):
     return [ process_line(l, csv_sep) for l in lines ]
 
 if __name__ == "__main__":
-    print(import_csv("/home/wawa/Bureau/TS4.csv", ";"))
+    print(process_line("DUCON LAJOIR Robert-Edouard", ";"))

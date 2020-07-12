@@ -7,7 +7,7 @@ from src.Model.mod_bdd import ModBdd
 from src.View.view_mainframe import ViewMainFrame
 from src.View.widgets.view_menubutton import ViewMenuButton
 from src.View.popup.view_import_csv import DialogImportCsv
-from src.Model.import_csv import import_csv
+from src.Model.import_csv import import_csv, process_line
 
 from random import shuffle
 
@@ -152,6 +152,7 @@ class Controller(QObject):
                 self.v_canvas.move_tile(id_desk_end, start, True)
         else:
             self.mod_bdd.remove_desk_by_id(id_desk_start)
+            self.show_course()
         self.__bdd.commit()
         self.v_canvas.repaint()
 
@@ -253,12 +254,15 @@ class Controller(QObject):
         self.gui.central_widget.topic.set_topics(topic_names, topic_name)
         self.show_course()
 
-    def show_all_groups(self):
+    def show_all_groups(self, current = 0):
         groups = self.mod_bdd.get_groups()
-        self.gui.sidewidget.students().students_toolbar.init_groups(groups) 
+        if current == 0:
+            self.gui.sidewidget.students().students_toolbar.init_groups(groups)
         if groups:
-            self.on_student_group_changed(groups[0])
-            self.id_group = self.mod_bdd.get_group_id_by_name(groups[0])
+            current_group  = groups[0] if current == 0 else self.mod_bdd.get_group_name_by_id(current)
+            self.on_student_group_changed(current_group)
+            self.mod_bdd.get_group_id_by_name(current_group)
+            self.gui.sidewidget.students().students_toolbar.current_group = current_group
 
     def auto_place(self):
         """Autoplacement of students on the free tiles"""
@@ -270,7 +274,10 @@ class Controller(QObject):
             list_students = self.mod_bdd.get_students_in_group(group_name)
         else:
             list_students = [self.mod_bdd.get_student_by_id(i) for i in list_idstd] 
-                
+        
+        students_ids = { s.id for s in list_students}
+
+        to_be_placed = len(list_students)
         list_available_desks = []
         list_to_remove = []
         for row in range(maxRow):
@@ -283,21 +290,32 @@ class Controller(QObject):
                         list_available_desks.append((id_desk, row, col))
                     else:
                         list_to_remove.append(student.id)
+        # Adjust the number of students to place
+        for s in list_to_remove:
+            if s in students_ids:
+                to_be_placed -= 1
+
         index_std = 0
         for dsk in list_available_desks:
             while index_std < len(list_students) and list_students[index_std].id in list_to_remove:
                 index_std += 1
+                to_be_placed -= 1
             if index_std >= len(list_students):
                 break
             student = list_students[index_std]
             # update the model
             self.mod_bdd.set_student_in_desk_by_id(student.id, dsk[0])
+            to_be_placed -= 1
             # update the view
             self.v_canvas.set_student(dsk[0], student.firstname, student.lastname)
             self.v_canvas.repaint()
             
             index_std += 1
         
+        if to_be_placed > 0 :
+            self.gui.status_bar.showMessage(f"Il manque {to_be_placed} places pour placer tous les élèves")
+        else:
+            self.gui.status_bar.showMessage("Tous les élèves sont placés",3000)
         self.__bdd.commit()
 
     @Slot(int)
@@ -427,12 +445,19 @@ class Controller(QObject):
             list_id_students = self.gui.sidewidget.students().selected_students()
             for id_std in list_id_students:
                 self.mod_bdd.insert_isin(id_std, id_group)
-            self.__bdd.commit()
             self.show_all_groups()
         elif prefix == 'std ':  # Student creation
             self.gui.status_bar.showMessage(f"Creation de l'élève {name}", 3000)
+            lastname, firstname  = process_line(name, ";")
+            self.mod_bdd.insert_student_in_group_id(firstname, lastname, 0, id_group)
         else:  # Student edition
-            print("edit student - id: " + str(int(prefix)) + " - New name: " + new_grp_std[4:])
+            id_std = int(prefix)
+            lastname, firstname  = process_line(name, ";")
+            self.gui.status_bar.showMessage(f"Renommage de l'élève {firstname} {lastname}", 3000)
+            self.mod_bdd.rename_student_by_id(id_std, firstname, lastname)
+            self.show_course()
+            self.show_all_groups(current = self.id_group)
+        self.__bdd.commit()
 
     def sort_alpha(self, desc):
         self.gui.status_bar.showMessage("Tri alphabétique", 3000)
