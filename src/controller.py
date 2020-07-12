@@ -134,12 +134,12 @@ class Controller(QObject):
         if 0 <= end[0] < max_row and 0 <= end[1] < max_col:
             # Destination is in the canvas
             id_desk_end = self.mod_bdd.get_desk_id_in_course_by_coords(self.id_course, end[0], end[1])
-            if id_desk_end == 0:
+            if id_desk_end == 0 and id_desk_start != 0:
                 # We just change the coordinates
                 self.mod_bdd.move_desk_by_id(id_desk_start, end[0], end[1])
                 # We update the view
                 self.v_canvas.move_tile(id_desk_start, end)
-            else:
+            elif id_desk_end != 0 and id_desk_start != 0:
                 # We swap the two desks
                 self.mod_bdd.move_desk_by_id(id_desk_start, end[0], end[1])
                 self.mod_bdd.move_desk_by_id(id_desk_end, start[0], start[1])
@@ -263,7 +263,12 @@ class Controller(QObject):
         maxRow = int(self.config.get("size", "default_room_rows"))
         maxCol = int(self.config.get("size", "default_room_columns"))
         group_name = self.mod_bdd.get_group_name_by_id(self.id_group)
-        list_students = self.mod_bdd.get_students_in_group(group_name)
+        list_idstd = self.gui.sidewidget.students().selected_students()
+        if list_idstd == []:
+            list_students = self.mod_bdd.get_students_in_group(group_name)
+        else:
+            list_students = [self.mod_bdd.get_student_by_id(i) for i in list_idstd] 
+                
         list_available_desks = []
         list_to_remove = []
         for row in range(maxRow):
@@ -404,3 +409,10 @@ class Controller(QObject):
 
         self.__bdd.commit()
         self.v_canvas.repaint()
+
+# TODO Sorting
+    def sort_asc(self):
+        print("Sorting students Ascending")
+
+    def sort_desc(self):
+        print("Sorting students Descending")
