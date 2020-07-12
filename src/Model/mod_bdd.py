@@ -173,9 +173,18 @@ class ModBdd():
         return "" if r is None else r[0]
 
     def insert_student_in_group_id(self, firstname, lastname, order, id_group):
+        """Create a new student by firstname and lastname in group by id
+        return the nbew student id"""
+
         req = "INSERT INTO Students (StdFirstName, StdLastName, OrderKey) VALUES (?, ?, ?)"
         self.__cursor.execute(req, [firstname, lastname, order])
         id_std = self.__cursor.lastrowid
+        req = "INSERT INTO IsIn (IdStudent, IdGroup) VALUES (?, ?)"
+        self.__cursor.execute(req, [id_std, id_group])
+        return id_std
+    
+    def insert_isin(self, id_std, id_group):
+        """Insert the student id in the group id"""
         req = "INSERT INTO IsIn (IdStudent, IdGroup) VALUES (?, ?)"
         self.__cursor.execute(req, [id_std, id_group])
 

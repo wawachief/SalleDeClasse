@@ -364,16 +364,14 @@ class Controller(QObject):
                 order += 1
             self.__bdd.commit()
 
-            groups = self.mod_bdd.get_groups()
-            self.gui.sidewidget.students().students_toolbar.init_groups(groups)
-            self.on_student_group_changed(self.mod_bdd.get_group_name_by_id(self.id_group))
+            self.show_all_groups()
 
     def select(self) -> None:
         """Select Desks, rotate selection mode
-        - 0 = all, 
-        - 1 = occupied desks, 
-        - 2 = empty desks, 
-        - 3 = none
+        - 3 = all, 
+        - 2 = occupied desks, 
+        - 1 = empty desks, 
+        - 0 = none
         """
         def get_desks(isFree):
             all_desks = self.mod_bdd.get_course_all_desks(self.id_course)
@@ -384,12 +382,16 @@ class Controller(QObject):
 
         if self.selection_mode == self.SEL_NONE:
             self.v_canvas.select_tiles_to(False)
+            self.gui.status_bar.showMessage(f"Déselection de tous les emplacements", 3000)
         elif self.selection_mode == self.SEL_EMPTY:
             self.v_canvas.select_tiles_from_desks_ids(get_desks(True))
+            self.gui.status_bar.showMessage(f"Selection des emplacements libres", 3000)
         elif self.selection_mode == self.SEL_OCCUPIED:
             self.v_canvas.select_tiles_from_desks_ids(get_desks(False))
+            self.gui.status_bar.showMessage(f"Selection des emplacements occupés", 3000)
         else:
             self.v_canvas.select_tiles_to(True)
+            self.gui.status_bar.showMessage(f"Selection de tous les emplacements", 3000)
         self.selection_mode = (self.selection_mode+1) % 4
 
         self.v_canvas.repaint()
@@ -417,16 +419,23 @@ class Controller(QObject):
         It is a group if the received string starts with 'grp '. It is a student if it starts with 'std '.
         """
         prefix = new_grp_std[:4]
+        name = new_grp_std[4:]
 
         if prefix == 'grp ':  # Group creation
-            print("create group " + new_grp_std[4:])
+            self.gui.status_bar.showMessage(f"Creation du groupe {name}", 3000)
+            id_group = self.mod_bdd.create_group(name)
+            list_id_students = self.gui.sidewidget.students().selected_students()
+            for id_std in list_id_students:
+                self.mod_bdd.insert_isin(id_std, id_group)
+            self.__bdd.commit()
+            self.show_all_groups()
         elif prefix == 'std ':  # Student creation
-            print("create student " + new_grp_std[4:])
+            self.gui.status_bar.showMessage(f"Creation de l'élève {name}", 3000)
 
-        print(self.gui.sidewidget.students().selected_students())  # TODO
+         #print(self.gui.sidewidget.students().selected_students())  # TODO
 
     def sort_alpha(self, desc):
-        self.gui.status_bar.showMessage("Tri alphabétique croissant")
+        self.gui.status_bar.showMessage("Tri alphabétique", 3000)
         group_name = self.mod_bdd.get_group_name_by_id(self.id_group)
         list_students = self.mod_bdd.get_students_in_group(group_name)
         sortlist = [(s.lastname, s.id) for s in list_students ]
@@ -445,6 +454,7 @@ class Controller(QObject):
         self.sort_alpha(True)
 
     def sort_desks(self):
+        self.gui.status_bar.showMessage("Tri d'après les places", 3000)
         maxRow = int(self.config.get("size", "default_room_rows"))
         maxCol = int(self.config.get("size", "default_room_columns"))
         group_name = self.mod_bdd.get_group_name_by_id(self.id_group)
