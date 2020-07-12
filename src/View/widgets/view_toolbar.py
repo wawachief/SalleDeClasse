@@ -119,7 +119,8 @@ class ViewStudentListToolbar(QToolBar):
                                                       ("Placement automatique", "auto_place"),
                                                       'sep',
                                                       ("Tri alphabétique croissant", "sort_asc"),
-                                                      ("Tri alphabétique décroissant", "sort_desc")])
+                                                      ("Tri alphabétique décroissant", "sort_desc"),
+                                                      ("Tri d'après les places", "sort_desks")])
 
         self.addWidget(self.combo_groups)
         self.addWidget(self.action_menu)
