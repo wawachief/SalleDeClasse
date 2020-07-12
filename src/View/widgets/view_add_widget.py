@@ -153,6 +153,8 @@ class ViewAddLine(QWidget):
             res += "std "
 
         res += self.create_field.text()
-        self.sig_create.emit(res)
+        # If we don't have text, we don't send anything
+        if self.create_field.text():
+            self.sig_create.emit(res)
 
         self.hide_field()

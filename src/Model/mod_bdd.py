@@ -199,8 +199,8 @@ class ModBdd():
         return [] if r is None else [Student(t[0], t[1], t[2]) for t in r ]
 
     def get_students_in_group(self, group_name):
-        """Returns an array of Students in the room
-        Input : id_group - the group id
+        """Returns an array of Students in a group
+        Input : group_name - the group name
         Output : a list (maybe empty) of students in the group"""
         req = """SELECT * from Students JOIN IsIn USING (idStudent) JOIN Groups USING (IdGroup) WHERE Groups.GroupName = ? ORDER BY OrderKey"""
         self.__cursor.execute(req, [group_name])
@@ -216,7 +216,10 @@ class ModBdd():
         self.__cursor.execute(req, [id_desk])
         r = self.__cursor.fetchone()
         return r if r is None else Student(r[0], r[1], r[2])
-
+    
+    def update_student_order_with_id(self, idS, order):
+            req = "UPDATE Students SET OrderKey = ? WHERE IdStudent = ?"
+            self.__cursor.execute (req, [order, idS])
     #
     # Topic relative requests
     #

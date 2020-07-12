@@ -50,6 +50,7 @@ class Controller(QObject):
                                 "auto_place": self.auto_place,
                                 "sort_asc": self.sort_asc,
                                 "sort_desc": self.sort_desc,
+                                "sort_desks": self.sort_desks,
 
                                 # Toolbar buttons
                                 "magic": self.debug,
@@ -103,7 +104,7 @@ class Controller(QObject):
         self.gui.update()
 
     def debug(self):
-        print("ouaf")
+        self.gui.status_bar.showMessage("ouaf")
 
     @Slot()
     def test_buttton(self):
@@ -257,7 +258,7 @@ class Controller(QObject):
         self.gui.sidewidget.students().students_toolbar.init_groups(groups) 
         if groups:
             self.on_student_group_changed(groups[0])
-            self.mod_bdd.get_group_id_by_name(groups[0])
+            self.id_group = self.mod_bdd.get_group_id_by_name(groups[0])
 
     def auto_place(self):
         """Autoplacement of students on the free tiles"""
@@ -424,9 +425,42 @@ class Controller(QObject):
 
         print(self.gui.sidewidget.students().selected_students())  # TODO
 
-# TODO Sorting
+    def sort_alpha(self, desc):
+        self.gui.status_bar.showMessage("Tri alphabétique croissant")
+        group_name = self.mod_bdd.get_group_name_by_id(self.id_group)
+        list_students = self.mod_bdd.get_students_in_group(group_name)
+        sortlist = [(s.lastname, s.id) for s in list_students ]
+        sortlist.sort(reverse = desc)
+        orderkey = 1
+        for s in sortlist:
+            self.mod_bdd.update_student_order_with_id(s[1], orderkey)
+            orderkey += 1
+        self.__bdd.commit()
+        self.gui.sidewidget.students().set_students_list(self.mod_bdd.get_students_in_group(group_name))
+
     def sort_asc(self):
-        print("Sorting students Ascending")
+        self.sort_alpha(False)
 
     def sort_desc(self):
-        print("Sorting students Descending")
+        self.sort_alpha(True)
+
+    def sort_desks(self):
+        maxRow = int(self.config.get("size", "default_room_rows"))
+        maxCol = int(self.config.get("size", "default_room_columns"))
+        group_name = self.mod_bdd.get_group_name_by_id(self.id_group)
+
+        sortlist = []
+        for row in range(maxRow):
+            for col in range(maxCol):
+                id_desk = self.mod_bdd.get_desk_id_in_course_by_coords(self.id_course, row, col)
+                if id_desk != 0:
+                    student = self.mod_bdd.get_student_by_desk_id(id_desk)
+                    if student is not None:
+                        sortlist.append(student.id)
+        
+        orderkey = 0
+        for s in sortlist:
+            self.mod_bdd.update_student_order_with_id(s, orderkey)
+            orderkey += 1
+        self.__bdd.commit()
+        self.gui.sidewidget.students().set_students_list(self.mod_bdd.get_students_in_group(group_name))
