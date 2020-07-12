@@ -118,11 +118,12 @@ class ViewAddLine(QWidget):
 
         self.hide_field()
 
-    def show_field(self, origin: str) -> None:
+    def show_field(self, origin: str, default_text: str=None) -> None:
         """
         Shows and focus the creation field
 
         :param origin: action that triggered the displayal
+        :param default_text: default text to display in the field
         """
         self.creator = origin
         self.create_field.setVisible(True)
@@ -132,6 +133,8 @@ class ViewAddLine(QWidget):
             self.create_field.setPlaceholderText("Nom du groupe")
         elif origin == 'create_student':
             self.create_field.setPlaceholderText("Nom/Prénom de l'élève")
+        else:  # We are editing a student, the origin is the student id
+            self.create_field.setText(default_text)
 
     def hide_field(self) -> None:
         """
@@ -151,6 +154,8 @@ class ViewAddLine(QWidget):
             res += "grp "
         elif self.creator == "create_student":
             res += "std "
+        else:  # Student edition: we put the id in prefix
+            res += self.creator + (4 - len(self.creator)) * ' '  # We use a 4-length string for the id
 
         res += self.create_field.text()
         # If we don't have text, we don't send anything

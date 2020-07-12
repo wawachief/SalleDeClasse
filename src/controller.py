@@ -420,10 +420,11 @@ class Controller(QObject):
 
         if prefix == 'grp ':  # Group creation
             print("create group " + new_grp_std[4:])
+            print(self.gui.sidewidget.students().selected_students())  # TODO
         elif prefix == 'std ':  # Student creation
             print("create student " + new_grp_std[4:])
-
-        print(self.gui.sidewidget.students().selected_students())  # TODO
+        else:  # Student edition
+            print("edit student - id: " + str(int(prefix)) + " - New name: " + new_grp_std[4:])
 
     def sort_alpha(self, desc):
         self.gui.status_bar.showMessage("Tri alphabétique croissant")
