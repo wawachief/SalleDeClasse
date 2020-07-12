@@ -118,6 +118,7 @@ class ViewStudentListToolbar(QToolBar):
                                           [("Import Pronote", "import_csv"),
                                            ("Créer un groupe", "create_group"),
                                            ("Créer un élève", "create_student"),
+                                           ("Supprimer un élève", "killstudent"),
                                            'sep',
                                            ("Placement automatique", "auto_place"),
                                            'sep',

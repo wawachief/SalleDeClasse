@@ -51,6 +51,7 @@ class Controller(QObject):
                                 "sort_asc": self.sort_asc,
                                 "sort_desc": self.sort_desc,
                                 "sort_desks": self.sort_desks,
+                                "killstudent": self.killstudent,
 
                                 # Toolbar buttons
                                 "magic": self.debug,
@@ -449,7 +450,9 @@ class Controller(QObject):
         elif prefix == 'std ':  # Student creation
             self.gui.status_bar.showMessage(f"Creation de l'élève {name}", 3000)
             lastname, firstname  = process_line(name, ";")
-            self.mod_bdd.insert_student_in_group_id(firstname, lastname, 0, id_group)
+            self.mod_bdd.insert_student_in_group_id(firstname, lastname, 0, self.id_group)
+            self.show_course()
+            self.show_all_groups(current = self.id_group)
         else:  # Student edition
             id_std = int(prefix)
             lastname, firstname  = process_line(name, ";")
@@ -457,6 +460,21 @@ class Controller(QObject):
             self.mod_bdd.rename_student_by_id(id_std, firstname, lastname)
             self.show_course()
             self.show_all_groups(current = self.id_group)
+
+        self.__bdd.commit()
+
+    def killstudent(self):
+        self.gui.status_bar.showMessage(f"Suppression d'élèves", 3000)
+        list_id_students = self.gui.sidewidget.students().selected_students()
+        for id_std in list_id_students:
+            # delete student from IsIn
+            self.mod_bdd.delete_isin(id_std, self.id_group)
+            n = self.mod_bdd.nb_groups_contains_student_by_id(id_std)
+            if n == 0:
+                # Delete Student from Database
+                self.mod_bdd.delete_student_by_id(id_std)
+        self.show_course()
+        self.show_all_groups(current = self.id_group)
         self.__bdd.commit()
 
     def sort_alpha(self, desc):

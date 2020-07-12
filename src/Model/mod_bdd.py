@@ -183,14 +183,37 @@ class ModBdd():
         self.__cursor.execute(req, [id_std, id_group])
         return id_std
 
-    def rename_student_by_id(self, is_std, firstname, lastname):
+    def rename_student_by_id(self, id_std, firstname, lastname):
         req = "UPDATE  Students SET StdFirstName = ?, StdLastName = ? WHERE IdStudent = ?"
-        self.__cursor.execute(req, [firstname, lastname, is_std])
+        self.__cursor.execute(req, [firstname, lastname, id_std])
 
     def insert_isin(self, id_std, id_group):
         """Insert the student id in the group id"""
         req = "INSERT INTO IsIn (IdStudent, IdGroup) VALUES (?, ?)"
         self.__cursor.execute(req, [id_std, id_group])
+    
+    def delete_isin(self, id_std, id_group):
+        """Delete the student id from the group id"""
+        req = "DELETE FROM IsIn WHERE IdStudent = ? AND IdGroup = ?"
+        self.__cursor.execute(req, [id_std, id_group])
+    
+    def nb_groups_contains_student_by_id(self, id_std):
+        """Returns the number of groups student id_std belongs to"""
+        req = "SELECT COUNT(*) FROM IsIn WHERE IdStudent = ?"
+        self.__cursor.execute(req, [id_std])
+        r = self.__cursor.fetchone()
+        return r[0]
+    def delete_student_by_id(self, id_std):
+        """Remove a student from the surface of the earth"""
+        # Delete Attributes
+        req = "DELETE FROM StdAttrs WHERE IdStudent = ?"
+        self.__cursor.execute(req, [id_std])
+        # Free Desks
+        req = "UPDATE Desks SET IdStudent = 0 WHERE IdStudent = ?"
+        self.__cursor.execute(req, [id_std])
+        # Kill the student
+        req = "DELETE FROM Students WHERE IdStudent = ?"
+        self.__cursor.execute(req, [id_std])
 
     def get_student_by_id(self, id_std):
         """Returns a Student object
