@@ -126,11 +126,18 @@ class ViewTile(QObject):
         self.__firstname = firstname
         self.__lastname = lastname
 
-    def update_selection(self):
+    def toggle_selection(self):
         """
         Switches the current selection value
         """
         self.__is_selected = not self.__is_selected
+    
+
+    def set_selection(self, value):
+        """
+        sets the current selection value
+        """
+        self.__is_selected = value
 
     def is_selected(self):
         """
@@ -493,6 +500,21 @@ class ViewCanvas(QWidget):
                 ids.append(t.id())
 
         return ids
+    
+    def select_tiles_to(self, value):
+        """sets tiles selection to value"""
+        for t in list(self.__tiles.values()):
+            t.set_selection(True)
+
+    def select_occupied_tiles(self):
+        """select occupied tiles"""
+        for t in list(self.__tiles.values()):
+            t.set_selection(True)
+
+    def select_free_tiles(self):
+        """select free tiles"""
+        pass
+
 
     def mousePressEvent(self, event):
         """
@@ -537,7 +559,7 @@ class ViewCanvas(QWidget):
             if not selected_tile:
                 self.sig_canvas_click.emit(rel_end_pos)
             else:
-                selected_tile.update_selection()
+                selected_tile.toggle_selection()
         else:  # Drag/Drop operation
             self.sig_canvas_drag.emit(rel_start_pos, rel_end_pos)
 

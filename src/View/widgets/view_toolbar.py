@@ -23,11 +23,15 @@ class ViewMainToolBar(QToolBar):
         """
         QToolBar.__init__(self)
         self.config = config
+        self.sig_TBbutton = None
 
         # Buttons
-        self.__btn_magic = ToolBarButton("magic", "Abracadabra !", self.on_btn_magic_clicked)  # Debug btn
+        self.__btn_magic = ToolBarButton("unkwown", "Abracadabra !", lambda : self.sig_TBbutton.emit("magic"))  # Debug btn
         self.__btn_perspective = ToolBarButton("teacher", "Changer de perspective", self.on_btn_perspective_clicked)
         self.__btn_shuffle = ToolBarButton("shuffle", "Mélanger", self.on_btn_shuffle_clicked)
+        self.__btn_select = ToolBarButton("selection", "Sélectionner", lambda : self.sig_TBbutton.emit("select"))
+        self.__btn_delete = ToolBarButton("choixvolontaire", "Effacer", lambda : self.sig_TBbutton.emit("choix"))
+        self.__btn_delete = ToolBarButton("corbeille", "Effacer", lambda : self.sig_TBbutton.emit("delete"))
 
         # Signals
         self.sig_enable_animation_btns.connect(self.enable_animation_btns)
@@ -43,6 +47,8 @@ class ViewMainToolBar(QToolBar):
         self.addWidget(self.__btn_magic)
         self.addWidget(self.__btn_perspective)
         self.addWidget(self.__btn_shuffle)
+        self.addWidget(self.__btn_select)
+        self.addWidget(self.__btn_delete)
 
     def __set_style(self):
         """
@@ -62,9 +68,6 @@ class ViewMainToolBar(QToolBar):
         self.__btn_shuffle.setEnabled(do_enable)
 
     def on_btn_perspective_clicked(self):
-        pass
-
-    def on_btn_magic_clicked(self):
         pass
 
     def on_btn_shuffle_clicked(self):

@@ -19,6 +19,7 @@ class Controller(QObject):
     sig_shuffle = Signal()
     sig_canvas_click = Signal(tuple)
     sig_canvas_drag = Signal(tuple, tuple)
+    sig_TBbutton = Signal(str)
 
     sig_course_changed = Signal(int)
     sig_create_course = Signal(str)
@@ -38,9 +39,17 @@ class Controller(QObject):
 
         self.config = config
 
-        self.actions_table = {"import_csv": self.import_pronote,
-                              "create_group": self.create_group,
-                              "auto_place": self.auto_place}
+        self.actions_table = {  # Action buttons
+                                "import_csv": self.import_pronote,
+                                "create_group": self.create_group,
+                                "auto_place": self.auto_place,
+
+                                # Toolbar buttons
+                                "magic": self.debug,
+                                "select": self.select,
+                                "choix": self.debug,
+                                "delete": self.debug
+                              }
 
         # BDD connection
         self.__bdd = sqlite3.connect("src/SQL/sdc_db")
@@ -61,6 +70,7 @@ class Controller(QObject):
         self.gui.sidewidget.students().students_toolbar.sig_combo_changed = self.sig_student_group_changed
         self.gui.sidewidget.students().sig_student_changed = self.sig_student_selected
         ViewMenuButton.sig_action = self.sig_action_triggered
+        self.gui.maintoolbar.sig_TBbutton = self.sig_TBbutton
 
         # Signals connection
         self.sig_add_tile.connect(self.test_buttton)
@@ -74,13 +84,19 @@ class Controller(QObject):
         self.sig_student_group_changed.connect(self.on_student_group_changed)
         self.sig_student_selected.connect(self.on_student_selected)
         self.sig_action_triggered.connect(self.action_triggered)
+        self.sig_TBbutton.connect(self.action_triggered)
 
         # properties
         self.id_course = 0
         self.id_group = 0
+        self.selection_mode = 0 # 0 = all, 1 = occupied desks, 2 = empty desks, 3 = none
         
         self.show_all_courses()
+        self.show_all_groups()
         self.gui.update()
+
+    def debug(self):
+        print ("ouaf")
 
     @Slot()
     def test_buttton(self):
@@ -107,6 +123,8 @@ class Controller(QObject):
 
         max_row = int(self.config.get("size", "default_room_rows"))
         max_col = int(self.config.get("size", "default_room_columns"))
+        if len(start) == 0:
+            return
 
         id_desk_start = self.mod_bdd.get_desk_id_in_course_by_coords(self.id_course, start[0], start[1])
         if 0 <= end[0] < max_row and 0 <= end[1] < max_col:
@@ -134,6 +152,7 @@ class Controller(QObject):
 
     @Slot()
     def desk_shuffle(self):
+        """Shuffle all desktops"""
         all_desks = self.mod_bdd.get_course_all_desks(self.id_course)
         shuffle(all_desks)
         for i in range(0,len(all_desks)-1,2):
@@ -212,8 +231,11 @@ class Controller(QObject):
         self.id_course = self.mod_bdd.create_course_with_name(course_name)
     
     def show_all_courses(self):
+        """Initializes the contents of the widgets :
+        - courses list
+        - topic list"""
+
         courses = self.mod_bdd.get_courses()
-        groups = self.mod_bdd.get_groups()
         topic_names = self.mod_bdd.get_topics_names()
         if self.id_course == 0:
             self.id_course = courses[0][0]
@@ -222,13 +244,16 @@ class Controller(QObject):
         self.gui.sidewidget.courses().init_table(
             list_courses=courses, selected_id=None if self.id_course == 0 else self.id_course)
 
+        self.gui.central_widget.topic.set_topics(topic_names, topic_name)
+        self.show_course()
+
+    def show_all_groups(self):
+        groups = self.mod_bdd.get_groups()
         self.gui.sidewidget.students().students_toolbar.init_groups(groups) 
         if groups:
             self.on_student_group_changed(groups[0])
             self.mod_bdd.get_group_id_by_name(groups[0])
 
-        self.gui.central_widget.topic.set_topics(topic_names, topic_name)
-        self.show_course()
 
     def auto_place(self):
         """Autoplacement of students on the free tiles"""
@@ -335,3 +360,13 @@ class Controller(QObject):
 
     def create_group(self) -> None:
         print("Create group")
+
+    def select(self) -> None:
+        """Select Desks, rotate selection mode
+        - 0 = all, 
+        - 1 = occupied desks, 
+        - 2 = empty desks, 
+        - 3 = none
+        """
+        if self.selection_mode == 0:
+            
