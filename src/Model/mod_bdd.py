@@ -187,7 +187,7 @@ class ModBdd():
         req = "SELECT * FROM Students WHERE IdStudent = ?"
         self.__cursor.execute(req, [id_std])
         r = self.__cursor.fetchone()
-        return r if r is None else Student(id, r[1], r[2])
+        return r if r is None else Student(id_std, r[1], r[2])
         
     def get_students_in_course_by_id(self, id_course):
         """Returns an array of Students in the room

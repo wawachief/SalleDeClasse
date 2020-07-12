@@ -114,9 +114,9 @@ class ViewStudentListToolbar(QToolBar):
         # Widgets
         self.combo_groups = QComboBox()
         self.action_menu = ViewMenuButton("Actions", [("Import Pronote", "import_csv"),
-                                                      ("Placement automatique", "auto_place"),
-                                                      'sep',
                                                       ("Créer un groupe", "create_group"),
+                                                      'sep',
+                                                      ("Placement automatique", "auto_place"),
                                                       'sep',
                                                       ("Tri alphabétique croissant", "sort_asc"),
                                                       ("Tri alphabétique décroissant", "sort_desc")])

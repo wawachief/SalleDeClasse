@@ -1,6 +1,6 @@
 class Desk:
-    def __init__(self, id, row, col, id_course, id_student):
-        self.id = id
+    def __init__(self, idd, row, col, id_course, id_student):
+        self.id = idd
         self.row, self.col = row, col
         self.id_course = id_course
         self.id_student = id_student
@@ -11,8 +11,8 @@ class Desk:
 
 
 class Student:
-    def __init__(self, id=0, firstname="", lastname=""):
-        self.id = id
+    def __init__(self, ids=0, firstname="", lastname=""):
+        self.id = ids
         self.firstname = firstname
         self.lastname = lastname
 
