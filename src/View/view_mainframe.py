@@ -1,4 +1,4 @@
-from PySide2.QtWidgets import QMainWindow, QWidget, QDockWidget, QGridLayout
+from PySide2.QtWidgets import QMainWindow, QWidget, QDockWidget, QGridLayout, QStatusBar, QLabel
 from PySide2.QtCore import Qt, Signal
 
 from src.View.view_canvas import ViewCanvas
@@ -14,15 +14,17 @@ class CentralWidget(QWidget):
 
     sig_move_animation_ended = Signal()
 
-    def __init__(self, config):
+    def __init__(self, config, status_message):
         """
         Application's central widget, contains all the app's widgets.
 
         :param config: application's parsed configuration
+        :param status_message: Status bar function to call to display a message
         """
         QWidget.__init__(self)
 
         self.config = config
+        self.status_message = status_message
 
         self.v_canvas = ViewCanvas(config, self.sig_move_animation_ended)  # Central canvas
 
@@ -76,9 +78,11 @@ class CentralWidget(QWidget):
         if self.is_view_students:
             self.view_students.set_label_visible(True)
             self.view_teacher.set_label_visible(False)
+            self.status_message("Vue élève active", 3000)
         else:
             self.view_students.set_label_visible(False)
             self.view_teacher.set_label_visible(True)
+            self.status_message("Vue prof active", 3000)
 
     def do_magic(self):
         self.sig_add_tile.emit()
@@ -138,8 +142,10 @@ class ViewMainFrame(QMainWindow):
         QMainWindow.__init__(self)
 
         # Widgets
+        self.status_bar = QStatusBar()
+        self.status_bar.setStyleSheet("QStatusBar {background: lightgrey; color: black;}")
         self.maintoolbar = ViewMainToolBar(config)
-        self.central_widget = CentralWidget(config)
+        self.central_widget = CentralWidget(config, self.status_bar.showMessage)
         self.sidewidget = SideDockWidget(config)
 
         self.sidewidget.dockLocationChanged.connect(self.on_side_widget_docked_state_changed)
@@ -150,6 +156,7 @@ class ViewMainFrame(QMainWindow):
         self.setCentralWidget(self.central_widget)
         self.addDockWidget(Qt.LeftDockWidgetArea, self.sidewidget)
         self.addToolBar(Qt.RightToolBarArea, self.maintoolbar)
+        self.setStatusBar(self.status_bar)
 
         self.sig_quit = sig_quit
 

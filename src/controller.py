@@ -100,7 +100,7 @@ class Controller(QObject):
         self.gui.update()
 
     def debug(self):
-        print ("ouaf")
+        print("ouaf")
 
     @Slot()
     def test_buttton(self):
@@ -181,7 +181,6 @@ class Controller(QObject):
 
     @Slot()
     def do_quit(self):
-        print("Bye")
         self.v_canvas.application_closing()
         self.__bdd.close()
 
@@ -256,7 +255,6 @@ class Controller(QObject):
         if groups:
             self.on_student_group_changed(groups[0])
             self.mod_bdd.get_group_id_by_name(groups[0])
-
 
     def auto_place(self):
         """Autoplacement of students on the free tiles"""
