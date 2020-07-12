@@ -24,7 +24,6 @@ class Controller(QObject):
     sig_course_changed = Signal(int)
     sig_create_course = Signal(str)
     sig_student_group_changed = Signal(str)
-    sig_student_selected = Signal(int)
 
     sig_topic_changed = Signal(str)
     sig_action_triggered = Signal(str)
@@ -43,6 +42,8 @@ class Controller(QObject):
                                 "import_csv": self.import_pronote,
                                 "create_group": self.create_group,
                                 "auto_place": self.auto_place,
+                                "sort_asc": self.sort_asc,
+                                "sort_desc": self.sort_desc,
 
                                 # Toolbar buttons
                                 "magic": self.debug,
@@ -68,7 +69,6 @@ class Controller(QObject):
         self.gui.sidewidget.courses().courses_toolbar.add_widget.sig_new_element = self.sig_create_course
         self.gui.central_widget.topic.sig_topic_changed = self.sig_topic_changed
         self.gui.sidewidget.students().students_toolbar.sig_combo_changed = self.sig_student_group_changed
-        self.gui.sidewidget.students().sig_student_changed = self.sig_student_selected
         ViewMenuButton.sig_action = self.sig_action_triggered
         self.gui.maintoolbar.sig_TBbutton = self.sig_TBbutton
 
@@ -82,7 +82,6 @@ class Controller(QObject):
         self.sig_create_course.connect(self.on_create_course)
         self.sig_topic_changed.connect(self.on_topic_changed)
         self.sig_student_group_changed.connect(self.on_student_group_changed)
-        self.sig_student_selected.connect(self.on_student_selected)
         self.sig_action_triggered.connect(self.action_triggered)
         self.sig_TBbutton.connect(self.action_triggered)
 
@@ -196,16 +195,6 @@ class Controller(QObject):
         """
         self.id_group = self.mod_bdd.get_group_id_by_name(new_group)
         self.gui.sidewidget.students().set_students_list(self.mod_bdd.get_students_in_group(new_group))
-
-    @Slot(int)
-    def on_student_selected(self, student_id: int) -> None:
-        """
-        Triggered when the student selection changed.
-
-        :param student_id: new selected student id
-        :type student_id: int
-        """
-        print(student_id)
 
     def show_course(self):
         """DIsplays a the course defined by the id_course property"""
@@ -359,7 +348,7 @@ class Controller(QObject):
             self.on_student_group_changed(self.mod_bdd.get_group_name_by_id(self.id_group))
 
     def create_group(self) -> None:
-        print("Create group")
+        print(self.gui.sidewidget.students().selected_students())  # TODO
 
     def select(self) -> None:
         """Select Desks, rotate selection mode
@@ -369,4 +358,11 @@ class Controller(QObject):
         - 3 = none
         """
         if self.selection_mode == 0:
-            
+            pass
+
+    # Sorting
+    def sort_asc(self):
+        print("Sorting students Ascending")
+
+    def sort_desc(self):
+        print("Sorting students Descending")

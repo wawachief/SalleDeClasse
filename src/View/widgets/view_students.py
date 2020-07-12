@@ -17,17 +17,13 @@ class ViewStudentPanel(QWidget):
         self.config = config
 
         # Widgets
-        self.tableview = CustomTableView()
+        self.tableview = CustomTableView(False)
         self.students_toolbar = ViewStudentListToolbar(config)
 
         # DataModel and additional info
         self.datamodel: CustomTableModel = None  # TableView datamodel
         self.current_selection: int = None  # Stores the selected student ID
         self.students = {}  # All the displayed students items -> {(lastname, firstname): id, ...}
-
-        # Signals
-        self.sig_student_changed = None
-        self.tableview.clicked.connect(self.on_selection_changed)
 
         # layout
         self.__set_layout()
@@ -51,19 +47,6 @@ class ViewStudentPanel(QWidget):
 
         self.setLayout(layout)
 
-    def on_selection_changed(self, item):
-        """
-        Triggered when a click is performed in the tableview
-
-        :param item: selected item (not used, we use the current selection, in order to retrieve the index)
-        """
-        idx = self.tableview.selectionModel().currentIndex()
-        selected_id = self.students[(idx.sibling(idx.row(), 0).data(), idx.sibling(idx.row(), 1).data())]
-
-        if selected_id and selected_id != self.current_selection:
-            self.sig_student_changed.emit(selected_id)
-            self.current_selection = selected_id
-
     def set_students_list(self, students: list) -> None:
         """
         Sets the specified student list inside the table view
@@ -86,4 +69,15 @@ class ViewStudentPanel(QWidget):
 
         self.repaint()
 
+    def selected_students(self) -> list:
+        """
+        :return: list of all selected students IDs
+        :rtype: list
+        """
+        students_ids = []
 
+        for r in self.tableview.selectionModel().selectedRows():
+            data = (self.datamodel.index(r.row(), 0).data(), self.datamodel.index(r.row(), 1).data())
+            students_ids.append(self.students[data])
+
+        return students_ids

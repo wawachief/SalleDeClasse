@@ -42,12 +42,18 @@ class CustomTableModel(QAbstractTableModel):
 
 class CustomTableView(QTableView):
 
-    def __init__(self):
+    def __init__(self, single_selection: bool=True):
+        """
+        Common TableView used in side panels
+
+        :param single_selection: disable multi-selection (True by default)
+        :type single_selection: bool
+        """
         QTableView.__init__(self)
         self.verticalHeader().hide()
         self.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.setSelectionMode(QAbstractItemView.SingleSelection if single_selection else QAbstractItemView.MultiSelection)
         self.horizontalHeader().setStretchLastSection(True)
         self.horizontalHeader().setSectionResizeMode(QHeaderView.Fixed)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
