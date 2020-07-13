@@ -8,6 +8,7 @@ from src.View.widgets.view_toolbar import ViewMainToolBar
 from src.View.widgets.view_courses import ViewCoursePanel
 from src.View.widgets.view_students import ViewStudentPanel
 from src.View.widgets.view_attributes import ViewAttributePanel
+from src.assets_manager import AssetManager
 
 
 class CentralWidget(QWidget):
@@ -78,11 +79,11 @@ class CentralWidget(QWidget):
         if self.is_view_students:
             self.view_students.set_label_visible(True)
             self.view_teacher.set_label_visible(False)
-            self.status_message("Vue élève active", 3000)
+            self.status_message(AssetManager.getInstance().get_text("status_bar_active_view_student"), 3000)
         else:
             self.view_students.set_label_visible(False)
             self.view_teacher.set_label_visible(True)
-            self.status_message("Vue prof active", 3000)
+            self.status_message(AssetManager.getInstance().get_text("status_bar_active_view_teacher"), 3000)
 
     def do_magic(self):
         self.sig_add_tile.emit()

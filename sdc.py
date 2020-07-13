@@ -3,6 +3,7 @@ from PySide2.QtWidgets import QApplication
 from src.controller import Controller
 
 from configparser import ConfigParser
+from src.assets_manager import AssetManager
 
 CONFIG_PATH = 'config.ini'
 
