@@ -60,6 +60,16 @@ class AssetManager:
             AssetManager()
         return AssetManager.__instance
 
+    def config(self, section: str, key: str) -> str:
+        """
+        Gets the value of the specefied section, key in the configuration file.
+
+        :param section: Config's section
+        :param key: Section's key
+        :return: value
+        """
+        return self.__config.get(section, key)
+
     def get_text(self, key: str) -> str:
         if key in self.__language_dico:
             return self.__language_dico[key]

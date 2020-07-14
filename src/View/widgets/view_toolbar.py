@@ -13,25 +13,22 @@ class ViewMainToolBar(QToolBar):
 
     sig_enable_animation_btns = Signal(bool)
 
-    def __init__(self, config):
+    def __init__(self):
         """
         Main ToolBar, providing features buttons that operates over the canvas.
         The callbacks methods provided by this class should be redirected towards any widget handling the associated
         process.
-
-        :param config: application's parsed configuration
         """
         QToolBar.__init__(self)
-        self.config = config
         self.sig_TBbutton = None
 
         # Buttons
-        self.__btn_magic = ToolBarButton("unkwown", "Abracadabra !", lambda : self.sig_TBbutton.emit("magic"))  # Debug btn
+        self.__btn_magic = ToolBarButton("unkwown", "Abracadabra !", lambda: self.sig_TBbutton.emit("magic"))  # Debug btn
         self.__btn_perspective = ToolBarButton("teacher", "Changer de perspective", self.on_btn_perspective_clicked)
         self.__btn_shuffle = ToolBarButton("shuffle", "Mélanger", self.on_btn_shuffle_clicked)
-        self.__btn_select = ToolBarButton("selection", "Sélectionner", lambda : self.sig_TBbutton.emit("select"))
-        self.__btn_delete = ToolBarButton("choixvolontaire", "Effacer", lambda : self.sig_TBbutton.emit("choix"))
-        self.__btn_delete = ToolBarButton("corbeille", "Effacer", lambda : self.sig_TBbutton.emit("delete"))
+        self.__btn_select = ToolBarButton("selection", "Sélectionner", lambda: self.sig_TBbutton.emit("select"))
+        self.__btn_delete = ToolBarButton("choixvolontaire", "Effacer", lambda: self.sig_TBbutton.emit("choix"))
+        self.__btn_delete = ToolBarButton("corbeille", "Effacer", lambda: self.sig_TBbutton.emit("delete"))
 
         # Signals
         self.sig_enable_animation_btns.connect(self.enable_animation_btns)
@@ -76,16 +73,13 @@ class ViewMainToolBar(QToolBar):
 
 class ViewCourseListToolbar(QToolBar):
 
-    def __init__(self, config):
+    def __init__(self):
         """
         Toolbar for the Room list side panel tab
-
-        :param config: application's parsed configuration
         """
         QToolBar.__init__(self)
-        self.config = config
 
-        self.add_widget = ViewAddWidget(config)
+        self.add_widget = ViewAddWidget()
 
         self.addWidget(self.add_widget)
 
@@ -101,14 +95,11 @@ class ViewCourseListToolbar(QToolBar):
 
 class ViewStudentListToolbar(QToolBar):
 
-    def __init__(self, config):
+    def __init__(self):
         """
         Toolbar for the students list side panel tab
-
-        :param config: application's parsed configuration
         """
         QToolBar.__init__(self)
-        self.config = config
         self.current_group: str = None
 
         # Widgets
@@ -192,14 +183,11 @@ class ViewStudentListToolbar(QToolBar):
 
 class ViewAttributeListToolbar(QToolBar):
 
-    def __init__(self, config):
+    def __init__(self):
         """
         Toolbar for the attributes list side panel tab
-
-        :param config: application's parsed configuration
         """
         QToolBar.__init__(self)
-        self.config = config
 
         self.__set_style()
 

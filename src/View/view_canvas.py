@@ -2,6 +2,8 @@ from PySide2.QtWidgets import QWidget
 from PySide2.QtGui import QPainter, QColor, QPen, QPalette, QFont
 from PySide2.QtCore import QPoint, QRect, Qt, Signal, Slot, QTimer, QThread, QObject
 
+from src.assets_manager import AssetManager
+
 from time import sleep
 
 PADDING = 1  # Padding of each tile
@@ -48,7 +50,7 @@ class MoveAnimationThread(QThread):
 
         i = 0
         while self.running and i <= 100 and self.__current != self.__arrival:
-            sleep(t)  # 10 ms
+            sleep(t)
             i += 1
 
             y, x = self.__current
@@ -262,19 +264,16 @@ class ViewCanvas(QWidget):
 
     sig_move_ended = Signal()
 
-    def __init__(self, config, sig_move_animation_ended):
+    def __init__(self, sig_move_animation_ended):
         """
         Application's main canvas, in which is drawn desks and student's names.
 
-        :param config: application's parsed configuration
         :param sig_move_animation_ended: signal to trigger when the move animation ends
         :type sig_move_animation_ended: Signal
         """
         QWidget.__init__(self)
 
-        self.config = config
-
-        self.square_size = int(config.get('size', 'desk'))
+        self.square_size = int(AssetManager.getInstance().config('size', 'desk'))
         self.setAutoFillBackground(True)
 
         self.__tiles = {}  # All drawn tiles
@@ -297,8 +296,8 @@ class ViewCanvas(QWidget):
         self.__running_animations = 0
         self.update_timer = None  # Timer running only during animations to perform the UI update
 
-        self.nb_rows = int(self.config.get('size', 'default_room_rows'))
-        self.nb_columns = int(self.config.get('size', 'default_room_columns'))
+        self.nb_rows = int(AssetManager.getInstance().config('size', 'default_room_rows'))
+        self.nb_columns = int(AssetManager.getInstance().config('size', 'default_room_columns'))
         self.setFixedSize(self.square_size * self.nb_columns, self.square_size * self.nb_rows)
         self.__init_style()
 
@@ -307,7 +306,7 @@ class ViewCanvas(QWidget):
         Sets the background of this canvas widget
         """
         pal = QPalette()
-        pal.setColor(QPalette.Background, self.config.get('colors', 'room_bg'))
+        pal.setColor(QPalette.Background, AssetManager.getInstance().config('colors', 'room_bg'))
         self.setPalette(pal)
 
     def remove_tile(self, desk_id):
@@ -426,7 +425,7 @@ class ViewCanvas(QWidget):
         """
         painter = QPainter(self)
         pen = QPen()
-        pen.setColor(QColor(self.config.get('colors', 'room_grid')))
+        pen.setColor(QColor(AssetManager.getInstance().config('colors', 'room_grid')))
         pen.setWidth(2)
         painter.setPen(pen)
 
@@ -440,7 +439,7 @@ class ViewCanvas(QWidget):
                              QPoint(c * self.square_size, self.square_size * self.nb_rows))
 
         # Update painter color and font size for tiles
-        pen.setColor(QColor(self.config.get('colors', 'tile_text')))
+        pen.setColor(QColor(AssetManager.getInstance().config('colors', 'tile_text')))
         painter.setPen(pen)
 
         font = QFont()
@@ -456,13 +455,13 @@ class ViewCanvas(QWidget):
             y, x = self.__relative_mouse_position(t.real_position())
             if self.__relative_grid_position(t.grid_position()) == self.__click_pos:  # If the tile is selected
                 tile_selected = t
-                color = QColor(self.config.get('colors', 'drag_selected_tile'))
+                color = QColor(AssetManager.getInstance().config('colors', 'drag_selected_tile'))
             elif self.__relative_grid_position(t.grid_position()) == tile_selected_pos:  # If the mouse is hover
-                color = QColor(self.config.get('colors', 'hovered_tile'))
+                color = QColor(AssetManager.getInstance().config('colors', 'hovered_tile'))
             elif t.is_selected():
-                color = QColor(self.config.get('colors', 'selected_tile'))
+                color = QColor(AssetManager.getInstance().config('colors', 'selected_tile'))
             else:  # Regular tile
-                color = QColor(self.config.get('colors', 'tile'))
+                color = QColor(AssetManager.getInstance().config('colors', 'tile'))
             rect = self.__get_rect_at(y, x)
             painter.fillRect(rect, color)
             painter.drawText(rect, Qt.AlignCenter | Qt.TextWordWrap, f"{t.lastname()}\n{t.firstname()}")
@@ -484,7 +483,7 @@ class ViewCanvas(QWidget):
         """
         rect = QRect(QPoint(PADDING + y, PADDING + x),
                      QPoint(y + self.square_size - PADDING, x + self.square_size - PADDING))
-        painter.fillRect(rect, QColor(self.config.get('colors', 'dragged_tile')))
+        painter.fillRect(rect, QColor(AssetManager.getInstance().config('colors', 'dragged_tile')))
         painter.drawText(rect, Qt.AlignCenter | Qt.TextWordWrap, f"{tile.lastname()}\n{tile.firstname()}")
 
     def get_selected_tiles(self):

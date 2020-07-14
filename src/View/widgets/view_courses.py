@@ -6,24 +6,22 @@ from src.View.widgets.view_table import CustomTableModel, CustomTableView
 
 class ViewCoursePanel(QWidget):
 
-    def __init__(self, config, width):
+    def __init__(self, width):
         """
         Side panel dedicated to courses
 
-        :param config: application's parsed configuration
         :param width: table default width
         :type width: int
         """
         QWidget.__init__(self)
 
-        self.config = config
         self.default_width = width
 
         # Table
         self.tableview = CustomTableView()
 
         # Toolbar
-        self.courses_toolbar = ViewCourseListToolbar(config)
+        self.courses_toolbar = ViewCourseListToolbar()
         self.courses_toolbar.add_widget.get_prefix = self.get_new_course_prefix
 
         # DataModel and additional info

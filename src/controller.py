@@ -1,5 +1,4 @@
 import sqlite3
-import platform
 
 from PySide2.QtCore import QObject, Signal, Slot, QTimer
 
@@ -9,7 +8,10 @@ from src.View.widgets.view_menubutton import ViewMenuButton
 from src.View.popup.view_import_csv import DialogImportCsv
 from src.Model.import_csv import import_csv, process_line
 
+from src.assets_manager import AssetManager
+
 from random import shuffle
+
 
 class Controller(QObject):
     # Constants
@@ -35,15 +37,11 @@ class Controller(QObject):
 
     sig_create_grp_std = Signal(str)
 
-    def __init__(self, config):
+    def __init__(self):
         """
         Application main controller.
-
-        :param config: application's parsed configuration
         """
         QObject.__init__(self)
-
-        self.config = config
 
         self.actions_table = {  # Action buttons
                                 "import_csv": self.import_pronote,
@@ -65,7 +63,7 @@ class Controller(QObject):
         self.mod_bdd = ModBdd(self.__bdd)
 
         # Create the Views
-        self.gui = ViewMainFrame(self.sig_quit, self.config)
+        self.gui = ViewMainFrame(self.sig_quit)
         self.v_canvas = self.gui.central_widget.v_canvas
         # Plugs the signals
         self.gui.central_widget.sig_add_tile = self.sig_add_tile
@@ -130,8 +128,8 @@ class Controller(QObject):
         """Moves a desk from start to end
         if end is out of the screen, we remove the desk"""
 
-        max_row = int(self.config.get("size", "default_room_rows"))
-        max_col = int(self.config.get("size", "default_room_columns"))
+        max_row = int(AssetManager.getInstance().config("size", "default_room_rows"))
+        max_col = int(AssetManager.getInstance().config("size", "default_room_columns"))
         if len(start) == 0:
             return
 
@@ -267,8 +265,8 @@ class Controller(QObject):
 
     def auto_place(self):
         """Autoplacement of students on the free tiles"""
-        maxRow = int(self.config.get("size", "default_room_rows"))
-        maxCol = int(self.config.get("size", "default_room_columns"))
+        maxRow = int(AssetManager.getInstance().config("size", "default_room_rows"))
+        maxCol = int(AssetManager.getInstance().config("size", "default_room_columns"))
         group_name = self.mod_bdd.get_group_name_by_id(self.id_group)
         list_idstd = self.gui.sidewidget.students().selected_students()
         if list_idstd == []:
@@ -374,7 +372,7 @@ class Controller(QObject):
             if name_group == "Nouveau Groupe":
                 f = file_path.split("/")[-1].upper()
                 name_group = f[0:f.index(".CSV")]
-            csv_sep = self.config.get("main", "csv_separator")
+            csv_sep = AssetManager.getInstance().config("main", "csv_separator")
             names = import_csv(file_path, csv_sep)
             id_group = self.mod_bdd.create_group(name_group)
             order = 0
@@ -498,8 +496,8 @@ class Controller(QObject):
 
     def sort_desks(self):
         self.gui.status_bar.showMessage("Tri d'après les places", 3000)
-        maxRow = int(self.config.get("size", "default_room_rows"))
-        maxCol = int(self.config.get("size", "default_room_columns"))
+        maxRow = int(AssetManager.getInstance().config("size", "default_room_rows"))
+        maxCol = int(AssetManager.getInstance().config("size", "default_room_columns"))
         group_name = self.mod_bdd.get_group_name_by_id(self.id_group)
 
         sortlist = []

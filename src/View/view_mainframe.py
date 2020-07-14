@@ -15,22 +15,20 @@ class CentralWidget(QWidget):
 
     sig_move_animation_ended = Signal()
 
-    def __init__(self, config, status_message):
+    def __init__(self, status_message):
         """
         Application's central widget, contains all the app's widgets.
 
-        :param config: application's parsed configuration
         :param status_message: Status bar function to call to display a message
         """
         QWidget.__init__(self)
 
-        self.config = config
         self.status_message = status_message
 
-        self.v_canvas = ViewCanvas(config, self.sig_move_animation_ended)  # Central canvas
+        self.v_canvas = ViewCanvas(self.sig_move_animation_ended)  # Central canvas
 
-        self.view_students = ViewTeacherDeskLabel("Vue élève", config.get('colors', 'board_bg'))
-        self.view_teacher = ViewTeacherDeskLabel("Vue prof", config.get('colors', 'board_bg'))
+        self.view_students = ViewTeacherDeskLabel("Vue élève", AssetManager.getInstance().config('colors', 'board_bg'))
+        self.view_teacher = ViewTeacherDeskLabel("Vue prof", AssetManager.getInstance().config('colors', 'board_bg'))
         self.is_view_students: bool = None  # Current view
 
         self.topic = ViewTopics()
@@ -95,15 +93,13 @@ class CentralWidget(QWidget):
 
 class SideDockWidget(QDockWidget):
 
-    def __init__(self, config):
+    def __init__(self):
         """
         Dockable widget containing the Side Panel
-
-        :param config: application's parsed configuration
         """
         QDockWidget.__init__(self)
 
-        self.sidepanel = ViewSidePanel(config)
+        self.sidepanel = ViewSidePanel()
 
         self.setWidget(self.sidepanel)
         self.setAllowedAreas(Qt.LeftDockWidgetArea)
@@ -133,21 +129,22 @@ class SideDockWidget(QDockWidget):
 
 class ViewMainFrame(QMainWindow):
 
-    def __init__(self, sig_quit, config):
+    def __init__(self, sig_quit):
         """
         Main application's frame
 
         :param sig_quit: signal to trigger when the application closes
-        :param config: application's parsed configuration
         """
         QMainWindow.__init__(self)
+
+        self.setWindowTitle(f"Salle de Classe | {AssetManager.getInstance().config('main', 'version')}")
 
         # Widgets
         self.status_bar = QStatusBar()
         self.status_bar.setStyleSheet("QStatusBar {background: lightgrey; color: black;}")
-        self.maintoolbar = ViewMainToolBar(config)
-        self.central_widget = CentralWidget(config, self.status_bar.showMessage)
-        self.sidewidget = SideDockWidget(config)
+        self.maintoolbar = ViewMainToolBar()
+        self.central_widget = CentralWidget(self.status_bar.showMessage)
+        self.sidewidget = SideDockWidget()
 
         self.sidewidget.dockLocationChanged.connect(self.on_side_widget_docked_state_changed)
 
@@ -161,7 +158,7 @@ class ViewMainFrame(QMainWindow):
 
         self.sig_quit = sig_quit
 
-        self.setStyleSheet("QMainWindow {" + f"background-color: {config.get('colors', 'main_bg')};" + "}")
+        self.setStyleSheet("QMainWindow {" + f"background-color: {AssetManager.getInstance().config('colors', 'main_bg')};" + "}")
 
     def __init_callbacks(self):
         """

@@ -10,15 +10,13 @@ from src.assets_manager import get_icon, get_stylesheet
 
 class ViewSidePanel(QTabWidget):
 
-    def __init__(self, config):
+    def __init__(self):
         """
         Application side panel. Contains room, groups and skills lists.
 
         :param config: application's parsed configuration
         """
         QTabWidget.__init__(self)
-
-        self.config = config
 
         self.setMinimumSize(QSize(300, 500))
 
@@ -28,9 +26,9 @@ class ViewSidePanel(QTabWidget):
         self.tabBar().setIconSize(QSize(46, 46))
 
         # widgets
-        self.courses_panel = ViewCoursePanel(config, self.minimumWidth())
-        self.students_panel = ViewStudentPanel(config)
-        self.attributes_panel = ViewAttributePanel(config)
+        self.courses_panel = ViewCoursePanel(self.minimumWidth())
+        self.students_panel = ViewStudentPanel()
+        self.attributes_panel = ViewAttributePanel()
 
         # Tabs
         self.addTab(self.courses_panel, get_icon("classroom"), "")

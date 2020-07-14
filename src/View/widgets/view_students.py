@@ -7,20 +7,16 @@ from src.View.widgets.view_table import CustomTableModel, CustomTableView
 
 class ViewStudentPanel(QWidget):
 
-    def __init__(self, config):
+    def __init__(self):
         """
         Side panel dedicated to students
-
-        :param config: application's parsed configuration
         """
         QWidget.__init__(self)
-
-        self.config = config
 
         # Widgets
         self.tableview = CustomTableView(False)
         self.tableview.doubleClicked.connect(self.__on_double_clicked)
-        self.students_toolbar = ViewStudentListToolbar(config)
+        self.students_toolbar = ViewStudentListToolbar()
 
         # DataModel and additional info
         self.datamodel: CustomTableModel = None  # TableView datamodel

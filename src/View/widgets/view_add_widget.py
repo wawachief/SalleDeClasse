@@ -7,16 +7,12 @@ from src.assets_manager import get_icon
 
 class ViewAddWidget(QWidget):
 
-    def __init__(self, config):
+    def __init__(self):
         """
         Widget proposing an add button, with a text entry that will appear only when the add button is pressed.
         A new click on the add button will cancel the action, and a press on <Enter> will validate.
-
-        :param config: application's parsed configuration
         """
         QWidget.__init__(self)
-
-        self.config = config
 
         self.setFixedSize(QSize(150, 50))
 
