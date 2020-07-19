@@ -169,6 +169,7 @@ class ViewAddAttributeWidget(QWidget):
         """
         Widget proposing an add button, with a text entry that will appear only when the add button is pressed. The
         attribute type selection combo will also appear next to it.
+        We also display a remove button, that will be shown only when the other fields are not.
 
         A new click on the add button (or an <Escape> press) will cancel the action, and a press on <Enter> will
         validate.
@@ -194,6 +195,9 @@ class ViewAddAttributeWidget(QWidget):
         self.combo.addItems(list(self.attr_types_dico.keys()))
         self.combo.setVisible(False)
 
+        self.delete_button = QPushButton("-")
+        self.delete_button.setEnabled(False)
+
         # Current state
         self.is_creating = False
 
@@ -207,20 +211,21 @@ class ViewAddAttributeWidget(QWidget):
         self.__init_layout()
         self.__init_style()
 
-    def __init_style(self):
+    def __init_style(self) -> None:
         self.add_btn.setStyleSheet("border: none;")
 
-    def __init_layout(self):
+    def __init_layout(self) -> None:
         layout = QHBoxLayout()
         layout.setMargin(0)
 
         layout.addWidget(self.add_btn, alignment=Qt.AlignLeft)
         layout.addWidget(self.field, alignment=Qt.AlignLeft)
         layout.addWidget(self.combo, alignment=Qt.AlignLeft)
+        layout.addWidget(self.delete_button, alignment=Qt.AlignRight)
 
         self.setLayout(layout)
 
-    def __on_add_pressed(self):
+    def __on_add_pressed(self) -> None:
         """
         Performs the action associated to the add button, given the current state
         """
@@ -230,6 +235,7 @@ class ViewAddAttributeWidget(QWidget):
             self.add_btn.setIcon(get_icon("close"))
             self.add_btn.setToolTip("Annuler")
 
+            self.delete_button.setVisible(False)
             self.field.setVisible(True)
             self.field.setFocus()
             self.combo.setVisible(True)
@@ -240,8 +246,17 @@ class ViewAddAttributeWidget(QWidget):
 
             self.field.setVisible(False)
             self.combo.setVisible(False)
+            self.delete_button.setVisible(True)
 
-    def __on_field_enter(self):
+    def enable_delete_btn(self, do_enable: bool):
+        """
+        Enables or disables the delete button
+
+        :param do_enable: True to enable
+        """
+        self.delete_button.setEnabled(do_enable)
+
+    def __on_field_enter(self) -> None:
         """
         Triggered when Enter key is pressed on the name field. Emits the creation signal then hides the field.
         """

@@ -64,7 +64,10 @@ class ViewAttributePanel(QWidget):
             data_list.append(data)
 
         self.datamodel = CustomTableModel(self.tableview, data_list, ("Nom", "Type"))
-
+        self.tableview.selectionModel().selectionChanged.connect(
+            lambda: self.attributes_toolbar.add_widget.enable_delete_btn(
+                len(self.tableview.selectionModel().selectedRows()) > 0))
+        
         self.repaint()
 
     def selected_attributes(self) -> list:
