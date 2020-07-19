@@ -79,6 +79,9 @@ class ViewCoursePanel(QWidget):
                 selection = len(data_list) - 1
 
         self.datamodel = CustomTableModel(self.tableview, data_list, ("Cours", "Discipline"))
+        self.tableview.selectionModel().selectionChanged.connect(
+            lambda: self.courses_toolbar.enable_delete_btn(len(self.tableview.selectionModel().selectedRows()) > 0))
+
         self.tableview.setCurrentIndex(self.datamodel.index(selection, 0))
         self.current_selection = selected_id
 

@@ -29,9 +29,9 @@ class ViewAttributePanel(QWidget):
 
     def resizeEvent(self, event):
         """
-        Always keep a half ratio for the first column size
+        Always keep a 2/3 ratio for the first column size
         """
-        self.tableview.setColumnWidth(0, int(self.width()/2))
+        self.tableview.setColumnWidth(0, int(self.width()*.66))
 
     def __set_layout(self) -> None:
         """
@@ -67,7 +67,7 @@ class ViewAttributePanel(QWidget):
         self.tableview.selectionModel().selectionChanged.connect(
             lambda: self.attributes_toolbar.add_widget.enable_delete_btn(
                 len(self.tableview.selectionModel().selectedRows()) > 0))
-        
+
         self.repaint()
 
     def selected_attributes(self) -> list:

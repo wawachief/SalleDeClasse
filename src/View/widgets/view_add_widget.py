@@ -9,10 +9,12 @@ from src.enumerates import EAttributesTypes
 
 class ViewAddWidget(QWidget):
 
-    def __init__(self):
+    def __init__(self, btn_to_disable: QPushButton):
         """
         Widget proposing an add button, with a text entry that will appear only when the add button is pressed.
         A new click on the add button will cancel the action, and a press on <Enter> will validate.
+
+        :param btn_to_disable: button to disable when the creation field is shown
         """
         QWidget.__init__(self)
 
@@ -28,6 +30,7 @@ class ViewAddWidget(QWidget):
 
         # Current state
         self.is_creating = False
+        self.btn_to_disable = btn_to_disable
 
         # Signals
         self.add_btn.clicked.connect(self.__on_add_pressed)
@@ -56,6 +59,7 @@ class ViewAddWidget(QWidget):
         Performs the action associated to the add button, given the current state
         """
         self.is_creating = not self.is_creating
+        self.btn_to_disable.setEnabled(not self.is_creating)
 
         if self.is_creating:
             self.add_btn.setIcon(get_icon("close"))
@@ -176,7 +180,7 @@ class ViewAddAttributeWidget(QWidget):
         """
         QWidget.__init__(self)
 
-        self.setFixedSize(QSize(250, 50))
+        self.setFixedSize(QSize(290, 50))
 
         self.attr_types_dico = {}
         for attr_type in [t.value for t in EAttributesTypes]:
@@ -191,28 +195,40 @@ class ViewAddAttributeWidget(QWidget):
         self.field.setVisible(False)
 
         self.combo = QComboBox()
-        self.combo.setFixedWidth(100)
+        self.combo.setFixedWidth(105)
         self.combo.addItems(list(self.attr_types_dico.keys()))
         self.combo.setVisible(False)
 
-        self.delete_button = QPushButton("-")
-        self.delete_button.setEnabled(False)
+        self.ok_btn = QPushButton()
+        self.ok_btn.setIcon(get_icon("valid"))
+        self.ok_btn.setIconSize(QSize(25, 25))
+        self.ok_btn.setToolTip("Créer")
+        self.ok_btn.setVisible(False)
+        self.ok_btn.clicked.connect(self.__on_field_enter)
+
+        self.delete_btn = QPushButton()
+        self.delete_btn.setIcon(get_icon("del"))
+        self.delete_btn.setIconSize(QSize(35, 35))
+        self.delete_btn.setToolTip("Supprimer")
+        self.delete_btn.setEnabled(False)
 
         # Current state
         self.is_creating = False
 
         # Signals
-        self.add_btn.clicked.connect(self.__on_add_pressed)
+        self.add_btn.clicked.connect(self.__on_field_enter)
         self.sig_new_element = None  # Signal emitted when a new element is created
+        self.sig_delete = None  # Signal emitted when the delete button is clicked
         self.field.returnPressed.connect(self.__on_field_enter)
         QShortcut(QKeySequence("Escape"), self.field).activated.connect(lambda: self.__on_add_pressed())  # Cancel
+        self.delete_btn.clicked.connect(lambda: self.sig_delete.emit())
 
         # Layout
         self.__init_layout()
         self.__init_style()
 
     def __init_style(self) -> None:
-        self.add_btn.setStyleSheet("border: none;")
+        self.setStyleSheet("QPushButton { border: none; }")
 
     def __init_layout(self) -> None:
         layout = QHBoxLayout()
@@ -221,7 +237,8 @@ class ViewAddAttributeWidget(QWidget):
         layout.addWidget(self.add_btn, alignment=Qt.AlignLeft)
         layout.addWidget(self.field, alignment=Qt.AlignLeft)
         layout.addWidget(self.combo, alignment=Qt.AlignLeft)
-        layout.addWidget(self.delete_button, alignment=Qt.AlignRight)
+        layout.addWidget(self.ok_btn, alignment=Qt.AlignRight)
+        layout.addWidget(self.delete_btn, alignment=Qt.AlignRight)
 
         self.setLayout(layout)
 
@@ -235,10 +252,11 @@ class ViewAddAttributeWidget(QWidget):
             self.add_btn.setIcon(get_icon("close"))
             self.add_btn.setToolTip("Annuler")
 
-            self.delete_button.setVisible(False)
+            self.delete_btn.setVisible(False)
             self.field.setVisible(True)
             self.field.setFocus()
             self.combo.setVisible(True)
+            self.ok_btn.setVisible(True)
         else:
             self.field.clear()
             self.add_btn.setIcon(get_icon("add"))
@@ -246,7 +264,8 @@ class ViewAddAttributeWidget(QWidget):
 
             self.field.setVisible(False)
             self.combo.setVisible(False)
-            self.delete_button.setVisible(True)
+            self.ok_btn.setVisible(False)
+            self.delete_btn.setVisible(True)
 
     def enable_delete_btn(self, do_enable: bool):
         """
@@ -254,7 +273,7 @@ class ViewAddAttributeWidget(QWidget):
 
         :param do_enable: True to enable
         """
-        self.delete_button.setEnabled(do_enable)
+        self.delete_btn.setEnabled(do_enable)
 
     def __on_field_enter(self) -> None:
         """

@@ -1,4 +1,4 @@
-from PySide2.QtWidgets import QToolBar, QPushButton, QComboBox
+from PySide2.QtWidgets import QToolBar, QPushButton, QComboBox, QWidget, QSizePolicy
 from PySide2.QtCore import Signal, Slot, QSize
 
 from src.assets_manager import get_icon, get_stylesheet
@@ -27,7 +27,7 @@ class ViewMainToolBar(QToolBar):
         self.__btn_perspective = ToolBarButton("teacher", "Changer de perspective", self.on_btn_perspective_clicked)
         self.__btn_shuffle = ToolBarButton("shuffle", "Mélanger", self.on_btn_shuffle_clicked)
         self.__btn_select = ToolBarButton("selection", "Sélectionner", lambda: self.sig_TBbutton.emit("select"))
-        self.__btn_choice = ToolBarButton("choixvolontaire", "Effacer", lambda: self.sig_TBbutton.emit("choix"))
+        self.__btn_choice = ToolBarButton("choixvolontaire", "Choisir un élève", lambda: self.sig_TBbutton.emit("choix"))
         self.__btn_delete = ToolBarButton("corbeille", "Effacer", lambda: self.sig_TBbutton.emit("delete"))
 
         self.actions_table = {self.__btn_magic: None, self.__btn_perspective: None, self.__btn_shuffle: None,
@@ -92,18 +92,45 @@ class ViewCourseListToolbar(QToolBar):
         """
         QToolBar.__init__(self)
 
-        self.add_widget = ViewAddWidget()
+        # Widgets
+        self.delete_btn = QPushButton()
+        self.delete_btn.setIcon(get_icon("del"))
+        self.delete_btn.setIconSize(QSize(35, 35))
+        self.delete_btn.setToolTip("Supprimer")
+        self.delete_btn.setEnabled(False)
 
+        self.add_widget = ViewAddWidget(self.delete_btn)
+
+        self.sig_delete: Signal = None
+        self.delete_btn.clicked.connect(lambda: self.sig_delete.emit())
+
+        # Layout
         self.addWidget(self.add_widget)
+        # Empty space to align the about button to the right
+        spacer = QWidget()
+        spacer.setStyleSheet("background-color: transparent;")
+        spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.addWidget(spacer)
+
+        self.addWidget(self.delete_btn)
 
         self.__set_style()
 
-    def __set_style(self):
+    def __set_style(self) -> None:
         """
         Inits the stylesheet of this widget
         """
         # Toolbar
         self.setStyleSheet(get_stylesheet("toolbar"))
+        self.delete_btn.setStyleSheet("border: none;")
+
+    def enable_delete_btn(self, do_enable: bool) -> None:
+        """
+        Enables or disables the delete button
+
+        :param do_enable: True to enable
+        """
+        self.delete_btn.setEnabled(do_enable)
 
 
 class ViewStudentListToolbar(QToolBar):

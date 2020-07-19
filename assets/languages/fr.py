@@ -33,6 +33,6 @@ dico = {"perspective_student_txt": "Vue élève",
 
         "attr_color": "Couleur",
         "attr_counter": "Compteur",
-        "attr_txt": "Text",
+        "attr_txt": "Texte",
         "attr_mark": "Note"
 }

@@ -38,6 +38,8 @@ class Controller(QObject):
     sig_create_grp_std = Signal(str)
 
     sig_create_attribute = Signal(str, str)
+    sig_delete_attributes = Signal()
+    sig_delete_course = Signal()
 
     def __init__(self):
         """
@@ -81,6 +83,8 @@ class Controller(QObject):
         self.gui.maintoolbar.sig_TBbutton = self.sig_TBbutton
         self.gui.sidewidget.students().students_toolbar.create_field.sig_create = self.sig_create_grp_std
         self.gui.sidewidget.attributes().attributes_toolbar.add_widget.sig_new_element = self.sig_create_attribute
+        self.gui.sidewidget.attributes().attributes_toolbar.add_widget.sig_delete = self.sig_delete_attributes
+        self.gui.sidewidget.courses().courses_toolbar.sig_delete = self.sig_delete_course
 
         # Signals connection
         self.sig_add_tile.connect(self.test_buttton)
@@ -96,6 +100,8 @@ class Controller(QObject):
         self.sig_TBbutton.connect(self.action_triggered)
         self.sig_create_grp_std.connect(self.on_create_grp_std)
         self.sig_create_attribute.connect(self.on_create_attr)
+        self.sig_delete_attributes.connect(self.on_delete_attributes)
+        self.sig_delete_course.connect(self.on_delete_course)
 
         # properties
         self.id_course = 0
@@ -535,10 +541,23 @@ class Controller(QObject):
 
         self.show_all_attributes()
 
-        
     def show_all_attributes(self):
         """Initializes the contents of the attributes list"""
 
         list_attr = self.mod_bdd.get_all_attributes()
         # self.gui.sidewidget.attributes().set_attributes_list([(1, attr_name, attr_type), (2, "toto", "attr_txt"), (3, "tata", "attr_txt")])
         self.gui.sidewidget.attributes().set_attributes_list(list_attr)
+
+    @Slot()
+    def on_delete_attributes(self) -> None:
+        """
+        Deletes all the selected attribtues
+        """
+        print("Attributes IDs to delete:", self.gui.sidewidget.attributes().selected_attributes())  # TODO
+
+    @Slot()
+    def on_delete_course(self) -> None:
+        """
+        Deletes the selected course
+        """
+        print("delete current course")  # TODO
