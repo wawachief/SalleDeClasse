@@ -29,6 +29,10 @@ dico = {"perspective_student_txt": "Student perspective",
         "btn_delete": "Delete",
 
         "status_bar_active_view_teacher": "Teacher perspective",
-        "status_bar_active_view_student": "Student perspective"
+        "status_bar_active_view_student": "Student perspective",
 
+        "attr_color": "Color",
+        "attr_counter": "Counter",
+        "attr_txt": "Text",
+        "attr_mark": "Mark"
         }

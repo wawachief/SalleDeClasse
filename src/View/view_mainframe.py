@@ -1,4 +1,4 @@
-from PySide2.QtWidgets import QMainWindow, QWidget, QDockWidget, QGridLayout, QStatusBar, QLabel
+from PySide2.QtWidgets import QMainWindow, QWidget, QDockWidget, QGridLayout, QStatusBar, QTabWidget
 from PySide2.QtCore import Qt, Signal
 
 from src.View.view_canvas import ViewCanvas
@@ -7,31 +7,34 @@ from src.View.widgets.view_board import ViewTeacherDeskLabel, ViewTopics
 from src.View.widgets.view_toolbar import ViewMainToolBar
 from src.View.widgets.view_courses import ViewCoursePanel
 from src.View.widgets.view_students import ViewStudentPanel
-from src.View.widgets.view_attributes import ViewAttributePanel
+from src.View.widgets.view_attributes_list import ViewAttributePanel
+from src.View.view_attributes_tab import AttributesTab
 from src.assets_manager import AssetManager
 
 
-class CentralWidget(QWidget):
+class CentralWidget(QTabWidget):
 
     sig_move_animation_ended = Signal()
 
-    def __init__(self, status_message):
+    def __init__(self, status_message, active_tab_changed):
         """
         Application's central widget, contains all the app's widgets.
 
         :param status_message: Status bar function to call to display a message
+        :param active_tab_changed: Method to call when the tab changed, in order to update the content of the toolbar.
+        Call with True if the new active tab is the classroom's one.
         """
-        QWidget.__init__(self)
+        QTabWidget.__init__(self)
 
+        # Init
         self.status_message = status_message
-
-        self.v_canvas = ViewCanvas(self.sig_move_animation_ended)  # Central canvas
-
-        self.view_students = ViewTeacherDeskLabel("Vue élève", AssetManager.getInstance().config('colors', 'board_bg'))
-        self.view_teacher = ViewTeacherDeskLabel("Vue prof", AssetManager.getInstance().config('colors', 'board_bg'))
         self.is_view_students: bool = None  # Current view
+        self.setTabPosition(QTabWidget.South)
+        self.setTabsClosable(False)
 
-        self.topic = ViewTopics()
+        # Widgets
+        self.classroom_tab = ClassRoomTab(self.sig_move_animation_ended)
+        self.attributes_tab = AttributesTab()
 
         # Signals
         self.sig_add_tile = None
@@ -39,6 +42,7 @@ class CentralWidget(QWidget):
         self.sig_enable_animation_btns = None
         # When the move animation ends, we can re-activate the buttons
         self.sig_move_animation_ended.connect(lambda: self.sig_enable_animation_btns.emit(True))
+        self.currentChanged.connect(lambda: active_tab_changed(self.currentIndex() == 0))
 
         self.__set_layout()
         self.on_perspective_changed()  # This will switch the is_view_student flag and display the students' view
@@ -47,7 +51,62 @@ class CentralWidget(QWidget):
         """
         Initializes the layout of this widget
         """
+        self.addTab(self.classroom_tab, "Plan de classe")
+        self.addTab(self.attributes_tab, "Attributs")
+
+    def on_perspective_changed(self):
+        """
+        Switches the current view perspective and updates boards display and canvas
+        """
+        if self.is_view_students is None:  # To prevent updating the canvas for the initialization
+            self.is_view_students = True
+        else:
+            self.sig_enable_animation_btns.emit(False)  # Freeze btn for preventing multiple clicks
+            self.is_view_students = not self.is_view_students
+            self.classroom_tab.v_canvas.perspective_changed()
+
+        if self.is_view_students:
+            self.classroom_tab.view_students.set_label_visible(True)
+            self.classroom_tab.view_teacher.set_label_visible(False)
+            self.status_message(AssetManager.getInstance().get_text("status_bar_active_view_student"), 3000)
+        else:
+            self.classroom_tab.view_students.set_label_visible(False)
+            self.classroom_tab.view_teacher.set_label_visible(True)
+            self.status_message(AssetManager.getInstance().get_text("status_bar_active_view_teacher"), 3000)
+
+    def do_magic(self):
+        self.sig_add_tile.emit()
+
+    def do_shuffle(self):
+        self.sig_enable_animation_btns.emit(False)
+        self.sig_shuffle.emit()
+
+
+class ClassRoomTab(QWidget):
+
+    def __init__(self, sig_move_animation_ended):
+        """
+        Widget containing the main canvas (classroom), the board's position and topic selection.
+
+        :param sig_move_animation_ended: Signal to trigger when the move animation ended
+        """
+        QWidget.__init__(self)
+
+        # Widgets
+        self.v_canvas = ViewCanvas(sig_move_animation_ended)  # Central canvas
+        self.view_students = ViewTeacherDeskLabel("Vue élève", AssetManager.getInstance().config('colors', 'board_bg'))
+        self.view_teacher = ViewTeacherDeskLabel("Vue prof", AssetManager.getInstance().config('colors', 'board_bg'))
+        self.topic = ViewTopics()
+
+        # Layout
+        self.__set_layout()
+
+    def __set_layout(self):
+        """
+        Initializes the layout of this widget
+        """
         layout = QGridLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
 
         # Widgets
         layout.addWidget(self.topic, 0, 0)
@@ -62,33 +121,6 @@ class CentralWidget(QWidget):
         layout.setAlignment(self.view_teacher, Qt.AlignCenter)
 
         self.setLayout(layout)
-
-    def on_perspective_changed(self):
-        """
-        Switches the current view perspective and updates boards display and canvas
-        """
-        if self.is_view_students is None:  # To prevent updating the canvas for the initialization
-            self.is_view_students = True
-        else:
-            self.sig_enable_animation_btns.emit(False)  # Freeze btn for preventing multiple clicks
-            self.is_view_students = not self.is_view_students
-            self.v_canvas.perspective_changed()
-
-        if self.is_view_students:
-            self.view_students.set_label_visible(True)
-            self.view_teacher.set_label_visible(False)
-            self.status_message(AssetManager.getInstance().get_text("status_bar_active_view_student"), 3000)
-        else:
-            self.view_students.set_label_visible(False)
-            self.view_teacher.set_label_visible(True)
-            self.status_message(AssetManager.getInstance().get_text("status_bar_active_view_teacher"), 3000)
-
-    def do_magic(self):
-        self.sig_add_tile.emit()
-
-    def do_shuffle(self):
-        self.sig_enable_animation_btns.emit(False)
-        self.sig_shuffle.emit()
 
 
 class SideDockWidget(QDockWidget):
@@ -143,7 +175,7 @@ class ViewMainFrame(QMainWindow):
         self.status_bar = QStatusBar()
         self.status_bar.setStyleSheet("QStatusBar {background: lightgrey; color: black;}")
         self.maintoolbar = ViewMainToolBar()
-        self.central_widget = CentralWidget(self.status_bar.showMessage)
+        self.central_widget = CentralWidget(self.status_bar.showMessage, self.maintoolbar.set_widgets)
         self.sidewidget = SideDockWidget()
 
         self.sidewidget.dockLocationChanged.connect(self.on_side_widget_docked_state_changed)

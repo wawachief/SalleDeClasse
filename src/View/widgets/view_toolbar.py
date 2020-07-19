@@ -1,8 +1,8 @@
-from PySide2.QtWidgets import QToolBar, QPushButton, QComboBox, QLineEdit
+from PySide2.QtWidgets import QToolBar, QPushButton, QComboBox
 from PySide2.QtCore import Signal, Slot, QSize
 
 from src.assets_manager import get_icon, get_stylesheet
-from src.View.widgets.view_add_widget import ViewAddWidget, ViewAddLine
+from src.View.widgets.view_add_widget import ViewAddWidget, ViewAddLine, ViewAddAttributeWidget
 from src.View.widgets.view_menubutton import ViewMenuButton
 
 BUTTON_SIZE = QSize(60, 60)
@@ -23,29 +23,42 @@ class ViewMainToolBar(QToolBar):
         self.sig_TBbutton = None
 
         # Buttons
-        self.__btn_magic = ToolBarButton("unkwown", "Abracadabra !", lambda: self.sig_TBbutton.emit("magic"))  # Debug btn
+        self.__btn_magic = ToolBarButton("unkwown", "Abracadabra !", lambda: self.sig_TBbutton.emit("magic"))
         self.__btn_perspective = ToolBarButton("teacher", "Changer de perspective", self.on_btn_perspective_clicked)
         self.__btn_shuffle = ToolBarButton("shuffle", "Mélanger", self.on_btn_shuffle_clicked)
         self.__btn_select = ToolBarButton("selection", "Sélectionner", lambda: self.sig_TBbutton.emit("select"))
-        self.__btn_delete = ToolBarButton("choixvolontaire", "Effacer", lambda: self.sig_TBbutton.emit("choix"))
+        self.__btn_choice = ToolBarButton("choixvolontaire", "Effacer", lambda: self.sig_TBbutton.emit("choix"))
         self.__btn_delete = ToolBarButton("corbeille", "Effacer", lambda: self.sig_TBbutton.emit("delete"))
+
+        self.actions_table = {self.__btn_magic: None, self.__btn_perspective: None, self.__btn_shuffle: None,
+                              self.__btn_select: None, self.__btn_choice: None, self.__btn_delete: None}
 
         # Signals
         self.sig_enable_animation_btns.connect(self.enable_animation_btns)
 
-        # Layout
-        self.__set_widgets()
+        self.__init_widgets()
         self.__set_style()
 
-    def __set_widgets(self):
+    def __init_widgets(self) -> None:
         """
         Adds the widgets to this toolbar
+        :return:
         """
-        self.addWidget(self.__btn_magic)
-        self.addWidget(self.__btn_perspective)
-        self.addWidget(self.__btn_shuffle)
-        self.addWidget(self.__btn_select)
-        self.addWidget(self.__btn_delete)
+        for btn in self.actions_table:
+            self.actions_table[btn] = self.addWidget(btn)
+
+    def set_widgets(self, is_view_classroom: bool) -> None:
+        """
+        Sets the visibility of widgets given the current view
+
+        :param is_view_classroom: True if the current central panel tab is the classroom's widget
+        """
+        # self.actions_table[self.__btn_magic].setVisible(is_view_classroom)
+        self.actions_table[self.__btn_perspective].setVisible(is_view_classroom)
+        self.actions_table[self.__btn_shuffle].setVisible(is_view_classroom)
+        self.actions_table[self.__btn_select].setVisible(is_view_classroom)
+        self.actions_table[self.__btn_choice].setVisible(is_view_classroom)
+        self.actions_table[self.__btn_delete].setVisible(is_view_classroom)
 
     def __set_style(self):
         """
@@ -188,6 +201,10 @@ class ViewAttributeListToolbar(QToolBar):
         Toolbar for the attributes list side panel tab
         """
         QToolBar.__init__(self)
+
+        self.add_widget = ViewAddAttributeWidget()
+
+        self.addWidget(self.add_widget)
 
         self.__set_style()
 

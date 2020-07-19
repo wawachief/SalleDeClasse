@@ -20,7 +20,6 @@ class ViewStudentPanel(QWidget):
 
         # DataModel and additional info
         self.datamodel: CustomTableModel = None  # TableView datamodel
-        self.current_selection: int = None  # Stores the selected student ID
         self.students = {}  # All the displayed students items -> {(lastname, firstname): id, ...}
 
         # layout
@@ -61,7 +60,6 @@ class ViewStudentPanel(QWidget):
         """
         self.datamodel = None
         self.students = {}
-        self.current_selection = None
         self.tableview.clearSelection()
         data_list = []
 

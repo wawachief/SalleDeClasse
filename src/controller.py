@@ -37,6 +37,8 @@ class Controller(QObject):
 
     sig_create_grp_std = Signal(str)
 
+    sig_create_attribute = Signal(str, str)
+
     def __init__(self):
         """
         Application main controller.
@@ -64,7 +66,7 @@ class Controller(QObject):
 
         # Create the Views
         self.gui = ViewMainFrame(self.sig_quit)
-        self.v_canvas = self.gui.central_widget.v_canvas
+        self.v_canvas = self.gui.central_widget.classroom_tab.v_canvas
         # Plugs the signals
         self.gui.central_widget.sig_add_tile = self.sig_add_tile
         self.gui.central_widget.sig_shuffle = self.sig_shuffle
@@ -73,11 +75,12 @@ class Controller(QObject):
         self.v_canvas.sig_canvas_drag = self.sig_canvas_drag
         self.gui.sidewidget.courses().sig_course_changed = self.sig_course_changed
         self.gui.sidewidget.courses().courses_toolbar.add_widget.sig_new_element = self.sig_create_course
-        self.gui.central_widget.topic.sig_topic_changed = self.sig_topic_changed
+        self.gui.central_widget.classroom_tab.topic.sig_topic_changed = self.sig_topic_changed
         self.gui.sidewidget.students().students_toolbar.sig_combo_changed = self.sig_student_group_changed
         ViewMenuButton.sig_action = self.sig_action_triggered
         self.gui.maintoolbar.sig_TBbutton = self.sig_TBbutton
         self.gui.sidewidget.students().students_toolbar.create_field.sig_create = self.sig_create_grp_std
+        self.gui.sidewidget.attributes().attributes_toolbar.add_widget.sig_new_element = self.sig_create_attribute
 
         # Signals connection
         self.sig_add_tile.connect(self.test_buttton)
@@ -92,6 +95,7 @@ class Controller(QObject):
         self.sig_action_triggered.connect(self.action_triggered)
         self.sig_TBbutton.connect(self.action_triggered)
         self.sig_create_grp_std.connect(self.on_create_grp_std)
+        self.sig_create_attribute.connect(self.on_create_attr)
 
         # properties
         self.id_course = 0
@@ -225,7 +229,7 @@ class Controller(QObject):
                 self.v_canvas.new_tile(d.row, d.col, d.id)
         self.v_canvas.repaint()
         # Display course's topic
-        self.gui.central_widget.topic.select_topic(topic_name)
+        self.gui.central_widget.classroom_tab.topic.select_topic(topic_name)
 
     def set_course(self, course_name):
         """Sets current course to course_name
@@ -250,15 +254,15 @@ class Controller(QObject):
         self.gui.sidewidget.courses().init_table(
             list_courses=courses, selected_id=None if self.id_course == 0 else self.id_course)
 
-        self.gui.central_widget.topic.set_topics(topic_names, topic_name)
+        self.gui.central_widget.classroom_tab.topic.set_topics(topic_names, topic_name)
         self.show_course()
 
-    def show_all_groups(self, current = 0):
+    def show_all_groups(self, current=0):
         groups = self.mod_bdd.get_groups()
         if current == 0:
             self.gui.sidewidget.students().students_toolbar.init_groups(groups)
         if groups:
-            current_group  = groups[0] if current == 0 else self.mod_bdd.get_group_name_by_id(current)
+            current_group = groups[0] if current == 0 else self.mod_bdd.get_group_name_by_id(current)
             self.on_student_group_changed(current_group)
             self.mod_bdd.get_group_id_by_name(current_group)
             self.gui.sidewidget.students().students_toolbar.current_group = current_group
@@ -515,3 +519,15 @@ class Controller(QObject):
             orderkey += 1
         self.__bdd.commit()
         self.gui.sidewidget.students().set_students_list(self.mod_bdd.get_students_in_group(group_name))
+
+    @Slot(str, str)
+    def on_create_attr(self, attr_name: str, attr_type: str) -> None:
+        """
+        Triggers when the user wants to create a new attribute
+
+        :param attr_name: Attribute's name
+        :param attr_type: Attribute's type key
+        """
+        print(attr_name, attr_type)
+
+        # TODO self.gui.sidewidget.attributes().set_attributes_list([(1, attr_name, attr_type), (2, "toto", "attr_txt"), (3, "tata", "attr_txt")])

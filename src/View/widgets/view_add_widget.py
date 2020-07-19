@@ -1,8 +1,10 @@
-from PySide2.QtWidgets import QWidget, QPushButton, QLineEdit, QHBoxLayout, QShortcut
+from PySide2.QtWidgets import QWidget, QPushButton, QLineEdit, QHBoxLayout, QShortcut, QComboBox
 from PySide2.QtCore import QSize, Qt, Signal
 from PySide2.QtGui import QKeySequence
 
-from src.assets_manager import get_icon
+from src.assets_manager import get_icon, AssetManager
+
+from src.enumerates import EAttributesTypes
 
 
 class ViewAddWidget(QWidget):
@@ -159,3 +161,92 @@ class ViewAddLine(QWidget):
             self.sig_create.emit(res)
 
         self.hide_field()
+
+
+class ViewAddAttributeWidget(QWidget):
+
+    def __init__(self):
+        """
+        Widget proposing an add button, with a text entry that will appear only when the add button is pressed. The
+        attribute type selection combo will also appear next to it.
+
+        A new click on the add button (or an <Escape> press) will cancel the action, and a press on <Enter> will
+        validate.
+        """
+        QWidget.__init__(self)
+
+        self.setFixedSize(QSize(250, 50))
+
+        self.attr_types_dico = {}
+        for attr_type in [t.value for t in EAttributesTypes]:
+            self.attr_types_dico[AssetManager.getInstance().get_text(attr_type)] = attr_type
+
+        self.add_btn = QPushButton()
+        self.add_btn.setIcon(get_icon("add"))
+        self.add_btn.setIconSize(QSize(35, 35))
+        self.add_btn.setToolTip("Créer")
+
+        self.field = QLineEdit()
+        self.field.setVisible(False)
+
+        self.combo = QComboBox()
+        self.combo.setFixedWidth(100)
+        self.combo.addItems(list(self.attr_types_dico.keys()))
+        self.combo.setVisible(False)
+
+        # Current state
+        self.is_creating = False
+
+        # Signals
+        self.add_btn.clicked.connect(self.__on_add_pressed)
+        self.sig_new_element = None  # Signal emitted when a new element is created
+        self.field.returnPressed.connect(self.__on_field_enter)
+        QShortcut(QKeySequence("Escape"), self.field).activated.connect(lambda: self.__on_add_pressed())  # Cancel
+
+        # Layout
+        self.__init_layout()
+        self.__init_style()
+
+    def __init_style(self):
+        self.add_btn.setStyleSheet("border: none;")
+
+    def __init_layout(self):
+        layout = QHBoxLayout()
+        layout.setMargin(0)
+
+        layout.addWidget(self.add_btn, alignment=Qt.AlignLeft)
+        layout.addWidget(self.field, alignment=Qt.AlignLeft)
+        layout.addWidget(self.combo, alignment=Qt.AlignLeft)
+
+        self.setLayout(layout)
+
+    def __on_add_pressed(self):
+        """
+        Performs the action associated to the add button, given the current state
+        """
+        self.is_creating = not self.is_creating
+
+        if self.is_creating:
+            self.add_btn.setIcon(get_icon("close"))
+            self.add_btn.setToolTip("Annuler")
+
+            self.field.setVisible(True)
+            self.field.setFocus()
+            self.combo.setVisible(True)
+        else:
+            self.field.clear()
+            self.add_btn.setIcon(get_icon("add"))
+            self.add_btn.setToolTip("Créer")
+
+            self.field.setVisible(False)
+            self.combo.setVisible(False)
+
+    def __on_field_enter(self):
+        """
+        Triggered when Enter key is pressed on the name field. Emits the creation signal then hides the field.
+        """
+        if self.field.text():
+            self.sig_new_element.emit(self.field.text(), self.attr_types_dico[self.combo.currentText()])
+
+        self.field.clear()
+        self.__on_add_pressed()  # Updates the state and hides the entry field

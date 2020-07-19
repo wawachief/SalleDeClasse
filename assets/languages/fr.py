@@ -29,6 +29,10 @@ dico = {"perspective_student_txt": "Vue élève",
         "btn_delete": "Effacer",
 
         "status_bar_active_view_teacher": "Vue prof active",    # View_mainframe
-        "status_bar_active_view_student": "Vue élève active"    # View_mainframe
+        "status_bar_active_view_student": "Vue élève active",    # View_mainframe
 
+        "attr_color": "Couleur",
+        "attr_counter": "Compteur",
+        "attr_txt": "Text",
+        "attr_mark": "Note"
 }

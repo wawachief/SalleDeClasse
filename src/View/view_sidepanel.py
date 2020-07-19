@@ -3,7 +3,7 @@ from PySide2.QtCore import QSize
 
 from src.View.widgets.view_courses import ViewCoursePanel
 from src.View.widgets.view_students import ViewStudentPanel
-from src.View.widgets.view_attributes import ViewAttributePanel
+from src.View.widgets.view_attributes_list import ViewAttributePanel
 
 from src.assets_manager import get_icon, get_stylesheet
 
