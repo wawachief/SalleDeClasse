@@ -280,3 +280,25 @@ class ModBdd():
     def set_topic_to_course_id(self, id_course, new_topic):
         req = "UPDATE Courses SET IdTopic = ( SELECT Topics.IdTopic FROM Topics WHERE Topics.TopicName = ? ) WHERE IdCourse = ?"
         self.__cursor.execute(req, [new_topic, id_course])
+    
+    #
+    # Attributes relative requests
+    #
+
+    def get_all_attributes(self):
+        """Returns a list of all attributes
+        format : [ (id1, attrName1, attrType1), (...), ...]"""
+
+        req = "SELECT * FROM Attributes"
+        self.__cursor.execute(req)
+        r = self.__cursor.fetchall()
+        return [] if r is None else [ (t[0], t[1], t[2]) for t in r ]
+    
+    def insert_attribute(self, attr_name, attr_type):
+        """Create a new attribute
+        return the new attribute id
+        commit must be called separately"""
+
+        req = "INSERT INTO Attributes (AttrName, AttrType) VALUES (?, ?)"
+        self.__cursor.execute(req, [attr_name, attr_type])
+        id_std = self.__cursor.lastrowid

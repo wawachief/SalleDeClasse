@@ -104,6 +104,7 @@ class Controller(QObject):
         
         self.show_all_courses()
         self.show_all_groups()
+        self.show_all_attributes()
         self.gui.update()
 
     def debug(self):
@@ -529,5 +530,15 @@ class Controller(QObject):
         :param attr_type: Attribute's type key
         """
         print(attr_name, attr_type)
+        self.mod_bdd.insert_attribute(attr_name, attr_type)
+        self.__bdd.commit()
 
-        # TODO self.gui.sidewidget.attributes().set_attributes_list([(1, attr_name, attr_type), (2, "toto", "attr_txt"), (3, "tata", "attr_txt")])
+        self.show_all_attributes()
+
+        
+    def show_all_attributes(self):
+        """Initializes the contents of the attributes list"""
+
+        list_attr = self.mod_bdd.get_all_attributes()
+        # self.gui.sidewidget.attributes().set_attributes_list([(1, attr_name, attr_type), (2, "toto", "attr_txt"), (3, "tata", "attr_txt")])
+        self.gui.sidewidget.attributes().set_attributes_list(list_attr)
