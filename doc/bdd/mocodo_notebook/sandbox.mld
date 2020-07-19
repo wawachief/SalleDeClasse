@@ -22,8 +22,6 @@ Topics: IdTopic, TopicName
 :::
 
 
-:
-Attributes: IdAttr, AttrName, #IdAttrType->AttrTypes->IdAttrType
 :::
-AttrTypes: IdAttrType, AttrTypeName
-:::::
+Attributes: IdAttr, AttrName, AttrType
+:::::::

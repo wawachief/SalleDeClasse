@@ -16,7 +16,5 @@ StdAttrs: IdStdAttr, StdAttrValue
     :
 Topics: IdTopic, TopicName
     
-Attributes: IdAttr, AttrName
-IsOfType, 1N AttrTypes, 11 Attributes
-AttrTypes: IdAttrType, AttrTypeName
+Attributes: IdAttr, AttrName, AttrType
 :

@@ -15,5 +15,4 @@
 - TopicName
 - IdAttr
 - AttrName
-- IdAttrType
-- AttrTypeName
+- AttrType

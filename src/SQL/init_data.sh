@@ -3,8 +3,6 @@
 
 echo "Create Students"
 sqlite3 sdc_db < create_Students.sql
-echo "Create AttrTypes"
-sqlite3 sdc_db < create_AttrTypes.sql
 echo "Create Attributes"
 sqlite3 sdc_db < create_Attributes.sql
 echo "Create StdAttrs"
@@ -22,8 +20,6 @@ sqlite3 sdc_db < create_isIn.sql
 
 echo "Populate Students"
 sqlite3 sdc_db < insert_Students.sql
-echo "Populate AttrTypes"
-sqlite3 sdc_db < insert_AttrTypes.sql
 echo "Populate Attributes"
 sqlite3 sdc_db < insert_Attributes.sql
 echo "Populate StdAttrs"

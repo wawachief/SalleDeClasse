@@ -2,206 +2,156 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
 "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 
-<svg width="697" height="411" view_box="0 0 697 411"
+<svg width="852" height="496" view_box="0 0 852 496"
 xmlns="http://www.w3.org/2000/svg"
-xmlns:link="http://www.w3.org/1999/xlink">\n\n<desc>Généré par Mocodo 2.3.7 le Mon, 06 Jul 2020 10:55:03</desc>
+xmlns:link="http://www.w3.org/1999/xlink">\n\n<desc>Généré par Mocodo 2.3.7 le Sun, 19 Jul 2020 12:15:36</desc>
 
-<rect id="frame" x="0" y="0" width="697" height="411" fill="#f5f5f5" stroke="none" stroke-width="0"/>
-
-<!-- Association sitsAt -->
-<line x1="83" y1="64" x2="237" y2="64" stroke="#bf812d" stroke-width="1"/>
-<text x="139" y="56.0" fill="#01665e" font-family="Futura" font-size="11">0,N</text>
-<line x1="371" y1="64" x2="237" y2="64" stroke="#bf812d" stroke-width="1"/>
-<text x="309" y="80.0" fill="#01665e" font-family="Futura" font-size="11">1,1</text>
-<g id="association-sitsAt">
-	<path d="M 259 35 a 14 14 90 0 1 14 14 V 63 h -72 V 49 a 14 14 90 0 1 14 -14" fill="#dfc27d" stroke="#dfc27d" stroke-width="0"/>
-	<path d="M 273 63.0 v 16 a 14 14 90 0 1 -14 14 H 215 a 14 14 90 0 1 -14 -14 V 63.0 H 72" fill="#f6e8c3" stroke="#f6e8c3" stroke-width="0"/>
-	<rect x="201" y="35" width="72" height="58" fill="none" rx="14" stroke="#bf812d" stroke-width="1.5"/>
-	<line x1="201" y1="63" x2="273" y2="63" stroke="#bf812d" stroke-width="1.5"/>
-	<text x="208" y="56.3" fill="#000000" font-family="Copperplate" font-size="18">sitsAt</text>
-</g>
-
-<!-- Association belongs to -->
-<line x1="637" y1="64" x2="498" y2="64" stroke="#bf812d" stroke-width="1"/>
-<text x="562" y="80.0" fill="#01665e" font-family="Futura" font-size="11">1,N</text>
-<line x1="371" y1="64" x2="498" y2="64" stroke="#bf812d" stroke-width="1"/>
-<text x="415" y="80.0" fill="#01665e" font-family="Futura" font-size="11">1,1</text>
-<g id="association-belongs to">
-	<path d="M 542 35 a 14 14 90 0 1 14 14 V 63 h -116 V 49 a 14 14 90 0 1 14 -14" fill="#dfc27d" stroke="#dfc27d" stroke-width="0"/>
-	<path d="M 556 63.0 v 16 a 14 14 90 0 1 -14 14 H 454 a 14 14 90 0 1 -14 -14 V 63.0 H 116" fill="#f6e8c3" stroke="#f6e8c3" stroke-width="0"/>
-	<rect x="440" y="35" width="116" height="58" fill="none" rx="14" stroke="#bf812d" stroke-width="1.5"/>
-	<line x1="440" y1="63" x2="556" y2="63" stroke="#bf812d" stroke-width="1.5"/>
-	<text x="447" y="56.3" fill="#000000" font-family="Copperplate" font-size="18">belongs to</text>
-</g>
-
-<!-- Association IsIn -->
-<line x1="83" y1="64" x2="237" y2="173" stroke="#bf812d" stroke-width="1"/>
-<text x="139" y="97.481901408319" fill="#01665e" font-family="Futura" font-size="11">1,N</text>
-<line x1="371" y1="173" x2="237" y2="173" stroke="#bf812d" stroke-width="1"/>
-<text x="299" y="189.0" fill="#01665e" font-family="Futura" font-size="11">1,N</text>
-<g id="association-IsIn">
-	<path d="M 248 144 a 14 14 90 0 1 14 14 V 172 h -50 V 158 a 14 14 90 0 1 14 -14" fill="#dfc27d" stroke="#dfc27d" stroke-width="0"/>
-	<path d="M 262 172.0 v 16 a 14 14 90 0 1 -14 14 H 226 a 14 14 90 0 1 -14 -14 V 172.0 H 50" fill="#f6e8c3" stroke="#f6e8c3" stroke-width="0"/>
-	<rect x="212" y="144" width="50" height="58" fill="none" rx="14" stroke="#bf812d" stroke-width="1.5"/>
-	<line x1="212" y1="172" x2="262" y2="172" stroke="#bf812d" stroke-width="1.5"/>
-	<text x="219" y="165.3" fill="#000000" font-family="Copperplate" font-size="18">IsIn</text>
-</g>
-
-<!-- Association IsAbout -->
-<line x1="637" y1="64" x2="637" y2="173" stroke="#bf812d" stroke-width="1"/>
-<text x="642.0" y="118" fill="#01665e" font-family="Futura" font-size="11">1,1</text>
-<line x1="498" y1="264" x2="637" y2="173" stroke="#bf812d" stroke-width="1"/>
-<text x="548" y="245.511490408956" fill="#01665e" font-family="Futura" font-size="11">1,N</text>
-<g id="association-IsAbout">
-	<path d="M 666 144 a 14 14 90 0 1 14 14 V 172 h -86 V 158 a 14 14 90 0 1 14 -14" fill="#dfc27d" stroke="#dfc27d" stroke-width="0"/>
-	<path d="M 680 172.0 v 16 a 14 14 90 0 1 -14 14 H 608 a 14 14 90 0 1 -14 -14 V 172.0 H 86" fill="#f6e8c3" stroke="#f6e8c3" stroke-width="0"/>
-	<rect x="594" y="144" width="86" height="58" fill="none" rx="14" stroke="#bf812d" stroke-width="1.5"/>
-	<line x1="594" y1="172" x2="680" y2="172" stroke="#bf812d" stroke-width="1.5"/>
-	<text x="601" y="165.3" fill="#000000" font-family="Copperplate" font-size="18">IsAbout</text>
-</g>
-
-<!-- Association HasAttributes -->
-<line x1="237" y1="264" x2="83" y2="264" stroke="#bf812d" stroke-width="1"/>
-<text x="164" y="280.0" fill="#01665e" font-family="Futura" font-size="11">1,1</text>
-<line x1="83" y1="64" x2="83" y2="264" stroke="#bf812d" stroke-width="1"/>
-<text x="59.0" y="135" fill="#01665e" font-family="Futura" font-size="11">1,N</text>
-<line x1="83" y1="364" x2="83" y2="264" stroke="#bf812d" stroke-width="1"/>
-<text x="88.0" y="318" fill="#01665e" font-family="Futura" font-size="11">N,N</text>
-<line x1="498" y1="264" x2="83" y2="264" stroke="#bf812d" stroke-width="1"/>
-<text x="429" y="280.0" fill="#01665e" font-family="Futura" font-size="11">1,N</text>
-<g id="association-HasAttributes">
-	<path d="M 143 235 a 14 14 90 0 1 14 14 V 263 h -148 V 249 a 14 14 90 0 1 14 -14" fill="#dfc27d" stroke="#dfc27d" stroke-width="0"/>
-	<path d="M 157 263.0 v 16 a 14 14 90 0 1 -14 14 H 23 a 14 14 90 0 1 -14 -14 V 263.0 H 148" fill="#f6e8c3" stroke="#f6e8c3" stroke-width="0"/>
-	<rect x="9" y="235" width="148" height="58" fill="none" rx="14" stroke="#bf812d" stroke-width="1.5"/>
-	<line x1="9" y1="263" x2="157" y2="263" stroke="#bf812d" stroke-width="1.5"/>
-	<text x="16" y="256.3" fill="#000000" font-family="Copperplate" font-size="18">HasAttributes</text>
-</g>
-
-<!-- Association IsOfType -->
-<line x1="371" y1="364" x2="237" y2="364" stroke="#bf812d" stroke-width="1"/>
-<text x="291" y="380.0" fill="#01665e" font-family="Futura" font-size="11">1,N</text>
-<line x1="83" y1="364" x2="237" y2="364" stroke="#bf812d" stroke-width="1"/>
-<text x="146" y="380.0" fill="#01665e" font-family="Futura" font-size="11">1,1</text>
-<g id="association-IsOfType">
-	<path d="M 271 335 a 14 14 90 0 1 14 14 V 363 h -96 V 349 a 14 14 90 0 1 14 -14" fill="#dfc27d" stroke="#dfc27d" stroke-width="0"/>
-	<path d="M 285 363.0 v 16 a 14 14 90 0 1 -14 14 H 203 a 14 14 90 0 1 -14 -14 V 363.0 H 96" fill="#f6e8c3" stroke="#f6e8c3" stroke-width="0"/>
-	<rect x="189" y="335" width="96" height="58" fill="none" rx="14" stroke="#bf812d" stroke-width="1.5"/>
-	<line x1="189" y1="363" x2="285" y2="363" stroke="#bf812d" stroke-width="1.5"/>
-	<text x="196" y="356.3" fill="#000000" font-family="Copperplate" font-size="18">IsOfType</text>
-</g>
+<rect id="frame" x="0" y="0" width="852" height="496" fill="#f5f5f5" stroke="none" stroke-width="0"/>
 
 <!-- Entity Students -->
 <g id="entity-Students">
 	<g id="frame-Students">
-		<rect x="32" y="9" width="102" height="30" fill="#80cdc1" stroke="#80cdc1" stroke-width="0"/>
-		<rect x="32" y="39.0" width="102" height="80" fill="#c7eae5" stroke="#c7eae5" stroke-width="0"/>
-		<rect x="32" y="9" width="102" height="110" fill="none" stroke="#35978f" stroke-width="1.5"/>
-		<line x1="32" y1="39" x2="134" y2="39" stroke="#35978f" stroke-width="1.5"/>
+		<rect x="42" y="18" width="112" height="26" fill="#80cdc1" stroke="#80cdc1" stroke-width="0"/>
+		<rect x="42" y="44.0" width="112" height="80" fill="#c7eae5" stroke="#c7eae5" stroke-width="0"/>
+		<rect x="42" y="18" width="112" height="106" fill="none" stroke="#35978f" stroke-width="1.5"/>
+		<line x1="42" y1="44" x2="154" y2="44" stroke="#35978f" stroke-width="1"/>
 	</g>
-	<text x="40" y="30.299999999999997" fill="#000000" font-family="Copperplate" font-size="18">Students</text>
-	<text x="40" y="56.1" fill="#000000" font-family="Gill Sans" font-size="15">IdStudent</text>
-	<line x1="40" y1="59" x2="100" y2="59" stroke="#000000" stroke-width="1"/>
-	<text x="40" y="73.1" fill="#000000" font-family="Gill Sans" font-size="15">StdFirstname</text>
-	<text x="40" y="90.1" fill="#000000" font-family="Gill Sans" font-size="15">StdLastname</text>
-	<text x="40" y="107.0" fill="#000000" font-family="Gill Sans" font-size="15">OrderKey</text>
+	<text x="64" y="36.6" fill="#000000" font-family="Courier New" font-size="14">Students</text>
+	<text x="47" y="62.6" fill="#000000" font-family="Courier New" font-size="14">IdStudent</text>
+	<line x1="47" y1="65.0" x2="124" y2="65.0" stroke="#000000" stroke-width="1"/>
+	<text x="47" y="80.6" fill="#000000" font-family="Courier New" font-size="14">StdFirstname</text>
+	<text x="47" y="98.6" fill="#000000" font-family="Courier New" font-size="14">StdLastname</text>
+	<text x="47" y="116.6" fill="#000000" font-family="Courier New" font-size="14">OrderKey</text>
 </g>
 
 <!-- Entity Desks -->
 <g id="entity-Desks">
 	<g id="frame-Desks">
-		<rect x="332" y="17" width="78" height="30" fill="#80cdc1" stroke="#80cdc1" stroke-width="0"/>
-		<rect x="332" y="47.0" width="78" height="64" fill="#c7eae5" stroke="#c7eae5" stroke-width="0"/>
-		<rect x="332" y="17" width="78" height="94" fill="none" stroke="#35978f" stroke-width="1.5"/>
-		<line x1="332" y1="47" x2="410" y2="47" stroke="#35978f" stroke-width="1.5"/>
+		<rect x="398" y="9" width="96" height="26" fill="#80cdc1" stroke="#80cdc1" stroke-width="0"/>
+		<rect x="398" y="35.0" width="96" height="98" fill="#c7eae5" stroke="#c7eae5" stroke-width="0"/>
+		<rect x="398" y="9" width="96" height="124" fill="none" stroke="#35978f" stroke-width="1.5"/>
+		<line x1="398" y1="35" x2="494" y2="35" stroke="#35978f" stroke-width="1"/>
 	</g>
-	<text x="344" y="38.3" fill="#000000" font-family="Copperplate" font-size="18">Desks</text>
-	<text x="340" y="64.1" fill="#000000" font-family="Gill Sans" font-size="15">IdDesk</text>
-	<line x1="340" y1="67" x2="385" y2="67" stroke="#000000" stroke-width="1"/>
-	<text x="340" y="81.1" fill="#000000" font-family="Gill Sans" font-size="15">DeskRow</text>
-	<text x="340" y="98.0" fill="#000000" font-family="Gill Sans" font-size="15">DeskCol</text>
+	<text x="424" y="27.6" fill="#000000" font-family="Courier New" font-size="14">Desks</text>
+	<text x="403" y="53.6" fill="#000000" font-family="Courier New" font-size="14">IdDesk</text>
+	<line x1="403" y1="56.0" x2="455" y2="56.0" stroke="#000000" stroke-width="1"/>
+	<text x="403" y="71.6" fill="#000000" font-family="Courier New" font-size="14">DeskRow</text>
+	<text x="403" y="89.6" fill="#000000" font-family="Courier New" font-size="14">DeskCol</text>
+	<text x="403" y="107.6" fill="#000000" font-family="Courier New" font-size="14">#IdStudent</text>
+	<text x="403" y="125.6" fill="#000000" font-family="Courier New" font-size="14">#IdCourse</text>
 </g>
 
 <!-- Entity Courses -->
 <g id="entity-Courses">
 	<g id="frame-Courses">
-		<rect x="586" y="26" width="102" height="30" fill="#80cdc1" stroke="#80cdc1" stroke-width="0"/>
-		<rect x="586" y="56.0" width="102" height="46" fill="#c7eae5" stroke="#c7eae5" stroke-width="0"/>
-		<rect x="586" y="26" width="102" height="76" fill="none" stroke="#35978f" stroke-width="1.5"/>
-		<line x1="586" y1="56" x2="688" y2="56" stroke="#35978f" stroke-width="1.5"/>
+		<rect x="714" y="27" width="96" height="26" fill="#80cdc1" stroke="#80cdc1" stroke-width="0"/>
+		<rect x="714" y="53.0" width="96" height="62" fill="#c7eae5" stroke="#c7eae5" stroke-width="0"/>
+		<rect x="714" y="27" width="96" height="88" fill="none" stroke="#35978f" stroke-width="1.5"/>
+		<line x1="714" y1="53" x2="810" y2="53" stroke="#35978f" stroke-width="1"/>
 	</g>
-	<text x="598" y="47.3" fill="#000000" font-family="Copperplate" font-size="18">Courses</text>
-	<text x="594" y="73.1" fill="#000000" font-family="Gill Sans" font-size="15">IdCourse</text>
-	<line x1="594" y1="76" x2="653" y2="76" stroke="#000000" stroke-width="1"/>
-	<text x="594" y="90.1" fill="#000000" font-family="Gill Sans" font-size="15">CourseName</text>
+	<text x="732" y="45.6" fill="#000000" font-family="Courier New" font-size="14">Courses</text>
+	<text x="719" y="71.6" fill="#000000" font-family="Courier New" font-size="14">IdCourse</text>
+	<line x1="719" y1="74.0" x2="787" y2="74.0" stroke="#000000" stroke-width="1"/>
+	<text x="719" y="89.6" fill="#000000" font-family="Courier New" font-size="14">CourseName</text>
+	<text x="719" y="107.6" fill="#000000" font-family="Courier New" font-size="14">#IdTopic</text>
+</g>
+
+<!-- Entity IsIn -->
+<g id="entity-IsIn">
+	<g id="frame-IsIn">
+		<rect x="228" y="157" width="96" height="26" fill="#80cdc1" stroke="#80cdc1" stroke-width="0"/>
+		<rect x="228" y="183.0" width="96" height="44" fill="#c7eae5" stroke="#c7eae5" stroke-width="0"/>
+		<rect x="228" y="157" width="96" height="70" fill="none" stroke="#35978f" stroke-width="1.5"/>
+		<line x1="228" y1="183" x2="324" y2="183" stroke="#35978f" stroke-width="1"/>
+	</g>
+	<text x="258" y="175.6" fill="#000000" font-family="Courier New" font-size="14">IsIn</text>
+	<text x="233" y="201.6" fill="#000000" font-family="Courier New" font-size="14">#IdStudent</text>
+	<line x1="233" y1="204.0" x2="318" y2="204.0" stroke="#000000" stroke-width="1"/>
+	<text x="233" y="219.6" fill="#000000" font-family="Courier New" font-size="14">#IdGroup</text>
+	<line x1="233" y1="222.0" x2="301" y2="222.0" stroke="#000000" stroke-width="1"/>
 </g>
 
 <!-- Entity Groups -->
 <g id="entity-Groups">
 	<g id="frame-Groups">
-		<rect x="323" y="135" width="96" height="30" fill="#80cdc1" stroke="#80cdc1" stroke-width="0"/>
-		<rect x="323" y="165.0" width="96" height="46" fill="#c7eae5" stroke="#c7eae5" stroke-width="0"/>
-		<rect x="323" y="135" width="96" height="76" fill="none" stroke="#35978f" stroke-width="1.5"/>
-		<line x1="323" y1="165" x2="419" y2="165" stroke="#35978f" stroke-width="1.5"/>
+		<rect x="402" y="157" width="88" height="26" fill="#80cdc1" stroke="#80cdc1" stroke-width="0"/>
+		<rect x="402" y="183.0" width="88" height="44" fill="#c7eae5" stroke="#c7eae5" stroke-width="0"/>
+		<rect x="402" y="157" width="88" height="70" fill="none" stroke="#35978f" stroke-width="1.5"/>
+		<line x1="402" y1="183" x2="490" y2="183" stroke="#35978f" stroke-width="1"/>
 	</g>
-	<text x="337" y="156.3" fill="#000000" font-family="Copperplate" font-size="18">Groups</text>
-	<text x="331" y="182.1" fill="#000000" font-family="Gill Sans" font-size="15">IdGroup</text>
-	<line x1="331" y1="185" x2="385" y2="185" stroke="#000000" stroke-width="1"/>
-	<text x="331" y="199.1" fill="#000000" font-family="Gill Sans" font-size="15">GroupName</text>
+	<text x="420" y="175.6" fill="#000000" font-family="Courier New" font-size="14">Groups</text>
+	<text x="407" y="201.6" fill="#000000" font-family="Courier New" font-size="14">IdGroup</text>
+	<line x1="407" y1="204.0" x2="467" y2="204.0" stroke="#000000" stroke-width="1"/>
+	<text x="407" y="219.6" fill="#000000" font-family="Courier New" font-size="14">GroupName</text>
 </g>
 
 <!-- Entity StdAttrs -->
 <g id="entity-StdAttrs">
 	<g id="frame-StdAttrs">
-		<rect x="187" y="226" width="100" height="30" fill="#80cdc1" stroke="#80cdc1" stroke-width="0"/>
-		<rect x="187" y="256.0" width="100" height="46" fill="#c7eae5" stroke="#c7eae5" stroke-width="0"/>
-		<rect x="187" y="226" width="100" height="76" fill="none" stroke="#35978f" stroke-width="1.5"/>
-		<line x1="187" y1="256" x2="287" y2="256" stroke="#35978f" stroke-width="1.5"/>
+		<rect x="220" y="251" width="112" height="26" fill="#80cdc1" stroke="#80cdc1" stroke-width="0"/>
+		<rect x="220" y="277.0" width="112" height="98" fill="#c7eae5" stroke="#c7eae5" stroke-width="0"/>
+		<rect x="220" y="251" width="112" height="124" fill="none" stroke="#35978f" stroke-width="1.5"/>
+		<line x1="220" y1="277" x2="332" y2="277" stroke="#35978f" stroke-width="1"/>
 	</g>
-	<text x="195" y="247.3" fill="#000000" font-family="Copperplate" font-size="18">StdAttrs</text>
-	<text x="195" y="273.1" fill="#000000" font-family="Gill Sans" font-size="15">IdStdAttr</text>
-	<line x1="195" y1="276" x2="254" y2="276" stroke="#000000" stroke-width="1"/>
-	<text x="195" y="290.1" fill="#000000" font-family="Gill Sans" font-size="15">StdAttrValue</text>
+	<text x="242" y="269.6" fill="#000000" font-family="Courier New" font-size="14">StdAttrs</text>
+	<text x="225" y="295.6" fill="#000000" font-family="Courier New" font-size="14">IdStdAttr</text>
+	<line x1="225" y1="298.0" x2="302" y2="298.0" stroke="#000000" stroke-width="1"/>
+	<text x="225" y="313.6" fill="#000000" font-family="Courier New" font-size="14">StdAttrValue</text>
+	<text x="225" y="331.6" fill="#000000" font-family="Courier New" font-size="14">#IdStudent</text>
+	<text x="225" y="349.6" fill="#000000" font-family="Courier New" font-size="14">#IdAttr</text>
+	<text x="225" y="367.6" fill="#000000" font-family="Courier New" font-size="14">#IdTopic</text>
 </g>
 
 <!-- Entity Topics -->
 <g id="entity-Topics">
 	<g id="frame-Topics">
-		<rect x="453" y="226" width="90" height="30" fill="#80cdc1" stroke="#80cdc1" stroke-width="0"/>
-		<rect x="453" y="256.0" width="90" height="46" fill="#c7eae5" stroke="#c7eae5" stroke-width="0"/>
-		<rect x="453" y="226" width="90" height="76" fill="none" stroke="#35978f" stroke-width="1.5"/>
-		<line x1="453" y1="256" x2="543" y2="256" stroke="#35978f" stroke-width="1.5"/>
+		<rect x="560" y="278" width="88" height="26" fill="#80cdc1" stroke="#80cdc1" stroke-width="0"/>
+		<rect x="560" y="304.0" width="88" height="44" fill="#c7eae5" stroke="#c7eae5" stroke-width="0"/>
+		<rect x="560" y="278" width="88" height="70" fill="none" stroke="#35978f" stroke-width="1.5"/>
+		<line x1="560" y1="304" x2="648" y2="304" stroke="#35978f" stroke-width="1"/>
 	</g>
-	<text x="468" y="247.3" fill="#000000" font-family="Copperplate" font-size="18">Topics</text>
-	<text x="461" y="273.1" fill="#000000" font-family="Gill Sans" font-size="15">IdTopic</text>
-	<line x1="461" y1="276" x2="509" y2="276" stroke="#000000" stroke-width="1"/>
-	<text x="461" y="290.1" fill="#000000" font-family="Gill Sans" font-size="15">TopicName</text>
+	<text x="578" y="296.6" fill="#000000" font-family="Courier New" font-size="14">Topics</text>
+	<text x="565" y="322.6" fill="#000000" font-family="Courier New" font-size="14">IdTopic</text>
+	<line x1="565" y1="325.0" x2="625" y2="325.0" stroke="#000000" stroke-width="1"/>
+	<text x="565" y="340.6" fill="#000000" font-family="Courier New" font-size="14">TopicName</text>
 </g>
 
 <!-- Entity Attributes -->
 <g id="entity-Attributes">
 	<g id="frame-Attributes">
-		<rect x="25" y="326" width="116" height="30" fill="#80cdc1" stroke="#80cdc1" stroke-width="0"/>
-		<rect x="25" y="356.0" width="116" height="46" fill="#c7eae5" stroke="#c7eae5" stroke-width="0"/>
-		<rect x="25" y="326" width="116" height="76" fill="none" stroke="#35978f" stroke-width="1.5"/>
-		<line x1="25" y1="356" x2="141" y2="356" stroke="#35978f" stroke-width="1.5"/>
+		<rect x="228" y="399" width="96" height="26" fill="#80cdc1" stroke="#80cdc1" stroke-width="0"/>
+		<rect x="228" y="425.0" width="96" height="62" fill="#c7eae5" stroke="#c7eae5" stroke-width="0"/>
+		<rect x="228" y="399" width="96" height="88" fill="none" stroke="#35978f" stroke-width="1.5"/>
+		<line x1="228" y1="425" x2="324" y2="425" stroke="#35978f" stroke-width="1"/>
 	</g>
-	<text x="33" y="347.3" fill="#000000" font-family="Copperplate" font-size="18">Attributes</text>
-	<text x="33" y="373.1" fill="#000000" font-family="Gill Sans" font-size="15">IdAttr</text>
-	<line x1="33" y1="376" x2="72" y2="376" stroke="#000000" stroke-width="1"/>
-	<text x="33" y="390.1" fill="#000000" font-family="Gill Sans" font-size="15">AttrName</text>
+	<text x="233" y="417.6" fill="#000000" font-family="Courier New" font-size="14">Attributes</text>
+	<text x="233" y="443.6" fill="#000000" font-family="Courier New" font-size="14">IdAttr</text>
+	<line x1="233" y1="446.0" x2="285" y2="446.0" stroke="#000000" stroke-width="1"/>
+	<text x="233" y="461.6" fill="#000000" font-family="Courier New" font-size="14">AttrName</text>
+	<text x="233" y="479.6" fill="#000000" font-family="Courier New" font-size="14">AttrType</text>
 </g>
-
-<!-- Entity AttrTypes -->
-<g id="entity-AttrTypes">
-	<g id="frame-AttrTypes">
-		<rect x="315" y="326" width="112" height="30" fill="#80cdc1" stroke="#80cdc1" stroke-width="0"/>
-		<rect x="315" y="356.0" width="112" height="46" fill="#c7eae5" stroke="#c7eae5" stroke-width="0"/>
-		<rect x="315" y="326" width="112" height="76" fill="none" stroke="#35978f" stroke-width="1.5"/>
-		<line x1="315" y1="356" x2="427" y2="356" stroke="#35978f" stroke-width="1.5"/>
-	</g>
-	<text x="324" y="347.3" fill="#000000" font-family="Copperplate" font-size="18">AttrTypes</text>
-	<text x="323" y="373.1" fill="#000000" font-family="Gill Sans" font-size="15">IdAttrType</text>
-	<line x1="323" y1="376" x2="393" y2="376" stroke="#000000" stroke-width="1"/>
-	<text x="323" y="390.1" fill="#000000" font-family="Gill Sans" font-size="15">AttrTypeName</text>
-</g>
+<path d="M398 103.0 C 276.0 80.5 316.6666666666667 58.0 154 58.0" fill="none" stroke="#bf812d" stroke-width="1"/>
+<path d="M 154 58.0 L 166.0 52.0 L 162.0 58.0 L 166.0 64.0 Z" fill="#bf812d" stroke-width="0"/>
+<circle cx="398" cy="103.0" r="1.5" stroke="#bf812d" stroke-width="1.5" fill="#bf812d"/>
+<path d="M494 121.0 C 604.0 94.0 567.3333333333334 67.0 714 67.0" fill="none" stroke="#bf812d" stroke-width="1"/>
+<path d="M 714 67.0 L 702.0 73.0 L 706.0 67.0 L 702.0 61.0 Z" fill="#bf812d" stroke-width="0"/>
+<circle cx="494" cy="121.0" r="1.5" stroke="#bf812d" stroke-width="1.5" fill="#bf812d"/>
+<path d="M714 103.0 C 681.0 210.5 692.0 318.0 648 318.0" fill="none" stroke="#bf812d" stroke-width="1"/>
+<path d="M 648 318.0 L 660.0 312.0 L 656.0 318.0 L 660.0 324.0 Z" fill="#bf812d" stroke-width="0"/>
+<circle cx="714" cy="103.0" r="1.5" stroke="#bf812d" stroke-width="1.5" fill="#bf812d"/>
+<path d="M228 197.0 C 191.0 127.5 203.33333333333334 58.0 154 58.0" fill="none" stroke="#bf812d" stroke-width="1"/>
+<path d="M 154 58.0 L 166.0 52.0 L 162.0 58.0 L 166.0 64.0 Z" fill="#bf812d" stroke-width="0"/>
+<circle cx="228" cy="197.0" r="1.5" stroke="#bf812d" stroke-width="1.5" fill="#bf812d"/>
+<path d="M324 215.0 C 363.0 206.0 350.0 197.0 402 197.0" fill="none" stroke="#bf812d" stroke-width="1"/>
+<path d="M 402 197.0 L 390.0 203.0 L 394.0 197.0 L 390.0 191.0 Z" fill="#bf812d" stroke-width="0"/>
+<circle cx="324" cy="215.0" r="1.5" stroke="#bf812d" stroke-width="1.5" fill="#bf812d"/>
+<path d="M220 327.0 C 187.0 192.5 198.0 58.0 154 58.0" fill="none" stroke="#bf812d" stroke-width="1"/>
+<path d="M 154 58.0 L 166.0 52.0 L 162.0 58.0 L 166.0 64.0 Z" fill="#bf812d" stroke-width="0"/>
+<circle cx="220" cy="327.0" r="1.5" stroke="#bf812d" stroke-width="1.5" fill="#bf812d"/>
+<path d="M220 345.0 C 164 392.0 172 439.0 228 439.0" fill="none" stroke="#bf812d" stroke-width="1"/>
+<path d="M 228 439.0 L 216.0 445.0 L 220.0 439.0 L 216.0 433.0 Z" fill="#bf812d" stroke-width="0"/>
+<circle cx="220" cy="345.0" r="1.5" stroke="#bf812d" stroke-width="1.5" fill="#bf812d"/>
+<path d="M332 363.0 C 446.0 340.5 408.0 318.0 560 318.0" fill="none" stroke="#bf812d" stroke-width="1"/>
+<path d="M 560 318.0 L 548.0 324.0 L 552.0 318.0 L 548.0 312.0 Z" fill="#bf812d" stroke-width="0"/>
+<circle cx="332" cy="363.0" r="1.5" stroke="#bf812d" stroke-width="1.5" fill="#bf812d"/>
 </svg>

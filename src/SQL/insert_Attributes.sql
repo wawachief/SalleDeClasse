@@ -1,7 +1,7 @@
 INSERT INTO Attributes
-    (AttrName, IdAttrType) 
+    (AttrName, AttrType) 
 VALUES 
-    ("Autonomie", 1),
-    ("Retards", 2),
-    ("Punitions", 3),
-    ("IDH_S1", 4);
+    ("Autonomie", "attr_color"),
+    ("Retards", "attr_counter"),
+    ("Punitions", "attr_txt"),
+    ("IDH_S1", "attr_mark");
