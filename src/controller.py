@@ -54,6 +54,7 @@ class Controller(QObject):
                                 "sort_desc": self.sort_desc,
                                 "sort_desks": self.sort_desks,
                                 "killstudent": self.killstudent,
+                                "delete_group": self.on_delete_group,
 
                                 # Toolbar buttons
                                 "magic": self.debug,
@@ -123,16 +124,19 @@ class Controller(QObject):
     @Slot(tuple)
     def add_desk(self, coords):
         """Add a new desk at mouse place"""
-        row = coords[0]
-        col = coords[1]
-        id_desk = self.mod_bdd.get_desk_id_in_course_by_coords(self.id_course, row, col)
-        if id_desk == 0:
-            # The place is free, we create the desk
-            id_desk = self.mod_bdd.create_new_desk_in_course(row, col, self.id_course)
-            self.v_canvas.new_tile(row, col, id_desk)
-        
-        self.__bdd.commit()
-        self.v_canvas.repaint()
+        if self.id_course > 0:
+            row = coords[0]
+            col = coords[1]
+            id_desk = self.mod_bdd.get_desk_id_in_course_by_coords(self.id_course, row, col)
+            if id_desk == 0:
+                # The place is free, we create the desk
+                id_desk = self.mod_bdd.create_new_desk_in_course(row, col, self.id_course)
+                self.v_canvas.new_tile(row, col, id_desk)
+            
+            self.__bdd.commit()
+            self.v_canvas.repaint()
+        else:
+            self.gui.status_bar.showMessage("Impossible : aucun cours sélectionné !")
     
     @Slot(tuple, tuple)
     def move_desk(self, start, end):
@@ -226,17 +230,18 @@ class Controller(QObject):
     def show_course(self):
         """DIsplays a the course defined by the id_course property"""
         self.v_canvas.delete_all_tiles()
-        all_desks = self.mod_bdd.get_course_all_desks(self.id_course)
-        topic_name = self.mod_bdd.get_topic_from_course_id(self.id_course)
-        for d in all_desks:
-            std = self.mod_bdd.get_student_by_id(d.id_student)
-            if std:
-                self.v_canvas.new_tile(d.row, d.col, d.id, firstname=std.firstname, lastname=std.lastname)
-            else:
-                self.v_canvas.new_tile(d.row, d.col, d.id)
+        if self.id_course > 0:
+            all_desks = self.mod_bdd.get_course_all_desks(self.id_course)
+            topic_name = self.mod_bdd.get_topic_from_course_id(self.id_course)
+            for d in all_desks:
+                std = self.mod_bdd.get_student_by_id(d.id_student)
+                if std:
+                    self.v_canvas.new_tile(d.row, d.col, d.id, firstname=std.firstname, lastname=std.lastname)
+                else:
+                    self.v_canvas.new_tile(d.row, d.col, d.id)
+            # Display course's topic
+            self.gui.central_widget.classroom_tab.topic.select_topic(topic_name)
         self.v_canvas.repaint()
-        # Display course's topic
-        self.gui.central_widget.classroom_tab.topic.select_topic(topic_name)
 
     def set_course(self, course_name):
         """Sets current course to course_name
@@ -254,14 +259,17 @@ class Controller(QObject):
 
         courses = self.mod_bdd.get_courses()
         topic_names = self.mod_bdd.get_topics_names()
-        if self.id_course == 0:
+        if self.id_course == 0 and len(courses) > 0:
             self.id_course = courses[0][0]
-        topic_name = self.mod_bdd.get_topic_from_course_id(self.id_course)
+        if self.id_course != 0:
+            topic_name = self.mod_bdd.get_topic_from_course_id(self.id_course)
 
-        self.gui.sidewidget.courses().init_table(
-            list_courses=courses, selected_id=None if self.id_course == 0 else self.id_course)
+            self.gui.sidewidget.courses().init_table(
+                list_courses=courses, selected_id=None if self.id_course == 0 else self.id_course)
 
-        self.gui.central_widget.classroom_tab.topic.set_topics(topic_names, topic_name)
+            self.gui.central_widget.classroom_tab.topic.set_topics(topic_names, topic_name)
+        else:
+            self.gui.sidewidget.courses().init_table([])
         self.show_course()
 
     def show_all_groups(self, current=0):
@@ -273,6 +281,8 @@ class Controller(QObject):
             self.on_student_group_changed(current_group)
             self.mod_bdd.get_group_id_by_name(current_group)
             self.gui.sidewidget.students().students_toolbar.current_group = current_group
+        else:
+            self.gui.sidewidget.students().set_students_list([])
 
     def auto_place(self):
         """Autoplacement of students on the free tiles"""
@@ -476,12 +486,7 @@ class Controller(QObject):
         self.gui.status_bar.showMessage(f"Suppression d'élèves", 3000)
         list_id_students = self.gui.sidewidget.students().selected_students()
         for id_std in list_id_students:
-            # delete student from IsIn
-            self.mod_bdd.delete_isin(id_std, self.id_group)
-            n = self.mod_bdd.nb_groups_contains_student_by_id(id_std)
-            if n == 0:
-                # Delete Student from Database
-                self.mod_bdd.delete_student_by_id(id_std)
+            self.mod_bdd.remove_student_from_group(id_std, self.id_group)
         self.show_course()
         self.show_all_groups(current = self.id_group)
         self.__bdd.commit()
@@ -535,7 +540,6 @@ class Controller(QObject):
         :param attr_name: Attribute's name
         :param attr_type: Attribute's type key
         """
-        print(attr_name, attr_type)
         self.mod_bdd.insert_attribute(attr_name, attr_type)
         self.__bdd.commit()
 
@@ -553,11 +557,26 @@ class Controller(QObject):
         """
         Deletes all the selected attribtues
         """
-        print("Attributes IDs to delete:", self.gui.sidewidget.attributes().selected_attributes())  # TODO
+        for id_a in self.gui.sidewidget.attributes().selected_attributes():
+            self.mod_bdd.delete_attribute_with_id(id_a)
+        self.__bdd.commit()
+        self.show_all_attributes()
 
     @Slot()
     def on_delete_course(self) -> None:
         """
         Deletes the selected course
         """
-        print("delete current course")  # TODO
+        self.mod_bdd.delete_course_with_id(self.id_course)
+        self.id_course = 0
+        self.__bdd.commit()
+        self.show_all_courses()
+    
+    def on_delete_group(self) -> None:
+        """
+        Deletes the selected group
+        """
+        self.mod_bdd.delete_group_by_id(self.id_group)
+        self.id_group = 0
+        self.__bdd.commit()
+        self.show_all_groups()

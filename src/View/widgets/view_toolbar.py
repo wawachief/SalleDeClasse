@@ -148,6 +148,8 @@ class ViewStudentListToolbar(QToolBar):
         self.action_menu = ViewMenuButton("Actions", self.create_field.show_field,
                                           [("Import Pronote", "import_csv"),
                                            ("Créer un groupe", "create_group"),
+                                           ("Supprimer ce groupe !", "delete_group"),
+                                           'sep',
                                            ("Créer un élève", "create_student"),
                                            ("Supprimer un élève", "killstudent"),
                                            'sep',

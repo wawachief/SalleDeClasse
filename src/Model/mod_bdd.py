@@ -84,7 +84,18 @@ class ModBdd():
             self.__cursor.execute(req, [name])
             id = self.__cursor.lastrowid
         return id
-    
+
+    def delete_course_with_id(self, course_id):
+        """delete a course given its id
+        all desks in this course will be deleted too !
+        commit must be called separately"""
+        
+        req = "DELETE FROM Desks WHERE IdCourse = ?"
+        self.__cursor.execute(req, [course_id])
+
+        req = "DELETE FROM Courses WHERE IdCourse = ?"
+        self.__cursor.execute(req, [course_id])
+        
     def create_new_desk_in_course(self, row, col, id_course):
         """Creates a new desk in a course
         Input : idcourse - course id
@@ -119,15 +130,15 @@ class ModBdd():
         self.__cursor.execute(req, [row, col, id_desk])
         return None
 
-    def set_student_in_desk_by_id(self, id_std, id_desk):
+    def set_student_in_desk_by_id(self, std_id, id_desk):
         """Places a student on a desk/
-        Input : id_std : id of student to place
+        Input : std_id : id of student to place
                 id_desk : id of the desk
         Output : None"""
 
         if id_desk != 0:
             req = "UPDATE Desks SET IdStudent = ? WHERE IdDesk = ?"
-            self.__cursor.execute (req, [id_std, id_desk])
+            self.__cursor.execute (req, [std_id, id_desk])
 
     #
     # Student relative requests
@@ -172,58 +183,71 @@ class ModBdd():
         r = self.__cursor.fetchone()
         return "" if r is None else r[0]
 
-    def insert_student_in_group_id(self, firstname, lastname, order, id_group):
+    def insert_student_in_group_id(self, firstname, lastname, order, group_id):
         """Create a new student by firstname and lastname in group by id
         return the nbew student id"""
 
         req = "INSERT INTO Students (StdFirstName, StdLastName, OrderKey) VALUES (?, ?, ?)"
         self.__cursor.execute(req, [firstname, lastname, order])
-        id_std = self.__cursor.lastrowid
+        std_id = self.__cursor.lastrowid
         req = "INSERT INTO IsIn (IdStudent, IdGroup) VALUES (?, ?)"
-        self.__cursor.execute(req, [id_std, id_group])
-        return id_std
+        self.__cursor.execute(req, [std_id, group_id])
+        return std_id
 
-    def rename_student_by_id(self, id_std, firstname, lastname):
+    def rename_student_by_id(self, std_id, firstname, lastname):
         req = "UPDATE  Students SET StdFirstName = ?, StdLastName = ? WHERE IdStudent = ?"
-        self.__cursor.execute(req, [firstname, lastname, id_std])
+        self.__cursor.execute(req, [firstname, lastname, std_id])
 
-    def insert_isin(self, id_std, id_group):
+    def insert_isin(self, std_id, group_id):
         """Insert the student id in the group id"""
         req = "INSERT INTO IsIn (IdStudent, IdGroup) VALUES (?, ?)"
-        self.__cursor.execute(req, [id_std, id_group])
+        self.__cursor.execute(req, [std_id, group_id])
     
-    def delete_isin(self, id_std, id_group):
+    def delete_isin(self, std_id, group_id):
         """Delete the student id from the group id"""
         req = "DELETE FROM IsIn WHERE IdStudent = ? AND IdGroup = ?"
-        self.__cursor.execute(req, [id_std, id_group])
+        self.__cursor.execute(req, [std_id, group_id])
     
-    def nb_groups_contains_student_by_id(self, id_std):
-        """Returns the number of groups student id_std belongs to"""
+    def nb_groups_contains_student_by_id(self, std_id):
+        """Returns the number of groups student std_id belongs to"""
         req = "SELECT COUNT(*) FROM IsIn WHERE IdStudent = ?"
-        self.__cursor.execute(req, [id_std])
+        self.__cursor.execute(req, [std_id])
         r = self.__cursor.fetchone()
         return r[0]
-    def delete_student_by_id(self, id_std):
+
+    def delete_student_by_id(self, std_id):
         """Remove a student from the surface of the earth"""
         # Delete Attributes
         req = "DELETE FROM StdAttrs WHERE IdStudent = ?"
-        self.__cursor.execute(req, [id_std])
+        self.__cursor.execute(req, [std_id])
         # Free Desks
         req = "UPDATE Desks SET IdStudent = 0 WHERE IdStudent = ?"
-        self.__cursor.execute(req, [id_std])
+        self.__cursor.execute(req, [std_id])
+        # Delete IsIn just to be sure
+        req = "DELETE FROM IsIn WHERE IdStudent = ?"
+        self.__cursor.execute(req, [std_id])
         # Kill the student
         req = "DELETE FROM Students WHERE IdStudent = ?"
-        self.__cursor.execute(req, [id_std])
+        self.__cursor.execute(req, [std_id])
 
-    def get_student_by_id(self, id_std):
+    def remove_student_from_group(self, std_id, group_id):
+        """Remove a student from a group"""
+        self.delete_isin(std_id, group_id)
+        n = self.nb_groups_contains_student_by_id(std_id)
+        # Students belongs to no group
+        # He is fired !
+        if n == 0:
+            self.delete_student_by_id(std_id)
+
+    def get_student_by_id(self, std_id):
         """Returns a Student object
         Input : idStd - student id
         Output : Student object or None of no students matches the idStd"""
 
         req = "SELECT * FROM Students WHERE IdStudent = ?"
-        self.__cursor.execute(req, [id_std])
+        self.__cursor.execute(req, [std_id])
         r = self.__cursor.fetchone()
-        return r if r is None else Student(id_std, r[1], r[2])
+        return r if r is None else Student(std_id, r[1], r[2])
         
     def get_students_in_course_by_id(self, id_course):
         """Returns an array of Students in the room
@@ -256,6 +280,20 @@ class ModBdd():
     def update_student_order_with_id(self, idS, order):
             req = "UPDATE Students SET OrderKey = ? WHERE IdStudent = ?"
             self.__cursor.execute (req, [order, idS])
+    
+    def delete_group_by_id(self, group_id):
+        """Delete a all students in a group then the group itself
+        Commit must be done separately
+        Input : group_id : Id of the group to delete
+        """
+        students = self.get_students_in_group(self.get_group_name_by_id(group_id))
+        # Delete all students in the group
+        # If a student belongs to another group he will survive
+        for std in students:
+            self.remove_student_from_group(std.id, group_id)
+        # removes the group
+        req = "DELETE FROM Groups WHERE IdGroup = ?"
+        self.__cursor.execute(req, [group_id])
     #
     # Topic relative requests
     #
@@ -301,4 +339,16 @@ class ModBdd():
 
         req = "INSERT INTO Attributes (AttrName, AttrType) VALUES (?, ?)"
         self.__cursor.execute(req, [attr_name, attr_type])
-        id_std = self.__cursor.lastrowid
+        attr_id = self.__cursor.lastrowid
+        return attr_id
+    
+    def delete_attribute_with_id(self, attr_id):
+        """delete an attribute given its id
+        all students attributes will be deleted too !
+        commit must be called separately"""
+        
+        req = "DELETE FROM StdAttrs WHERE IdAttr = ?"
+        self.__cursor.execute(req, [attr_id])
+
+        req = "DELETE FROM Attributes WHERE IdAttr = ?"
+        self.__cursor.execute(req, [attr_id])
