@@ -1,6 +1,7 @@
 import sqlite3
 
 from PySide2.QtCore import QObject, Signal, Slot, QTimer
+from PySide2.QtGui import QColor
 
 from src.Model.mod_bdd import ModBdd
 from src.View.view_mainframe import ViewMainFrame
@@ -40,6 +41,9 @@ class Controller(QObject):
     sig_create_attribute = Signal(str, str)
     sig_delete_attributes = Signal()
     sig_delete_course = Signal()
+
+    sig_attr_selection_changed = Signal()
+    sig_attribute_cell_selected = Signal(int, int)
 
     def __init__(self):
         """
@@ -86,6 +90,8 @@ class Controller(QObject):
         self.gui.sidewidget.attributes().attributes_toolbar.add_widget.sig_new_element = self.sig_create_attribute
         self.gui.sidewidget.attributes().attributes_toolbar.add_widget.sig_delete = self.sig_delete_attributes
         self.gui.sidewidget.courses().courses_toolbar.sig_delete = self.sig_delete_course
+        self.gui.sidewidget.attributes().sig_selection_changed = self.sig_attr_selection_changed
+        self.gui.central_widget.attributes_tab.sig_cell_clicked = self.sig_attribute_cell_selected
 
         # Signals connection
         self.sig_add_tile.connect(self.test_buttton)
@@ -103,6 +109,8 @@ class Controller(QObject):
         self.sig_create_attribute.connect(self.on_create_attr)
         self.sig_delete_attributes.connect(self.on_delete_attributes)
         self.sig_delete_course.connect(self.on_delete_course)
+        self.sig_attr_selection_changed.connect(self.on_attribute_selection_changed)
+        self.sig_attribute_cell_selected.connect(self.on_attribute_cell_selected)
 
         # properties
         self.id_course = 0
@@ -433,7 +441,6 @@ class Controller(QObject):
         self.selection_mode = (self.selection_mode+1) % 4
 
         self.v_canvas.repaint()
-    
 
     def delete(self) -> None:
         desks_id = self.v_canvas.get_selected_tiles()
@@ -580,3 +587,26 @@ class Controller(QObject):
         self.id_group = 0
         self.__bdd.commit()
         self.show_all_groups()
+
+    @Slot()
+    def on_attribute_selection_changed(self) -> None:
+        """
+        Triggered when the attribute selection changed
+        """
+        print(self.gui.sidewidget.attributes().selected_attributes())
+        # TODO
+        attributes = [(1, "Attr1"), (2, "Attr2"), (3, "Attr3"), (4, "Attr4"), (5, "Attr5"), (6, "Attr6"), (7, "Retards"), (8, "Travaux rendus")]
+        students = [(1, "Thomas Lécluse"), (2, "Pauline Lécluse"), (3, "Simon Lécluse"), (4, "Julie Lécluse"), (11, "Clara Collet"), (6, "Romane Collet"), (7, "Antoine Collet")]
+        data = {(1, 1): "a", (1, 2): "b", (1, 3): "texte trop long", (1, 4): "d", (1, 11): "e", (1, 6): "f", (2, 11): QColor("green"), (3, 1): 0, (3, 2): 10, (3, 3): 0}
+        self.gui.central_widget.attributes_tab.set_data(attributes, students, data)
+
+    @Slot(int, int)
+    def on_attribute_cell_selected(self, attr_id: int, std_id: int) -> None:
+        """
+        Triggered when a cell is clicked on the attributes table.
+        Opens an edition panel, allowing the user to edit the cell content.
+
+        :param attr_id: Attribute ID
+        :param std_id: Student ID
+        """
+        print(attr_id, std_id)  # TODO

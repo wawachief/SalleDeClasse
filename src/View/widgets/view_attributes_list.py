@@ -1,4 +1,5 @@
 from PySide2.QtWidgets import QWidget, QVBoxLayout
+from PySide2.QtCore import Signal
 
 from src.View.widgets.view_toolbar import ViewAttributeListToolbar
 from src.View.widgets.view_table import CustomTableModel, CustomTableView
@@ -16,12 +17,16 @@ class ViewAttributePanel(QWidget):
 
         # Widgets
         self.tableview = CustomTableView(False)
+        self.tableview.clicked.connect(self.on_selection_changed)
         self.attributes_toolbar = ViewAttributeListToolbar()
 
         # DataModel and additional info
         self.datamodel: CustomTableModel = None  # TableView datamodel
         self.current_selection: int = None  # Stores the selected attribute ID
         self.attributes = {}  # All the displayed attributes items -> {(attribute_name, attribute_type): id, ...}
+
+        # Signals
+        self.sig_selection_changed: Signal = None
 
         # layout
         self.__set_layout()
@@ -82,3 +87,9 @@ class ViewAttributePanel(QWidget):
             attributes_ids.append(self.attributes[data])
 
         return attributes_ids
+
+    def on_selection_changed(self, item):
+        """
+        Triggered when the table selection changed
+        """
+        self.sig_selection_changed.emit()
