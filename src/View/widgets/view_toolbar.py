@@ -29,9 +29,10 @@ class ViewMainToolBar(QToolBar):
         self.__btn_select = ToolBarButton("selection", "Sélectionner", lambda: self.sig_TBbutton.emit("select"))
         self.__btn_choice = ToolBarButton("choixvolontaire", "Choisir un élève", lambda: self.sig_TBbutton.emit("choix"))
         self.__btn_delete = ToolBarButton("corbeille", "Effacer", lambda: self.sig_TBbutton.emit("delete"))
+        self.__btn_lot_change = ToolBarButton("fill", "Changement par Lot", lambda: self.sig_TBbutton.emit("lot_change"))
 
         self.actions_table = {self.__btn_magic: None, self.__btn_perspective: None, self.__btn_shuffle: None,
-                              self.__btn_select: None, self.__btn_choice: None, self.__btn_delete: None}
+                              self.__btn_select: None, self.__btn_choice: None, self.__btn_delete: None, self.__btn_lot_change: None}
 
         # Signals
         self.sig_enable_animation_btns.connect(self.enable_animation_btns)
@@ -53,12 +54,13 @@ class ViewMainToolBar(QToolBar):
 
         :param is_view_classroom: True if the current central panel tab is the classroom's widget
         """
-        # self.actions_table[self.__btn_magic].setVisible(is_view_classroom)
+        self.actions_table[self.__btn_magic].setVisible(not is_view_classroom)
         self.actions_table[self.__btn_perspective].setVisible(is_view_classroom)
         self.actions_table[self.__btn_shuffle].setVisible(is_view_classroom)
         self.actions_table[self.__btn_select].setVisible(is_view_classroom)
         self.actions_table[self.__btn_choice].setVisible(is_view_classroom)
         self.actions_table[self.__btn_delete].setVisible(is_view_classroom)
+        self.actions_table[self.__btn_lot_change].setVisible(not is_view_classroom)
 
     def __set_style(self):
         """

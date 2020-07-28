@@ -64,10 +64,11 @@ class Controller(QObject):
                                 "delete_group": self.on_delete_group,
 
                                 # Toolbar buttons
-                                "magic": self.debug,
+                                "magic": self.change_filter_selection,
                                 "select": self.select,
                                 "choix": self.debug,
-                                "delete": self.delete
+                                "delete": self.delete,
+                                "lot_change": self.lot_change
                               }
 
         # BDD connection
@@ -119,6 +120,7 @@ class Controller(QObject):
         self.id_course = 0
         self.id_group = 0
         self.selection_mode = self.SEL_ALL
+        self.filter_selection = False
         
         self.show_all_courses()
         self.show_all_groups()
@@ -610,7 +612,13 @@ class Controller(QObject):
 
             # get all students in current course
             students_in_course = self.mod_bdd.get_students_in_course_by_id(self.id_course)
-            students = [(s.id, f"{s.lastname} {s.firstname}") for s in students_in_course]
+            if self.filter_selection:
+                # get desk selection
+                desks_id = self.v_canvas.get_selected_tiles()
+                id_students_selected = [self.mod_bdd.get_desk_by_id(d).id_student for d in desks_id]
+                students = [(s.id, f"{s.lastname} {s.firstname}") for s in students_in_course if s.id in id_students_selected]
+            else:
+                students = [(s.id, f"{s.lastname} {s.firstname}") for s in students_in_course]
             students.sort(key=lambda x:x[1])
 
             # get datas
@@ -658,3 +666,9 @@ class Controller(QObject):
             self.__bdd.commit()
             self.on_attribute_selection_changed()
 
+    def change_filter_selection(self):
+        self.filter_selection = not self.filter_selection
+        self.on_attribute_selection_changed()
+    
+    def lot_change(self):
+        pass
