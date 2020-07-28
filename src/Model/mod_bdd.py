@@ -368,3 +368,9 @@ class ModBdd():
         self.__cursor.execute(req, [id_std, id_attr, id_topic])
         r = self.__cursor.fetchone()
         return "" if r is None else r[0]
+
+    def get_attribute_type_from_id(self, id_attr):
+        req = "SELECT AttrType FROM Attributes WHERE IdAttr = ?"
+        self.__cursor.execute(req, [id_attr])
+        r = self.__cursor.fetchone()
+        return "" if r is None else r[0]

@@ -9,7 +9,10 @@ from src.View.widgets.view_menubutton import ViewMenuButton
 from src.View.popup.view_import_csv import DialogImportCsv
 from src.Model.import_csv import import_csv, process_line
 
+from src.View.popup.view_attribute_edition import VDlgEditText, VDlgEditCounter, VDlgEditMark, VDlgEditColor
+
 from src.assets_manager import AssetManager
+from src.enumerates import EAttributesTypes
 
 from random import shuffle
 
@@ -633,3 +636,21 @@ class Controller(QObject):
         :param std_id: Student ID
         """
         print(attr_id, std_id)  # TODO
+
+        attr_type = self.mod_bdd.get_attribute_type_from_id(attr_id)
+        id_topic = self.mod_bdd.get_topic_id_by_course_id(self.id_course)
+        val = self.mod_bdd.get_attribute_value(std_id, attr_id, id_topic)
+
+        dlg = None  # QDialog
+        if attr_type == EAttributesTypes.TEXT.value:
+            dlg = VDlgEditText(self.gui, val)
+        elif attr_type == EAttributesTypes.COUNTER.value:
+            dlg = VDlgEditCounter(self.gui, val)
+        elif attr_type == EAttributesTypes.MARK.value:
+            dlg = VDlgEditMark(self.gui, val)
+        elif attr_type == EAttributesTypes.COLOR.value:
+            dlg = VDlgEditColor(self.gui, val)
+
+        if dlg and dlg.exec_():
+            print(dlg.new_value())  # TODO
+
