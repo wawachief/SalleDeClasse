@@ -619,6 +619,8 @@ class Controller(QObject):
                 for s in students:
                     val = self.mod_bdd.get_attribute_value(s[0], a[0], id_topic)
                     if val:
+                        if val[0] == '#' and len(val) == 7:
+                            val = QColor(val)
                         data[(a[0], s[0])] = val
             
             # push the data into the view
@@ -652,5 +654,7 @@ class Controller(QObject):
             dlg = VDlgEditColor(self.gui, val)
 
         if dlg and dlg.exec_():
-            print(dlg.new_value())  # TODO
+            self.mod_bdd.update_attr_with_ids(std_id, attr_id, id_topic, dlg.new_value())
+            self.__bdd.commit()
+            self.on_attribute_selection_changed()
 

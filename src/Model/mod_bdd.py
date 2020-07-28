@@ -374,3 +374,18 @@ class ModBdd():
         self.__cursor.execute(req, [id_attr])
         r = self.__cursor.fetchone()
         return "" if r is None else r[0]
+
+    def update_attr_with_ids(self, id_std, id_attr, id_topic, val):
+        """Insert or update Value as an attribute value
+        commit must be done separately
+        """
+        req = "SELECT IdStdAttr FROM StdAttrs WHERE IdStudent = ? AND IdAttr = ? AND IdTopic = ?"
+        self.__cursor.execute(req, [id_std, id_attr, id_topic])
+        r = self.__cursor.fetchone()
+        if r is None:
+            # Insert new value in the BDD
+            req = "INSERT INTO StdAttrs (StdAttrValue, IdStudent, IdAttr, IdTopic) VALUES (?, ?, ?, ?)"
+            self.__cursor.execute(req, [val, id_std, id_attr, id_topic])
+        else:
+            req = "UPDATE StdAttrs SET StdAttrValue = ? WHERE IdStdAttr = ?"
+            self.__cursor.execute(req, [val, r[0]])
