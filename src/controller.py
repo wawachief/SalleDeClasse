@@ -620,6 +620,8 @@ class Controller(QObject):
             
             # push the data into the view
             self.gui.central_widget.attributes_tab.set_data(attributes, students, data)
+        else:
+            self.gui.central_widget.attributes_tab.set_data([], [], {})
 
     @Slot(int, int)
     def on_attribute_cell_selected(self, attr_id: int, std_id: int) -> None:
