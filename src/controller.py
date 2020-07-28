@@ -592,13 +592,34 @@ class Controller(QObject):
     def on_attribute_selection_changed(self) -> None:
         """
         Triggered when the attribute selection changed
+        - attributes = [(1, "Attr1"), (2, "Attr2") ...]
+        - students = [(1, "Thomas Lécluse"), (2, "Pauline Lécluse"), ...]
+        - data = {(attr_id, std_id}: cell_data, ...}
         """
-        print(self.gui.sidewidget.attributes().selected_attributes())
-        # TODO
-        attributes = [(1, "Attr1"), (2, "Attr2"), (3, "Attr3"), (4, "Attr4"), (5, "Attr5"), (6, "Attr6"), (7, "Retards"), (8, "Travaux rendus")]
-        students = [(1, "Thomas Lécluse"), (2, "Pauline Lécluse"), (3, "Simon Lécluse"), (4, "Julie Lécluse"), (11, "Clara Collet"), (6, "Romane Collet"), (7, "Antoine Collet")]
-        data = {(1, 1): "a", (1, 2): "b", (1, 3): "texte trop long", (1, 4): "d", (1, 11): "e", (1, 6): "f", (2, 11): QColor("green"), (3, 1): 0, (3, 2): 10, (3, 3): 0}
-        self.gui.central_widget.attributes_tab.set_data(attributes, students, data)
+        list_id_attr = self.gui.sidewidget.attributes().selected_attributes()
+
+        if list_id_attr :
+            id_topic = self.mod_bdd.get_topic_id_by_course_id(self.id_course)
+            all_attributes = self.mod_bdd.get_all_attributes()
+            # all_attributes = list [(id1, attrName1, attrType1), ...]
+            # now we filter attributes
+            attributes = [(a[0], a[1]) for a in all_attributes if a[0] in list_id_attr]
+
+            # get all students in current course
+            students_in_course = self.mod_bdd.get_students_in_course_by_id(self.id_course)
+            students = [(s.id, f"{s.lastname} {s.firstname}") for s in students_in_course]
+            students.sort(key=lambda x:x[1])
+
+            # get datas
+            data = dict()
+            for a in attributes:
+                for s in students:
+                    val = self.mod_bdd.get_attribute_value(s[0], a[0], id_topic)
+                    if val:
+                        data[(a[0], s[0])] = val
+            
+            # push the data into the view
+            self.gui.central_widget.attributes_tab.set_data(attributes, students, data)
 
     @Slot(int, int)
     def on_attribute_cell_selected(self, attr_id: int, std_id: int) -> None:

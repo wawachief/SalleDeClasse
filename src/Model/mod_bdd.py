@@ -35,6 +35,16 @@ class ModBdd():
         self.__cursor.execute(req, [name])
         r = self.__cursor.fetchone()
         return 0 if r is None else r[0]
+    
+    def get_topic_id_by_course_id(self, id_course):
+        """Gets the topic Id from the course id
+        Input : id_course 
+        Output : topic id or 0"""
+
+        req = "SELECT IdTopic FROM Courses WHERE IdCourse = ?"
+        self.__cursor.execute(req, [id_course])
+        r = self.__cursor.fetchone()
+        return 0 if r is None else r[0]
 
     def get_course_all_desks(self, id_course):
         """fetch all the desks in the course
@@ -352,3 +362,9 @@ class ModBdd():
 
         req = "DELETE FROM Attributes WHERE IdAttr = ?"
         self.__cursor.execute(req, [attr_id])
+    
+    def get_attribute_value(self, id_std, id_attr, id_topic):
+        req = "SELECT stdAttrValue FROM StdAttrs WHERE IdStudent = ? AND IdAttr = ? AND IdTopic = ?"
+        self.__cursor.execute(req, [id_std, id_attr, id_topic])
+        r = self.__cursor.fetchone()
+        return "" if r is None else r[0]
