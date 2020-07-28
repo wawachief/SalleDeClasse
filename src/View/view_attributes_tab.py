@@ -152,8 +152,8 @@ class AttributesTableModel(QAbstractTableModel):
             return None
 
     def headerData(self, section: int, orientation: Qt.Orientation, role: int = ...) -> typing.Any:
-        if orientation == Qt.Horizontal and role == Qt.DisplayRole:
+        if orientation == Qt.Horizontal and role == Qt.DisplayRole and section < len(self.attr_header):
             return self.attr_header[section]
-        elif orientation == Qt.Vertical and role == Qt.DisplayRole:
+        elif orientation == Qt.Vertical and role == Qt.DisplayRole and section < len(self.std_header):
             return self.std_header[section]
         return None
