@@ -35,5 +35,7 @@ dico = {"perspective_student_txt": "Vue élève",
         "attr_color": "Couleur",
         "attr_counter": "Compteur",
         "attr_txt": "Texte",
-        "attr_mark": "Note"
+        "attr_mark": "Note",
+
+        "confirm_message_delete": "Êtes-vous sur de vouloir supprimer ?"
 }

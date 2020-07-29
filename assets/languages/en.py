@@ -35,5 +35,7 @@ dico = {"perspective_student_txt": "Student perspective",
         "attr_color": "Color",
         "attr_counter": "Counter",
         "attr_txt": "Text",
-        "attr_mark": "Mark"
+        "attr_mark": "Mark",
+
+        "confirm_message_delete": "Do you confirm the deletion?"
         }
