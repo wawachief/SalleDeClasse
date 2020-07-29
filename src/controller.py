@@ -64,7 +64,7 @@ class Controller(QObject):
                                 "delete_group": self.on_delete_group,
 
                                 # Toolbar buttons
-                                "magic": self.change_filter_selection,
+                                "filter_select": self.change_filter_selection,
                                 "select": self.select,
                                 "choix": self.debug,
                                 "delete": self.delete,
@@ -361,6 +361,7 @@ class Controller(QObject):
         """
         self.id_course = new_course
         self.show_course()
+        self.on_attribute_selection_changed()
 
     @Slot(str)
     def on_create_course(self, new_course):
@@ -671,4 +672,45 @@ class Controller(QObject):
         self.on_attribute_selection_changed()
     
     def lot_change(self):
-        pass
+        list_id_attr = self.gui.sidewidget.attributes().selected_attributes()
+        if len(list_id_attr) == 1:
+            # Only one attribute is selected, we change it
+            id_topic = self.mod_bdd.get_topic_id_by_course_id(self.id_course)
+            students_in_course = self.mod_bdd.get_students_in_course_by_id(self.id_course)
+            if self.filter_selection:
+                # get desk selection
+                desks_id = self.v_canvas.get_selected_tiles()
+                id_students_selected = [self.mod_bdd.get_desk_by_id(d).id_student for d in desks_id]
+                students = [(s.id, f"{s.lastname} {s.firstname}") for s in students_in_course if s.id in id_students_selected]
+            else:
+                students = [(s.id, f"{s.lastname} {s.firstname}") for s in students_in_course]
+            attr_id = list_id_attr[0]
+            attr_type = self.mod_bdd.get_attribute_type_from_id(attr_id)
+
+            dlg = None  # QDialog
+            val = ""
+            if attr_type == EAttributesTypes.TEXT.value:
+                dlg = VDlgEditText(self.gui, val)
+            elif attr_type == EAttributesTypes.MARK.value:
+                dlg = VDlgEditMark(self.gui, val)
+            elif attr_type == EAttributesTypes.COLOR.value:
+                dlg = VDlgEditColor(self.gui, val)
+            elif attr_type == EAttributesTypes.COUNTER.value:
+                dlg = VDlgEditCounter(self.gui, val)
+
+            if dlg and dlg.exec_():
+                if attr_type == EAttributesTypes.COUNTER.value:
+                    for s in students:
+                        if dlg.new_value() == 0:
+                            val = "0"
+                        else:
+                            val = self.mod_bdd.get_attribute_value(s[0], attr_id, id_topic)
+                            val = str(int(val) + dlg.new_value()) if val else "1"
+                        self.mod_bdd.update_attr_with_ids(s[0], attr_id, id_topic, val)
+                else: 
+                    for s in students:
+                        val = dlg.new_value()
+                        self.mod_bdd.update_attr_with_ids(s[0], attr_id, id_topic, val)
+
+                self.__bdd.commit()
+                self.on_attribute_selection_changed()

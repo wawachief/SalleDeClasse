@@ -23,7 +23,7 @@ class ViewMainToolBar(QToolBar):
         self.sig_TBbutton = None
 
         # Buttons
-        self.__btn_magic = ToolBarButton("unkwown", "Abracadabra !", lambda: self.sig_TBbutton.emit("magic"))
+        self.__btn_magic = ToolBarButton("unkwown", "Filtrer Sélection", lambda: self.sig_TBbutton.emit("filter_select"))
         self.__btn_perspective = ToolBarButton("teacher", "Changer de perspective", self.on_btn_perspective_clicked)
         self.__btn_shuffle = ToolBarButton("shuffle", "Mélanger", self.on_btn_shuffle_clicked)
         self.__btn_select = ToolBarButton("selection", "Sélectionner", lambda: self.sig_TBbutton.emit("select"))
