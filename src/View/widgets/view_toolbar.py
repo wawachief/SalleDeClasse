@@ -1,7 +1,7 @@
 from PySide2.QtWidgets import QToolBar, QPushButton, QComboBox, QWidget, QSizePolicy
 from PySide2.QtCore import Signal, Slot, QSize
 
-from src.assets_manager import get_icon, get_stylesheet
+from src.assets_manager import get_icon, get_stylesheet, AssetManager
 from src.View.widgets.view_add_widget import ViewAddWidget, ViewAddLine, ViewAddAttributeWidget
 from src.View.widgets.view_menubutton import ViewMenuButton
 
@@ -148,18 +148,18 @@ class ViewStudentListToolbar(QToolBar):
         self.combo_groups = QComboBox()
         self.create_field = ViewAddLine()
         self.action_menu = ViewMenuButton("Actions", self.create_field.show_field,
-                                          [("Import Pronote", "import_csv"),
-                                           ("Créer un groupe", "create_group"),
-                                           ("Supprimer ce groupe !", "delete_group"),
+                                          [(AssetManager.getInstance().get_text("grp_action_import_csv"), "import_csv"),
+                                           (AssetManager.getInstance().get_text("grp_action_create_group"), "create_group"),
+                                           (AssetManager.getInstance().get_text("grp_action_del_group"), "delete_group"),
                                            'sep',
-                                           ("Créer un élève", "create_student"),
-                                           ("Supprimer un élève", "killstudent"),
+                                           (AssetManager.getInstance().get_text("grp_action_create_student"), "create_student"),
+                                           (AssetManager.getInstance().get_text("grp_action_del_student"), "killstudent"),
                                            'sep',
-                                           ("Placement automatique", "auto_place"),
+                                           (AssetManager.getInstance().get_text("grp_action_auto_placement"), "auto_place"),
                                            'sep',
-                                           ("Tri alphabétique croissant", "sort_asc"),
-                                           ("Tri alphabétique décroissant", "sort_desc"),
-                                           ("Tri d'après les places", "sort_desks")])
+                                           (AssetManager.getInstance().get_text("grp_action_sort_asc"), "sort_asc"),
+                                           (AssetManager.getInstance().get_text("grp_action_sort_desc"), "sort_desc"),
+                                           (AssetManager.getInstance().get_text("grp_action_sort_by_place"), "sort_desks")])
 
         # Signals
         self.sig_combo_changed: Signal = None

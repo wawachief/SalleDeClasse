@@ -3,6 +3,8 @@ from PySide2.QtWidgets import QWidget, QVBoxLayout
 from src.View.widgets.view_toolbar import ViewCourseListToolbar
 from src.View.widgets.view_table import CustomTableModel, CustomTableView
 
+from src.assets_manager import AssetManager
+
 
 class ViewCoursePanel(QWidget):
 
@@ -78,7 +80,9 @@ class ViewCoursePanel(QWidget):
             if course_id == selected_id:
                 selection = len(data_list) - 1
 
-        self.datamodel = CustomTableModel(self.tableview, data_list, ("Cours", "Discipline"))
+        self.datamodel = CustomTableModel(self.tableview, data_list,
+                                          (AssetManager.getInstance().get_text("crs_courses"),
+                                           AssetManager.getInstance().get_text("crs_topic")))
         self.tableview.selectionModel().selectionChanged.connect(
             lambda: self.courses_toolbar.enable_delete_btn(len(self.tableview.selectionModel().selectedRows()) > 0))
 

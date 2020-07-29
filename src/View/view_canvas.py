@@ -278,6 +278,7 @@ class ViewCanvas(QWidget):
 
         self.__tiles = {}  # All drawn tiles
         self.tmp = {}
+        self.hovered = False
 
         self.is_view_students = True
         self.__do_switch = False
@@ -449,6 +450,7 @@ class ViewCanvas(QWidget):
         # Current tile selected by the mouse
         tile_selected_pos = self.__convert_point(self.__mouse_pos[0], self.__mouse_pos[1]) if self.__mouse_pos else None
         tile_selected = None
+        self.hovered = False
 
         # Drawing of all the tiles
         for t in list(self.__tiles.values()):
@@ -457,6 +459,7 @@ class ViewCanvas(QWidget):
                 tile_selected = t
                 color = QColor(AssetManager.getInstance().config('colors', 'drag_selected_tile'))
             elif self.__relative_grid_position(t.grid_position()) == tile_selected_pos:  # If the mouse is hover
+                self.hovered = True
                 color = QColor(AssetManager.getInstance().config('colors', 'hovered_tile'))
             elif t.is_selected():
                 color = QColor(AssetManager.getInstance().config('colors', 'selected_tile'))
@@ -481,8 +484,15 @@ class ViewCanvas(QWidget):
         :param x: real mouse position x
         :param y: real mouse position y
         """
-        rect = QRect(QPoint(PADDING + y, PADDING + x),
-                     QPoint(y + self.square_size - PADDING, x + self.square_size - PADDING))
+        if not self.hovered:  # If there is no tile under the dragged one, we draw a light gray rect below it
+            # Convert x and y to get the hovered empty tile position
+            hov_x = x // self.square_size * self.square_size
+            hov_y = y // self.square_size * self.square_size
+            hov_rect = self.__get_rect_at(hov_y, hov_x)
+            painter.fillRect(hov_rect, QColor(AssetManager.getInstance().config('colors', 'hovered_empty_tile')))
+
+        rect = QRect(QPoint(PADDING + y - self.square_size / 2, PADDING + x - self.square_size / 2),
+                     QPoint(y + self.square_size / 2 - PADDING, x + self.square_size / 2 - PADDING))
         painter.fillRect(rect, QColor(AssetManager.getInstance().config('colors', 'dragged_tile')))
         painter.drawText(rect, Qt.AlignCenter | Qt.TextWordWrap, f"{tile.lastname()}\n{tile.firstname()}")
 

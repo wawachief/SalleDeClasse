@@ -646,8 +646,6 @@ class Controller(QObject):
         :param attr_id: Attribute ID
         :param std_id: Student ID
         """
-        print(attr_id, std_id)  # TODO
-
         attr_type = self.mod_bdd.get_attribute_type_from_id(attr_id)
         id_topic = self.mod_bdd.get_topic_id_by_course_id(self.id_course)
         val = self.mod_bdd.get_attribute_value(std_id, attr_id, id_topic)

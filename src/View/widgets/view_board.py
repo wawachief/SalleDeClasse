@@ -1,5 +1,8 @@
+import PySide2
 from PySide2.QtWidgets import QLabel, QWidget, QComboBox, QHBoxLayout
 from PySide2.QtCore import QSize, Qt
+
+from src.assets_manager import AssetManager
 
 
 class ViewTeacherDeskLabel(QWidget):
@@ -18,7 +21,7 @@ class ViewTeacherDeskLabel(QWidget):
         self.setFixedSize(QSize(200, 30))
 
         self.label = QLabel(text)
-        self.label.setToolTip("Position du tableau")
+        self.label.setToolTip(AssetManager.getInstance().get_text("perspective_tootip"))
         self.label.setStyleSheet(f"border-radius: 5px; background: {bg_color}; color: white;")
         self.label.setAlignment(Qt.AlignCenter)
         self.label.setFixedSize(QSize(200, 30))
@@ -36,6 +39,15 @@ class ViewTeacherDeskLabel(QWidget):
         """
         self.label.setVisible(b_visible)
 
+    def mousePressEvent(self, event):
+        super().mousePressEvent(event)
+
+        if self.label.isVisible():
+            self.on_click()
+
+    def on_click(self):
+        pass
+
 
 class ViewTopics(QWidget):
 
@@ -48,7 +60,7 @@ class ViewTopics(QWidget):
         self.setFixedWidth(200)
 
         # Widgets
-        self.label = QLabel("Discipline :")
+        self.label = QLabel(AssetManager.getInstance().get_text("select_topic"))
         self.combo = QComboBox()
 
         # Signal

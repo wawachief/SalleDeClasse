@@ -5,7 +5,7 @@ from src.View.widgets.view_courses import ViewCoursePanel
 from src.View.widgets.view_students import ViewStudentPanel
 from src.View.widgets.view_attributes_list import ViewAttributePanel
 
-from src.assets_manager import get_icon, get_stylesheet
+from src.assets_manager import get_icon, get_stylesheet, AssetManager
 
 
 class ViewSidePanel(QTabWidget):
@@ -32,10 +32,10 @@ class ViewSidePanel(QTabWidget):
 
         # Tabs
         self.addTab(self.courses_panel, get_icon("classroom"), "")
-        self.setTabToolTip(0, "Cours")
+        self.setTabToolTip(0, AssetManager.getInstance().get_text("crs_tab_tooltip"))
         self.addTab(self.students_panel, get_icon("magic"), "")
-        self.setTabToolTip(1, "Élève")
+        self.setTabToolTip(1, AssetManager.getInstance().get_text("grp_tab_tooltip"))
         self.addTab(self.attributes_panel, get_icon("competence"), "")
-        self.setTabToolTip(2, "Attributs")
+        self.setTabToolTip(2, AssetManager.getInstance().get_text("attr_tab_tooltip"))
 
         self.setStyleSheet(get_stylesheet("tabbar"))

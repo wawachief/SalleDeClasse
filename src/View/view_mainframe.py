@@ -36,6 +36,10 @@ class CentralWidget(QTabWidget):
         self.classroom_tab = ClassRoomTab(self.sig_move_animation_ended)
         self.attributes_tab = AttributesTab()
 
+        # Callbacks
+        self.classroom_tab.view_students.on_click = self.on_perspective_changed
+        self.classroom_tab.view_teacher.on_click = self.on_perspective_changed
+
         # Signals
         self.sig_add_tile = None
         self.sig_shuffle = None
