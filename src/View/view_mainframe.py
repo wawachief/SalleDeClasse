@@ -11,6 +11,8 @@ from src.View.widgets.view_attributes_list import ViewAttributePanel
 from src.View.view_attributes_tab import AttributesTab
 from src.assets_manager import AssetManager
 
+from src.View.popup.view_confirm_dialogs import VConfirmDialog
+
 
 class CentralWidget(QTabWidget):
 
@@ -82,6 +84,9 @@ class CentralWidget(QTabWidget):
         self.sig_add_tile.emit()
 
     def do_shuffle(self):
+        if not VConfirmDialog(self, "confirm_message_shuffle").exec_():
+            return
+
         self.sig_enable_animation_btns.emit(False)
         self.sig_shuffle.emit()
 

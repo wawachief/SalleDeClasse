@@ -10,6 +10,8 @@ from src.View.popup.view_import_csv import DialogImportCsv
 from src.Model.import_csv import import_csv, process_line
 
 from src.View.popup.view_attribute_edition import VDlgEditText, VDlgEditCounter, VDlgEditMark, VDlgEditColor
+from src.View.popup.view_confirm_dialogs import VConfirmDialog
+from src.View.popup.view_info_dialog import VInfoDialog
 
 from src.assets_manager import AssetManager
 from src.enumerates import EAttributesTypes
@@ -199,7 +201,7 @@ class Controller(QObject):
         """Shuffle all desktops"""
         all_desks = self.mod_bdd.get_course_all_desks(self.id_course)
         shuffle(all_desks)
-        for i in range(0,len(all_desks)-1,2):
+        for i in range(0, len(all_desks)-1, 2):
             d1 = all_desks[i]
             d2 = all_desks[i+1]
             # We swap the two desks
@@ -344,12 +346,17 @@ class Controller(QObject):
             self.v_canvas.repaint()
             
             index_std += 1
-        
-        if to_be_placed > 0 :
-            self.gui.status_bar.showMessage(f"Il manque {to_be_placed} places pour placer tous les élèves")
+
+        info = None
+        if to_be_placed > 0:
+            info = f"Il manque {to_be_placed} places pour placer tous les élèves"
+            self.gui.status_bar.showMessage(info)
         else:
-            self.gui.status_bar.showMessage("Tous les élèves sont placés",3000)
+            self.gui.status_bar.showMessage("Tous les élèves sont placés", 3000)
         self.__bdd.commit()
+
+        if info is not None:
+            VInfoDialog(self.gui, info).exec_()
 
     @Slot(int)
     def on_course_changed(self, new_course):
@@ -449,6 +456,9 @@ class Controller(QObject):
         self.v_canvas.repaint()
 
     def delete(self) -> None:
+        if not VConfirmDialog(self.gui, "confirm_message_delete").exec_():
+            return
+
         desks_id = self.v_canvas.get_selected_tiles()
         for d in desks_id:
             id_student = self.mod_bdd.get_desk_by_id(d).id_student
@@ -496,6 +506,9 @@ class Controller(QObject):
         self.__bdd.commit()
 
     def killstudent(self):
+        if not VConfirmDialog(self.gui, "confirm_message_delete").exec_():
+            return
+
         self.gui.status_bar.showMessage(f"Suppression d'élèves", 3000)
         list_id_students = self.gui.sidewidget.students().selected_students()
         for id_std in list_id_students:
@@ -570,6 +583,9 @@ class Controller(QObject):
         """
         Deletes all the selected attribtues
         """
+        if not VConfirmDialog(self.gui, "confirm_message_delete").exec_():
+            return
+
         for id_a in self.gui.sidewidget.attributes().selected_attributes():
             self.mod_bdd.delete_attribute_with_id(id_a)
         self.__bdd.commit()
@@ -580,6 +596,9 @@ class Controller(QObject):
         """
         Deletes the selected course
         """
+        if not VConfirmDialog(self.gui, "confirm_message_delete").exec_():
+            return
+
         self.mod_bdd.delete_course_with_id(self.id_course)
         self.id_course = 0
         self.__bdd.commit()
@@ -589,6 +608,9 @@ class Controller(QObject):
         """
         Deletes the selected group
         """
+        if not VConfirmDialog(self.gui, "confirm_message_delete").exec_():
+            return
+
         self.mod_bdd.delete_group_by_id(self.id_group)
         self.id_group = 0
         self.__bdd.commit()

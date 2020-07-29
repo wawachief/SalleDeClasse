@@ -37,5 +37,6 @@ dico = {"perspective_student_txt": "Student perspective",
         "attr_txt": "Text",
         "attr_mark": "Mark",
 
-        "confirm_message_delete": "Do you confirm the deletion?"
+        "confirm_message_delete": "Do you confirm the deletion?",
+        "confirm_message_shuffle": "Are you sure you want to shuffle?"
         }
