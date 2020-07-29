@@ -15,6 +15,8 @@ class VDialogEdit(QDialog):
         """
         QDialog.__init__(self, parent)
 
+        self.setWindowTitle("Edition")
+
         # Quit buttons
         self.ok_btn = QPushButton("Ok")
         self.ok_btn.clicked.connect(self.accept)

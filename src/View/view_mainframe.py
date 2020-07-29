@@ -174,6 +174,7 @@ class ViewMainFrame(QMainWindow):
         QMainWindow.__init__(self)
 
         self.setWindowTitle(f"Salle de Classe | {AssetManager.getInstance().config('main', 'version')}")
+        self.setContextMenuPolicy(Qt.PreventContextMenu)
 
         # Widgets
         self.status_bar = QStatusBar()
