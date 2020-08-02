@@ -9,15 +9,20 @@ flask_app = Flask(__name__)
 
 controller: Controller = None
 
+
 @flask_app.route('/')
 def hello_world():
-    mots = ["dans", "Salle", "de", "Classe."]
     active_course = controller.id_course
-    bdd = sqlite3.connect("src/SQL/sdc_db")
-    mod_bdd = ModBdd(bdd)
+    mod_bdd = get_bdd_connection()
+    active_course_name = mod_bdd.get_course_name_by_id(active_course)
     students = mod_bdd.get_students_in_course_by_id(active_course)
     print(students)
-    return render_template('template.html', titre="Lise des élèves", mots=students)
+    return render_template('template.html', titre="Liste des élèves de la classe "+active_course_name, mots=students)
+
+
+def get_bdd_connection():
+    bdd = sqlite3.connect("src/SQL/sdc_db")
+    return ModBdd(bdd)
 
 
 class FlaskThread(QThread):
