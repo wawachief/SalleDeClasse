@@ -1,7 +1,7 @@
 from src.Model.mod_types import Desk, Student
 
 
-class ModBdd():
+class ModBdd:
     """This class deals with SQL requests
     All commits are done by the controller"""
 
@@ -63,7 +63,7 @@ class ModBdd():
     def get_desk_id_in_course_by_coords(self, id_course, row, col):
         """Returns the Id of the desk at the given coordinates
         Input : id_course - if of the course
-                row, col : Corrdinates of the desk
+                row, col : Coordinates of the desk
         Output : idDesk or 0 if no desk is present"""
 
         req = "SELECT IdDesk FROM Desks WHERE IdCourse = ? AND DeskRow = ? AND DeskCol = ?"
@@ -73,7 +73,7 @@ class ModBdd():
     
     def get_desk_by_id(self, id_desk):
         """Returns the desk designed by id_desk
-        Input : id_cdesk - if of the desk
+        Input : id_desk - if of the desk
         Output : Desk object or None"""
 
         req = "SELECT * FROM Desks WHERE IdDesk = ?"
@@ -88,12 +88,12 @@ class ModBdd():
             if name already exist, idCourse is the id of the existing course
             if name doesn't exist, idCourse is the id of the course just created
         The topic id of the new course is 1 (main topic)"""
-        id = self.get_course_id_by_name(name)
-        if id == 0:
+        idc = self.get_course_id_by_name(name)
+        if idc == 0:
             req = "INSERT INTO Courses (CourseName, IdTopic) VALUES (?, 1)"
             self.__cursor.execute(req, [name])
-            id = self.__cursor.lastrowid
-        return id
+            idc = self.__cursor.lastrowid
+        return idc
 
     def delete_course_with_id(self, course_id):
         """delete a course given its id
@@ -108,7 +108,7 @@ class ModBdd():
         
     def create_new_desk_in_course(self, row, col, id_course):
         """Creates a new desk in a course
-        Input : idcourse - course id
+        Input : id_course - course id
                 cx, cy : coordinates of the desk
         Output : the desk id 
         The student Id is set to 0"""
@@ -116,11 +116,9 @@ class ModBdd():
             req = "INSERT INTO Desks (DeskRow, DeskCol, IdCourse, IdStudent) VALUES (?, ?, ?, ?)"
             self.__cursor.execute(req, [row, col, id_course, 0])
             id_dsk = self.__cursor.lastrowid
-            dsk = Desk(id_dsk, row, col, id_course, 0)
             return id_dsk
         else:
             raise ValueError('new_desk error : invalid course id')
-            return 0
 
     def remove_desk_by_id(self, id_desk):
         """Removes a desk
@@ -148,7 +146,7 @@ class ModBdd():
 
         if id_desk != 0:
             req = "UPDATE Desks SET IdStudent = ? WHERE IdDesk = ?"
-            self.__cursor.execute (req, [std_id, id_desk])
+            self.__cursor.execute(req, [std_id, id_desk])
 
     #
     # Student relative requests
@@ -162,7 +160,7 @@ class ModBdd():
         req = "SELECT GroupName FROM Groups ORDER BY GroupName"
         self.__cursor.execute(req)
         r = self.__cursor.fetchall()
-        return [] if r is None else [ c[0] for c in r ]
+        return [] if r is None else [c[0] for c in r]
     
     def create_group(self, group_name):
         group_id = self.get_group_id_by_name(group_name)
@@ -195,7 +193,7 @@ class ModBdd():
 
     def insert_student_in_group_id(self, firstname, lastname, order, group_id):
         """Create a new student by firstname and lastname in group by id
-        return the nbew student id"""
+        return the new student id"""
 
         req = "INSERT INTO Students (StdFirstName, StdLastName, OrderKey) VALUES (?, ?, ?)"
         self.__cursor.execute(req, [firstname, lastname, order])
@@ -266,7 +264,7 @@ class ModBdd():
         req = """SELECT * from Students JOIN Desks USING (idStudent) WHERE Desks.IdCourse = ? ORDER BY OrderKey"""
         self.__cursor.execute(req, [id_course])
         r = self.__cursor.fetchall()
-        return [] if r is None else [Student(t[0], t[1], t[2]) for t in r ]
+        return [] if r is None else [Student(t[0], t[1], t[2]) for t in r]
 
     def get_students_in_group(self, group_name):
         """Returns an array of Students in a group
@@ -275,7 +273,7 @@ class ModBdd():
         req = """SELECT * from Students JOIN IsIn USING (idStudent) JOIN Groups USING (IdGroup) WHERE Groups.GroupName = ? ORDER BY OrderKey"""
         self.__cursor.execute(req, [group_name])
         r = self.__cursor.fetchall()
-        return [] if r is None else [Student(t[0], t[1], t[2]) for t in r ]
+        return [] if r is None else [Student(t[0], t[1], t[2]) for t in r]
 
     def get_student_by_desk_id(self, id_desk):
         """Returns the Id of the desk at the given coordinates
@@ -287,9 +285,9 @@ class ModBdd():
         r = self.__cursor.fetchone()
         return r if r is None else Student(r[0], r[1], r[2])
     
-    def update_student_order_with_id(self, idS, order):
-            req = "UPDATE Students SET OrderKey = ? WHERE IdStudent = ?"
-            self.__cursor.execute (req, [order, idS])
+    def update_student_order_with_id(self, ids, order):
+        req = "UPDATE Students SET OrderKey = ? WHERE IdStudent = ?"
+        self.__cursor.execute(req, [order, ids])
     
     def delete_group_by_id(self, group_id):
         """Delete a all students in a group then the group itself
@@ -307,6 +305,7 @@ class ModBdd():
     #
     # Topic relative requests
     #
+
     def get_topic_from_course_id(self, id_course):
         """Returns a Student object
         Input : id_course - course id
@@ -323,7 +322,7 @@ class ModBdd():
         req = "SELECT TopicName FROM Topics"
         self.__cursor.execute(req)
         r = self.__cursor.fetchall()
-        return ["Cueillette de fraises"] if r is None else [ t[0] for t in r ]
+        return ["Cueillette de fraises"] if r is None else [t[0] for t in r]
     
     def set_topic_to_course_id(self, id_course, new_topic):
         req = "UPDATE Courses SET IdTopic = ( SELECT Topics.IdTopic FROM Topics WHERE Topics.TopicName = ? ) WHERE IdCourse = ?"
@@ -340,7 +339,7 @@ class ModBdd():
         req = "SELECT * FROM Attributes"
         self.__cursor.execute(req)
         r = self.__cursor.fetchall()
-        return [] if r is None else [ (t[0], t[1], t[2]) for t in r ]
+        return [] if r is None else [(t[0], t[1], t[2]) for t in r]
     
     def insert_attribute(self, attr_name, attr_type):
         """Create a new attribute
