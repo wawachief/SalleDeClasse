@@ -1,5 +1,5 @@
-from PySide2.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton
-from PySide2.QtCore import Qt, QSize
+from PySide2.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton, QStyle
+from PySide2.QtCore import Qt, QSize, QPoint, QRect
 
 from src.assets_manager import get_stylesheet
 
@@ -15,7 +15,6 @@ class VInfoDialog(QDialog):
         """
         QDialog.__init__(self, parent)
 
-        self.setWindowFlags(Qt.FramelessWindowHint)
         self.setFixedSize(QSize(350, 80))
 
         self.info = QLabel(message)

@@ -1,6 +1,6 @@
 import sqlite3
 
-from PySide2.QtCore import QObject, Signal, Slot, QTimer
+from PySide2.QtCore import QObject, Signal, Slot
 from PySide2.QtGui import QColor
 
 from src.Model.mod_bdd import ModBdd
@@ -19,6 +19,7 @@ from src.enumerates import EAttributesTypes
 from random import shuffle
 
 
+# noinspection PyUnresolvedReferences
 class Controller(QObject):
     # Constants
     SEL_NONE = 0
@@ -57,21 +58,21 @@ class Controller(QObject):
         QObject.__init__(self)
 
         self.actions_table = {  # Action buttons
-                                "import_csv": self.import_pronote,
-                                "auto_place": self.auto_place,
-                                "sort_asc": self.sort_asc,
-                                "sort_desc": self.sort_desc,
-                                "sort_desks": self.sort_desks,
-                                "killstudent": self.killstudent,
-                                "delete_group": self.on_delete_group,
+            "import_csv": self.import_pronote,
+            "auto_place": self.auto_place,
+            "sort_asc": self.sort_asc,
+            "sort_desc": self.sort_desc,
+            "sort_desks": self.sort_desks,
+            "killstudent": self.killstudent,
+            "delete_group": self.on_delete_group,
 
-                                # Toolbar buttons
-                                "filter_select": self.change_filter_selection,
-                                "select": self.select,
-                                "choix": self.debug,
-                                "delete": self.delete,
-                                "lot_change": self.lot_change
-                              }
+            # Toolbar buttons
+            "filter_select": self.change_filter_selection,
+            "select": self.select,
+            "choix": self.debug,
+            "delete": self.delete,
+            "lot_change": self.lot_change
+        }
 
         # BDD connection
         self.__bdd = sqlite3.connect("src/SQL/sdc_db")
@@ -123,7 +124,7 @@ class Controller(QObject):
         self.id_group = 0
         self.selection_mode = self.SEL_ALL
         self.filter_selection = False
-        
+
         self.show_all_courses()
         self.show_all_groups()
         self.show_all_attributes()
@@ -135,7 +136,7 @@ class Controller(QObject):
     @Slot()
     def test_buttton(self):
         self.auto_place()
-        
+
     @Slot(tuple)
     def add_desk(self, coords):
         """Add a new desk at mouse place"""
@@ -147,12 +148,12 @@ class Controller(QObject):
                 # The place is free, we create the desk
                 id_desk = self.mod_bdd.create_new_desk_in_course(row, col, self.id_course)
                 self.v_canvas.new_tile(row, col, id_desk)
-            
+
             self.__bdd.commit()
             self.v_canvas.repaint()
         else:
             self.gui.status_bar.showMessage("Impossible : aucun cours sélectionné !")
-    
+
     @Slot(tuple, tuple)
     def move_desk(self, start, end):
         """Moves a desk from start to end
@@ -201,9 +202,9 @@ class Controller(QObject):
         """Shuffle all desktops"""
         all_desks = self.mod_bdd.get_course_all_desks(self.id_course)
         shuffle(all_desks)
-        for i in range(0, len(all_desks)-1, 2):
+        for i in range(0, len(all_desks) - 1, 2):
             d1 = all_desks[i]
-            d2 = all_desks[i+1]
+            d2 = all_desks[i + 1]
             # We swap the two desks
             self.mod_bdd.move_desk_by_id(d1.id, d2.row, d2.col)
             self.mod_bdd.move_desk_by_id(d2.id, d1.row, d1.col)
@@ -266,7 +267,7 @@ class Controller(QObject):
         """
         self.id_course = self.mod_bdd.create_course_with_name(course_name)
         self.selection_mode = self.SEL_ALL
-    
+
     def show_all_courses(self):
         """Initializes the contents of the widgets :
         - courses list
@@ -301,22 +302,22 @@ class Controller(QObject):
 
     def auto_place(self):
         """Autoplacement of students on the free tiles"""
-        maxRow = int(AssetManager.getInstance().config("size", "default_room_rows"))
-        maxCol = int(AssetManager.getInstance().config("size", "default_room_columns"))
+        max_row = int(AssetManager.getInstance().config("size", "default_room_rows"))
+        max_col = int(AssetManager.getInstance().config("size", "default_room_columns"))
         group_name = self.mod_bdd.get_group_name_by_id(self.id_group)
         list_idstd = self.gui.sidewidget.students().selected_students()
-        if list_idstd == []:
+        if not list_idstd:
             list_students = self.mod_bdd.get_students_in_group(group_name)
         else:
-            list_students = [self.mod_bdd.get_student_by_id(i) for i in list_idstd] 
-        
-        students_ids = { s.id for s in list_students}
+            list_students = [self.mod_bdd.get_student_by_id(i) for i in list_idstd]
+
+        students_ids = {s.id for s in list_students}
 
         to_be_placed = len(list_students)
         list_available_desks = []
         list_to_remove = []
-        for row in range(maxRow):
-            for col in range(maxCol):
+        for row in range(max_row):
+            for col in range(max_col):
                 id_desk = self.mod_bdd.get_desk_id_in_course_by_coords(self.id_course, row, col)
                 if id_desk != 0:
                     student = self.mod_bdd.get_student_by_desk_id(id_desk)
@@ -344,7 +345,7 @@ class Controller(QObject):
             # update the view
             self.v_canvas.set_student(dsk[0], student.firstname, student.lastname)
             self.v_canvas.repaint()
-            
+
             index_std += 1
 
         info = None
@@ -390,7 +391,7 @@ class Controller(QObject):
         for d in old_desks:
             id_desk = self.mod_bdd.create_new_desk_in_course(d.row, d.col, self.id_course)
             self.v_canvas.new_tile(d.row, d.col, id_desk)
-        
+
         self.__bdd.commit()
         self.v_canvas.repaint()
 
@@ -432,9 +433,10 @@ class Controller(QObject):
         - 1 = empty desks, 
         - 0 = none
         """
-        def get_desks(isFree):
+
+        def get_desks(is_free):
             all_desks = self.mod_bdd.get_course_all_desks(self.id_course)
-            if isFree:
+            if is_free:
                 return [d.id for d in all_desks if d.id_student == 0]
             else:
                 return [d.id for d in all_desks if d.id_student != 0]
@@ -451,7 +453,7 @@ class Controller(QObject):
         else:
             self.v_canvas.select_tiles_to(True)
             self.gui.status_bar.showMessage(f"Selection de tous les emplacements", 3000)
-        self.selection_mode = (self.selection_mode+1) % 4
+        self.selection_mode = (self.selection_mode + 1) % 4
 
         self.v_canvas.repaint()
 
@@ -491,17 +493,17 @@ class Controller(QObject):
             self.show_all_groups()
         elif prefix == 'std ':  # Student creation
             self.gui.status_bar.showMessage(f"Creation de l'élève {name}", 3000)
-            lastname, firstname  = process_line(name, ";")
+            lastname, firstname = process_line(name, ";")
             self.mod_bdd.insert_student_in_group_id(firstname, lastname, 0, self.id_group)
             self.show_course()
-            self.show_all_groups(current = self.id_group)
+            self.show_all_groups(current=self.id_group)
         else:  # Student edition
             id_std = int(prefix)
-            lastname, firstname  = process_line(name, ";")
+            lastname, firstname = process_line(name, ";")
             self.gui.status_bar.showMessage(f"Renommage de l'élève {firstname} {lastname}", 3000)
             self.mod_bdd.rename_student_by_id(id_std, firstname, lastname)
             self.show_course()
-            self.show_all_groups(current = self.id_group)
+            self.show_all_groups(current=self.id_group)
 
         self.__bdd.commit()
 
@@ -514,15 +516,15 @@ class Controller(QObject):
         for id_std in list_id_students:
             self.mod_bdd.remove_student_from_group(id_std, self.id_group)
         self.show_course()
-        self.show_all_groups(current = self.id_group)
+        self.show_all_groups(current=self.id_group)
         self.__bdd.commit()
 
     def sort_alpha(self, desc):
         self.gui.status_bar.showMessage("Tri alphabétique", 3000)
         group_name = self.mod_bdd.get_group_name_by_id(self.id_group)
         list_students = self.mod_bdd.get_students_in_group(group_name)
-        sortlist = [(s.lastname, s.id) for s in list_students ]
-        sortlist.sort(reverse = desc)
+        sortlist = [(s.lastname, s.id) for s in list_students]
+        sortlist.sort(reverse=desc)
         orderkey = 1
         for s in sortlist:
             self.mod_bdd.update_student_order_with_id(s[1], orderkey)
@@ -538,19 +540,19 @@ class Controller(QObject):
 
     def sort_desks(self):
         self.gui.status_bar.showMessage("Tri d'après les places", 3000)
-        maxRow = int(AssetManager.getInstance().config("size", "default_room_rows"))
-        maxCol = int(AssetManager.getInstance().config("size", "default_room_columns"))
+        max_row = int(AssetManager.getInstance().config("size", "default_room_rows"))
+        max_col = int(AssetManager.getInstance().config("size", "default_room_columns"))
         group_name = self.mod_bdd.get_group_name_by_id(self.id_group)
 
         sortlist = []
-        for row in range(maxRow):
-            for col in range(maxCol):
+        for row in range(max_row):
+            for col in range(max_col):
                 id_desk = self.mod_bdd.get_desk_id_in_course_by_coords(self.id_course, row, col)
                 if id_desk != 0:
                     student = self.mod_bdd.get_student_by_desk_id(id_desk)
                     if student is not None:
                         sortlist.append(student.id)
-        
+
         orderkey = 0
         for s in sortlist:
             self.mod_bdd.update_student_order_with_id(s, orderkey)
@@ -575,7 +577,6 @@ class Controller(QObject):
         """Initializes the contents of the attributes list"""
 
         list_attr = self.mod_bdd.get_all_attributes()
-        # self.gui.sidewidget.attributes().set_attributes_list([(1, attr_name, attr_type), (2, "toto", "attr_txt"), (3, "tata", "attr_txt")])
         self.gui.sidewidget.attributes().set_attributes_list(list_attr)
 
     @Slot()
@@ -603,7 +604,7 @@ class Controller(QObject):
         self.id_course = 0
         self.__bdd.commit()
         self.show_all_courses()
-    
+
     def on_delete_group(self) -> None:
         """
         Deletes the selected group
@@ -626,7 +627,7 @@ class Controller(QObject):
         """
         list_id_attr = self.gui.sidewidget.attributes().selected_attributes()
 
-        if list_id_attr :
+        if list_id_attr:
             id_topic = self.mod_bdd.get_topic_id_by_course_id(self.id_course)
             all_attributes = self.mod_bdd.get_all_attributes()
             # all_attributes = list [(id1, attrName1, attrType1), ...]
@@ -639,10 +640,11 @@ class Controller(QObject):
                 # get desk selection
                 desks_id = self.v_canvas.get_selected_tiles()
                 id_students_selected = [self.mod_bdd.get_desk_by_id(d).id_student for d in desks_id]
-                students = [(s.id, f"{s.lastname} {s.firstname}") for s in students_in_course if s.id in id_students_selected]
+                students = [(s.id, f"{s.lastname} {s.firstname}") for s in students_in_course if
+                            s.id in id_students_selected]
             else:
                 students = [(s.id, f"{s.lastname} {s.firstname}") for s in students_in_course]
-            students.sort(key=lambda x:x[1])
+            students.sort(key=lambda x: x[1])
 
             # get datas
             data = dict()
@@ -653,7 +655,7 @@ class Controller(QObject):
                         if val[0] == '#' and len(val) == 7:
                             val = QColor(val)
                         data[(a[0], s[0])] = val
-            
+
             # push the data into the view
             self.gui.central_widget.attributes_tab.set_data(attributes, students, data)
         else:
@@ -690,7 +692,7 @@ class Controller(QObject):
     def change_filter_selection(self):
         self.filter_selection = not self.filter_selection
         self.on_attribute_selection_changed()
-    
+
     def lot_change(self):
         list_id_attr = self.gui.sidewidget.attributes().selected_attributes()
         if len(list_id_attr) == 1:
@@ -701,7 +703,8 @@ class Controller(QObject):
                 # get desk selection
                 desks_id = self.v_canvas.get_selected_tiles()
                 id_students_selected = [self.mod_bdd.get_desk_by_id(d).id_student for d in desks_id]
-                students = [(s.id, f"{s.lastname} {s.firstname}") for s in students_in_course if s.id in id_students_selected]
+                students = [(s.id, f"{s.lastname} {s.firstname}") for s in students_in_course if
+                            s.id in id_students_selected]
             else:
                 students = [(s.id, f"{s.lastname} {s.firstname}") for s in students_in_course]
             attr_id = list_id_attr[0]
@@ -727,7 +730,7 @@ class Controller(QObject):
                             val = self.mod_bdd.get_attribute_value(s[0], attr_id, id_topic)
                             val = str(int(val) + dlg.new_value()) if val else "1"
                         self.mod_bdd.update_attr_with_ids(s[0], attr_id, id_topic, val)
-                else: 
+                else:
                     for s in students:
                         val = dlg.new_value()
                         self.mod_bdd.update_attr_with_ids(s[0], attr_id, id_topic, val)

@@ -1,5 +1,5 @@
-from PySide2.QtWidgets import QDialog, QGridLayout, QLabel, QPushButton
-from PySide2.QtCore import Qt, QSize
+from PySide2.QtWidgets import QDialog, QGridLayout, QLabel, QPushButton, QStyle
+from PySide2.QtCore import Qt, QSize, QPoint, QRect
 
 from src.assets_manager import AssetManager, get_stylesheet
 
@@ -15,7 +15,6 @@ class VConfirmDialog(QDialog):
         """
         QDialog.__init__(self, parent)
 
-        self.setWindowFlags(Qt.FramelessWindowHint)
         self.setFixedSize(QSize(350, 80))
 
         self.question = QLabel(AssetManager.getInstance().get_text(message_key))
