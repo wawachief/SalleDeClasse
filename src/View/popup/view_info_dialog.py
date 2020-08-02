@@ -1,5 +1,6 @@
 from PySide2.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton
-from PySide2.QtCore import Qt, QSize
+from PySide2.QtCore import Qt, QSize, QPoint, QRect
+from PySide2.QtGui import QGuiApplication
 
 from src.assets_manager import get_stylesheet
 
@@ -17,6 +18,12 @@ class VInfoDialog(QDialog):
 
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setFixedSize(QSize(350, 80))
+
+        # Center the dialog
+        rec = QGuiApplication.screenAt(self.pos()).geometry()
+        size = self.minimumSize()
+        topLeft = QPoint((rec.width() // 2) - (size.width() // 2), (rec.height() // 2) - (size.height() // 2))
+        self.setGeometry(QRect(topLeft, size))
 
         self.info = QLabel(message)
         self.info.setAlignment(Qt.AlignCenter)
