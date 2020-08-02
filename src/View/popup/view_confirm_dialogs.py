@@ -1,6 +1,5 @@
-from PySide2.QtWidgets import QDialog, QGridLayout, QLabel, QPushButton
+from PySide2.QtWidgets import QDialog, QGridLayout, QLabel, QPushButton, QStyle
 from PySide2.QtCore import Qt, QSize, QPoint, QRect
-from PySide2.QtGui import QGuiApplication
 
 from src.assets_manager import AssetManager, get_stylesheet
 
@@ -16,14 +15,7 @@ class VConfirmDialog(QDialog):
         """
         QDialog.__init__(self, parent)
 
-        self.setWindowFlags(Qt.FramelessWindowHint)
         self.setFixedSize(QSize(350, 80))
-
-        # Center the dialog
-        rec = QGuiApplication.screenAt(self.pos()).geometry()
-        size = self.minimumSize()
-        topLeft = QPoint((rec.width() // 2) - (size.width() // 2), (rec.height() // 2) - (size.height() // 2))
-        self.setGeometry(QRect(topLeft, size))
 
         self.question = QLabel(AssetManager.getInstance().get_text(message_key))
         self.question.setAlignment(Qt.AlignCenter)
