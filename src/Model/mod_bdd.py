@@ -35,6 +35,16 @@ class ModBdd():
         self.__cursor.execute(req, [name])
         r = self.__cursor.fetchone()
         return 0 if r is None else r[0]
+
+    def get_course_name_by_id(self, id):
+        """Gets the course Name from the Id
+        Input : Id - course id
+        Output : CourseName or 0 if the Id does not exist"""
+
+        req = "SELECT CourseName FROM Courses WHERE IdCourse = ?"
+        self.__cursor.execute(req, [id])
+        r = self.__cursor.fetchone()
+        return 0 if r is None else r[0]
     
     def get_topic_id_by_course_id(self, id_course):
         """Gets the topic Id from the course id
