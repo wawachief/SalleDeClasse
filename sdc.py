@@ -10,5 +10,4 @@ if __name__ == "__main__":
     ctrl = Controller()
     ctrl.gui.show()
 
-
     sys.exit(app.exec_())

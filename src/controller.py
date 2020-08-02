@@ -28,7 +28,7 @@ class Controller(QObject):
     SEL_ALL = 3
 
     # Signals
-    sig_add_tile = Signal()
+    sig_select_tile = Signal()
     sig_quit = Signal()
     sig_shuffle = Signal()
     sig_canvas_click = Signal(tuple)
@@ -82,7 +82,7 @@ class Controller(QObject):
         self.gui = ViewMainFrame(self.sig_quit)
         self.v_canvas = self.gui.central_widget.classroom_tab.v_canvas
         # Plugs the signals
-        self.gui.central_widget.sig_add_tile = self.sig_add_tile
+        self.v_canvas.sig_select_tile = self.sig_select_tile
         self.gui.central_widget.sig_shuffle = self.sig_shuffle
         self.gui.sig_quit = self.sig_quit
         self.v_canvas.sig_canvas_click = self.sig_canvas_click
@@ -101,7 +101,7 @@ class Controller(QObject):
         self.gui.central_widget.attributes_tab.sig_cell_clicked = self.sig_attribute_cell_selected
 
         # Signals connection
-        self.sig_add_tile.connect(self.test_buttton)
+        self.sig_select_tile.connect(self.on_attribute_selection_changed)
         self.sig_quit.connect(self.do_quit)
         self.sig_canvas_click.connect(self.add_desk)
         self.sig_canvas_drag.connect(self.move_desk)
@@ -132,10 +132,6 @@ class Controller(QObject):
 
     def debug(self):
         self.gui.status_bar.showMessage("ouaf")
-
-    @Slot()
-    def test_buttton(self):
-        self.auto_place()
 
     @Slot(tuple)
     def add_desk(self, coords):
@@ -454,7 +450,7 @@ class Controller(QObject):
             self.v_canvas.select_tiles_to(True)
             self.gui.status_bar.showMessage(f"Selection de tous les emplacements", 3000)
         self.selection_mode = (self.selection_mode + 1) % 4
-
+        self.on_attribute_selection_changed()
         self.v_canvas.repaint()
 
     def delete(self) -> None:
