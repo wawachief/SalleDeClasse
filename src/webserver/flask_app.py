@@ -11,13 +11,13 @@ controller: Controller = None
 
 
 @flask_app.route('/')
-def hello_world():
+def load_app():
     active_course = controller.id_course
     mod_bdd = get_bdd_connection()
     active_course_name = mod_bdd.get_course_name_by_id(active_course)
     students = mod_bdd.get_students_in_course_by_id(active_course)
     print(students)
-    return render_template('template.html', titre="Liste des élèves de la classe "+active_course_name, mots=students)
+    return render_template('template_v2.html', titre="Liste des élèves de la classe "+active_course_name, students=students)
 
 
 def get_bdd_connection():
@@ -32,7 +32,7 @@ class FlaskThread(QThread):
         self.start()
 
     def run(self):
-        flask_app.run()
+        flask_app.run(host='0.0.0.0')
 
     def init_controller(self, controller_param):
         global controller

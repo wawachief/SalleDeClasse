@@ -1,16 +1,28 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <title>{{ titre }}</title>
-    </head>
+<head>
+    <meta charset="utf-8"/>
+    <title>{{ titre }}</title>
+    <style type="text/css">
+        td {
+            border: 1px #DDD solid;
+            padding: 5px;
+            cursor: pointer;
+        }
 
-    <body>
-        <h1>{{ titre }}</h1>
-        <ul>
-        {% for mot in mots %}
-            <li>{{ mot }}</li>
-        {% endfor %}
-        </ul>
-    </body>
+        .selected {
+            background-color: brown;
+            color: #FFF;
+        }
+    </style>
+</head>
+
+<body>
+<h1>{{ titre }}</h1>
+<ul>
+    {% for mot in mots %}
+    <li>{{ mot }}</li>
+    {% endfor %}
+</ul>
+</body>
 </html>
