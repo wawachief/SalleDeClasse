@@ -11,5 +11,4 @@ if __name__ == "__main__":
     flask.init_controller(ctrl)
     ctrl.gui.show()
 
-
     sys.exit(app.exec_())

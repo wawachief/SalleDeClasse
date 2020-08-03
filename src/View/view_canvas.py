@@ -71,7 +71,7 @@ class ViewTile(QObject):
     sig_move_update = Signal(int, int)
     sig_thread_finished = Signal()
 
-    def __init__(self, row, column, square_size, sig_move_ended, desk_id):
+    def __init__(self, row, column, square_size, sig_move_ended, sig_select_tile, desk_id):
         """
         Description object, contains the information that needs to be displayed in the associated tile's position.
         This is the UI twin of Model's Desk object.
@@ -99,6 +99,7 @@ class ViewTile(QObject):
         self.__is_selected = False
 
         # Signals
+        self.sig_select_tile = sig_select_tile
         self.__sig_move_ended = sig_move_ended
         self.sig_move_update.connect(self.__on_move_updated)
         self.sig_thread_finished.connect(self.__process_animation_ended)
@@ -133,6 +134,7 @@ class ViewTile(QObject):
         Switches the current selection value
         """
         self.__is_selected = not self.__is_selected
+        self.sig_select_tile.emit()
     
 
     def set_selection(self, value):
@@ -140,6 +142,7 @@ class ViewTile(QObject):
         sets the current selection value
         """
         self.__is_selected = value
+        self.sig_select_tile.emit()
 
     def is_selected(self):
         """
@@ -285,6 +288,7 @@ class ViewCanvas(QWidget):
 
         self.sig_canvas_click = None  # Signal triggered when a click is performed on a desk
         self.sig_canvas_drag = None  # Signal triggered when a drag operation is performed on the canvas
+        self.sig_select_tile = None  # pushed by the controller. emits when tile selection change.
         self.sig_move_animation_ended = sig_move_animation_ended
 
         # Tracking for drag/drop operation
@@ -343,7 +347,7 @@ class ViewCanvas(QWidget):
         :param lastname: Student's last name
         :type lastname: str
         """
-        new_tile = ViewTile(row, column, self.square_size, self.sig_move_ended, desk_id)
+        new_tile = ViewTile(row, column, self.square_size, self.sig_move_ended, self.sig_select_tile, desk_id)
         new_tile.set_student(firstname, lastname)
 
         self.__tiles[desk_id] = new_tile

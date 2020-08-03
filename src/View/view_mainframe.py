@@ -43,7 +43,6 @@ class CentralWidget(QTabWidget):
         self.classroom_tab.view_teacher.on_click = self.on_perspective_changed
 
         # Signals
-        self.sig_add_tile = None
         self.sig_shuffle = None
         self.sig_enable_animation_btns = None
         # When the move animation ends, we can re-activate the buttons
@@ -79,9 +78,6 @@ class CentralWidget(QTabWidget):
             self.classroom_tab.view_students.set_label_visible(False)
             self.classroom_tab.view_teacher.set_label_visible(True)
             self.status_message(AssetManager.getInstance().get_text("status_bar_active_view_teacher"), 3000)
-
-    def do_magic(self):
-        self.sig_add_tile.emit()
 
     def do_shuffle(self):
         if not VConfirmDialog(self.parent(), "confirm_message_shuffle").exec_():
@@ -207,7 +203,6 @@ class ViewMainFrame(QMainWindow):
         Dispatches the callbacks from the toolbar to the handling widgets. Also init the signal triggered to enable
         or disable some buttons.
         """
-        self.maintoolbar.on_btn_magic_clicked = self.central_widget.do_magic
         self.maintoolbar.on_btn_perspective_clicked = self.central_widget.on_perspective_changed
         self.maintoolbar.on_btn_shuffle_clicked = self.central_widget.do_shuffle
 
