@@ -17,7 +17,6 @@ class ViewAttributePanel(QWidget):
 
         # Widgets
         self.tableview = CustomTableView(False)
-        self.tableview.clicked.connect(self.on_selection_changed)
         self.attributes_toolbar = ViewAttributeListToolbar()
 
         # DataModel and additional info
@@ -69,9 +68,7 @@ class ViewAttributePanel(QWidget):
             data_list.append(data)
 
         self.datamodel = CustomTableModel(self.tableview, data_list, ("Nom", "Type"))
-        self.tableview.selectionModel().selectionChanged.connect(
-            lambda: self.attributes_toolbar.add_widget.enable_delete_btn(
-                len(self.tableview.selectionModel().selectedRows()) > 0))
+        self.tableview.selectionModel().selectionChanged.connect(self.on_selection_changed)
 
         self.repaint()
 
@@ -88,8 +85,10 @@ class ViewAttributePanel(QWidget):
 
         return attributes_ids
 
-    def on_selection_changed(self, item):
+    def on_selection_changed(self, item=None):
         """
-        Triggered when the table selection changed
+        Enables the delete button when at least an attribute is selected and emits the selection changed signal
         """
+        self.attributes_toolbar.add_widget.enable_delete_btn(len(self.tableview.selectionModel().selectedRows()) > 0)
+
         self.sig_selection_changed.emit()
