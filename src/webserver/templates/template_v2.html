@@ -4,12 +4,18 @@
     <meta charset="utf-8"/>
     <title>{{ titre }}</title>
 
-    <link rel="stylesheet" href="static/css/table.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            var table = $('#example').DataTable();
+            var table = $('#students-table').DataTable({
+                paging: false,
+                fixedHeader: {
+                    header: false,
+                    footer: false
+                }
+            });
 
             $('#example tbody').on('click', 'tr', function () {
                 $(this).toggleClass('selected');
@@ -24,20 +30,22 @@
 
 <body>
 <h1>{{ titre }}</h1>
-<table id="example" class="display" style="width:100%">
+<table id="students-table" class="display" style="width:100%">
     <thead>
+    <tr>
         <th>Prénom</th>
         <th>Nom</th>
         <th> --</th>
+    </tr>
     </thead>
     <tbody>
-        {% for student in students %}
-        <tr>
-            <td>{{ student.firstname }}</td>
-            <td>{{ student.lastname }}</td>
-            <td> --</td>
-        </tr>
-        {% endfor %}
+    {% for student in students %}
+    <tr>
+        <td>{{ student.firstname }}</td>
+        <td>{{ student.lastname }}</td>
+        <td> --</td>
+    </tr>
+    {% endfor %}
     </tbody>
 </table>
 </body>
