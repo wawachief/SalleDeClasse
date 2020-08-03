@@ -72,12 +72,23 @@ class ModBdd:
 
     def get_desk_id_in_course_by_coords(self, id_course, row, col):
         """Returns the Id of the desk at the given coordinates
-        Input : id_course - if of the course
+        Input : id_course - id of the course
                 row, col : Coordinates of the desk
         Output : idDesk or 0 if no desk is present"""
 
         req = "SELECT IdDesk FROM Desks WHERE IdCourse = ? AND DeskRow = ? AND DeskCol = ?"
         self.__cursor.execute(req, [id_course, row, col])
+        r = self.__cursor.fetchone()
+        return 0 if r is None else r[0]
+
+    def get_desk_id_by_student_id_and_course_id(self, id_student, id_course):
+        """Returns the Id of the desk with the given id student and id course
+        Input : id_course - id of the course
+                id_student - id of the student
+        Output : idDesk or 0 if no desk is present"""
+
+        req = "SELECT IdDesk FROM Desks WHERE IdCourse = ? AND IdStudent = ?"
+        self.__cursor.execute(req, [id_course, id_student])
         r = self.__cursor.fetchone()
         return 0 if r is None else r[0]
     

@@ -45,8 +45,8 @@ class MoveAnimationThread(QThread):
 
         t = ANIMATION_DURATION / 100
 
-        vy = dy/ANIMATION_DURATION
-        vx = dx/ANIMATION_DURATION
+        vy = dy / ANIMATION_DURATION
+        vx = dx / ANIMATION_DURATION
 
         i = 0
         while self.running and i <= 100 and self.__current != self.__arrival:
@@ -67,7 +67,6 @@ class MoveAnimationThread(QThread):
 
 
 class ViewTile(QObject):
-
     sig_move_update = Signal(int, int)
     sig_thread_finished = Signal()
 
@@ -263,7 +262,6 @@ class ViewTile(QObject):
 
 
 class ViewCanvas(QWidget):
-
     sig_move_ended = Signal()
 
     def __init__(self, sig_move_animation_ended):
@@ -322,7 +320,7 @@ class ViewCanvas(QWidget):
         :type desk_id: int
         """
         self.__tiles.pop(desk_id)
-    
+
     def delete_all_tiles(self):
         """
         Removes the tile at the given row/column position
@@ -513,11 +511,15 @@ class ViewCanvas(QWidget):
                 ids.append(t.id())
 
         return ids
-    
+
     def select_tiles_to(self, value):
         """sets tiles selection to value"""
         for t in list(self.__tiles.values()):
             t.set_selection(value)
+
+    def change_desk_selection_by_desk_id(self, desk_id, selected):
+        """sets desk (of desk_id) selection to selected"""
+        self.__tiles[desk_id].set_selection(selected)
 
     def select_tiles_from_desks_ids(self, d_ids):
         """select tiles according to desk ids"""

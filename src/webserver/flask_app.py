@@ -1,7 +1,7 @@
 import sqlite3
 
 from PySide2.QtCore import QThread
-from flask import Flask, render_template
+from flask import Flask, render_template, request, jsonify
 from src.controller import Controller
 from src.Model.mod_bdd import ModBdd
 
@@ -17,7 +17,17 @@ def load_app():
     active_course_name = mod_bdd.get_course_name_by_id(active_course)
     students = mod_bdd.get_students_in_course_by_id(active_course)
     print(students)
-    return render_template('template_v2.html', titre="Liste des élèves de la classe "+active_course_name, students=students)
+    return render_template('template_v2.html', titre="Liste des élèves de la classe " + active_course_name,
+                           students=students)
+
+
+@flask_app.route('/api/student')
+def select_student():
+    student_id = int(request.args.get('id', 0))
+    selected = request.args.get('selected', 0) == "true"
+    controller.sig_flask_desk_selection_changed.emit(student_id, selected)
+    resp = jsonify(success=True)
+    return resp
 
 
 def get_bdd_connection():
