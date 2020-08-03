@@ -128,6 +128,7 @@ class Controller(QObject):
         self.id_group = 0
         self.selection_mode = self.SEL_ALL
         self.filter_selection = False
+        self.std_dialog_info: VStdAttributesDialog = None
 
         self.show_all_courses()
         self.show_all_groups()
@@ -625,6 +626,15 @@ class Controller(QObject):
         - students = [(1, "Thomas Lécluse"), (2, "Pauline Lécluse"), ...]
         - data = {(attr_id, std_id}: cell_data, ...}
         """
+        if self.std_dialog_info and self.std_dialog_info.isVisible():
+            id_topic = self.mod_bdd.get_topic_id_by_course_id(self.id_course)
+            attrs = []
+            for attr_id, attr_name, attr_type in self.mod_bdd.get_all_attributes():
+                attrs.append((attr_id, attr_name,
+                              self.mod_bdd.get_attribute_value(self.std_dialog_info.student.id, attr_id, id_topic)))
+
+            self.std_dialog_info.attributes_updated(attrs)
+
         list_id_attr = self.gui.sidewidget.attributes().selected_attributes()
 
         if list_id_attr:
@@ -652,7 +662,7 @@ class Controller(QObject):
                 for s in students:
                     val = self.mod_bdd.get_attribute_value(s[0], a[0], id_topic)
                     if val:
-                        if val[0] == '#' and len(val) == 7:
+                        if len(val) == 7 and val[0] == '#':
                             val = QColor(val)
                         data[(a[0], s[0])] = val
 
@@ -746,7 +756,21 @@ class Controller(QObject):
         :param desk_position: student's desk position (where the click was triggered)
         :type desk_position: tuple
         """
-        print(desk_position)
-        # TODO get student and its attributes from its current desk position
+        desk_id = self.mod_bdd.get_desk_id_in_course_by_coords(self.id_course, desk_position[0], desk_position[1])
+        std = self.mod_bdd.get_student_by_desk_id(desk_id)
+        topic = self.mod_bdd.get_topic_id_by_course_id(self.id_course)
 
-        # VStdAttributesDialog(self.gui, self.sig_attribute_cell_selected, std, attrs)
+        attrs = []
+        for attr_id, attr_name, attr_type in self.mod_bdd.get_all_attributes():
+            attrs.append((attr_id, attr_name, self.mod_bdd.get_attribute_value(std.id, attr_id, topic)))
+
+        if self.std_dialog_info and self.std_dialog_info.isVisible():  # Closes any opened info dialog
+            self.std_dialog_info.close()
+
+        self.std_dialog_info = VStdAttributesDialog(self.gui, self.sig_attribute_cell_selected, std, attrs)
+
+        # We can't use exec_() method, nor make the dialog modal because for some reason, at least on OSX, once closed,
+        # most of the HMI does not respond to user interaction.
+        # The chosen workaround is to just show() the dialog, and make it always on top. If a new dialog is to be
+        # displayed, the previous one would be closed before.
+        self.std_dialog_info.show()

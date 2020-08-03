@@ -25,7 +25,6 @@ class AttributesTab(QWidget):
         self.table_attributes = QTableView()
         self.table_attributes.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.table_attributes.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.table_attributes.horizontalHeader().setSectionResizeMode(QHeaderView.Fixed)
         self.table_attributes.verticalHeader().setSectionResizeMode(QHeaderView.Fixed)
         self.table_attributes.verticalHeader().setFixedWidth(150)
 
@@ -137,8 +136,6 @@ class AttributesTableModel(QAbstractTableModel):
         if role == Qt.DisplayRole:  # Cell data display
             if isinstance(d, QColor):
                 return None  # No text for color
-            elif isinstance(d, str) and len(d) > 11:
-                return d[:10] + "..."  # Truncates the text if too long
             return d
 
         elif role == Qt.BackgroundRole:  # Cell background
