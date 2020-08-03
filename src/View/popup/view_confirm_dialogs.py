@@ -1,5 +1,5 @@
-from PySide2.QtWidgets import QDialog, QGridLayout, QLabel, QPushButton, QStyle
-from PySide2.QtCore import Qt, QSize, QPoint, QRect
+from PySide2.QtWidgets import QDialog, QGridLayout, QLabel, QPushButton
+from PySide2.QtCore import Qt, QSize
 
 from src.assets_manager import AssetManager, get_stylesheet
 

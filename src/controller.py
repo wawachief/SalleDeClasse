@@ -12,6 +12,7 @@ from src.Model.import_csv import import_csv, process_line
 from src.View.popup.view_attribute_edition import VDlgEditText, VDlgEditCounter, VDlgEditMark, VDlgEditColor
 from src.View.popup.view_confirm_dialogs import VConfirmDialog
 from src.View.popup.view_info_dialog import VInfoDialog
+from src.View.popup.view_student_attributes import VStdAttributesDialog
 
 from src.assets_manager import AssetManager
 from src.enumerates import EAttributesTypes
@@ -33,6 +34,7 @@ class Controller(QObject):
     sig_shuffle = Signal()
     sig_canvas_click = Signal(tuple)
     sig_canvas_drag = Signal(tuple, tuple)
+    sig_canvas_right_click = Signal(tuple)
     sig_TBbutton = Signal(str)
 
     sig_course_changed = Signal(int)
@@ -87,6 +89,7 @@ class Controller(QObject):
         self.gui.sig_quit = self.sig_quit
         self.v_canvas.sig_canvas_click = self.sig_canvas_click
         self.v_canvas.sig_canvas_drag = self.sig_canvas_drag
+        self.v_canvas.sig_tile_info = self.sig_canvas_right_click
         self.gui.sidewidget.courses().sig_course_changed = self.sig_course_changed
         self.gui.sidewidget.courses().courses_toolbar.add_widget.sig_new_element = self.sig_create_course
         self.gui.central_widget.classroom_tab.topic.sig_topic_changed = self.sig_topic_changed
@@ -105,6 +108,7 @@ class Controller(QObject):
         self.sig_quit.connect(self.do_quit)
         self.sig_canvas_click.connect(self.add_desk)
         self.sig_canvas_drag.connect(self.move_desk)
+        self.sig_canvas_right_click.connect(self.show_student_attributes)
         self.sig_shuffle.connect(self.desk_shuffle)
         self.sig_course_changed.connect(self.on_course_changed)
         self.sig_create_course.connect(self.on_create_course)
@@ -733,3 +737,16 @@ class Controller(QObject):
 
                 self.__bdd.commit()
                 self.on_attribute_selection_changed()
+
+    @Slot(tuple)
+    def show_student_attributes(self, desk_position: tuple) -> None:
+        """
+        Displays a dialog with all the student's attributes information.
+
+        :param desk_position: student's desk position (where the click was triggered)
+        :type desk_position: tuple
+        """
+        print(desk_position)
+        # TODO get student and its attributes from its current desk position
+
+        # VStdAttributesDialog(self.gui, self.sig_attribute_cell_selected, std, attrs)
