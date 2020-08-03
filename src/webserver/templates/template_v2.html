@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+
     <script type="text/javascript">
         $(document).ready(function () {
             var table = $('#students-table').DataTable({
@@ -19,6 +20,14 @@
 
             $('#students-table tbody').on('click', 'tr', function () {
                 $(this).toggleClass('selected');
+                const id = $(this).attr('id');
+                const selected = $(this).hasClass("selected");
+                $.ajax({
+                        url: '/api/student?id=' + id+"&selected="+selected,
+                        success: function (data) {
+                        }
+                    });
+                return false;
             });
 
             $('#button').click(function () {
@@ -26,6 +35,7 @@
             });
         });
     </script>
+
 </head>
 
 <body>
@@ -35,15 +45,15 @@
     <tr>
         <th>Prénom</th>
         <th>Nom</th>
-        <th> --</th>
+        <th>Id</th>
     </tr>
     </thead>
     <tbody>
     {% for student in students %}
-    <tr>
+    <tr id="{{ student.id }}">
         <td>{{ student.firstname }}</td>
         <td>{{ student.lastname }}</td>
-        <td> --</td>
+        <td>{{ student.id }}</td>
     </tr>
     {% endfor %}
     </tbody>

@@ -53,6 +53,8 @@ class Controller(QObject):
     sig_attr_selection_changed = Signal()
     sig_attribute_cell_selected = Signal(int, int)
 
+    sig_flask_desk_selection_changed = Signal(int,bool)
+
     def __init__(self):
         """
         Application main controller.
@@ -70,7 +72,7 @@ class Controller(QObject):
 
             # Toolbar buttons
             "filter_select": self.change_filter_selection,
-            "select": self.select,
+            "select": self.auto_select_desks,
             "choix": self.debug,
             "delete": self.delete,
             "lot_change": self.lot_change
@@ -122,6 +124,7 @@ class Controller(QObject):
         self.sig_delete_course.connect(self.on_delete_course)
         self.sig_attr_selection_changed.connect(self.on_attribute_selection_changed)
         self.sig_attribute_cell_selected.connect(self.on_attribute_cell_selected)
+        self.sig_flask_desk_selection_changed.connect(self.on_desk_selection_changed)
 
         # properties
         self.id_course = 0
@@ -427,7 +430,14 @@ class Controller(QObject):
 
             self.show_all_groups()
 
-    def select(self) -> None:
+    @Slot(int, bool)
+    def on_desk_selection_changed(self, student_id: int, selected: bool) -> None:
+        desk_id = self.mod_bdd.get_desk_id_by_student_id_and_course_id(student_id, self.id_course)
+        self.v_canvas.change_desk_selection_by_desk_id(desk_id, selected)
+        self.on_attribute_selection_changed()
+        self.v_canvas.repaint()
+
+    def auto_select_desks(self) -> None:
         """Select Desks, rotate selection mode
         - 3 = all, 
         - 2 = occupied desks, 
