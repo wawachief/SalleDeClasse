@@ -135,7 +135,6 @@ class ViewTile(QObject):
         """
         self.__is_selected = not self.__is_selected
         self.sig_select_tile.emit()
-    
 
     def set_selection(self, value):
         """
@@ -289,6 +288,7 @@ class ViewCanvas(QWidget):
         self.sig_canvas_click = None  # Signal triggered when a click is performed on a desk
         self.sig_canvas_drag = None  # Signal triggered when a drag operation is performed on the canvas
         self.sig_select_tile = None  # pushed by the controller. emits when tile selection change.
+        self.sig_tile_info = None  # Signal triggered when a right-click is performed on a desk. Info is to be displayed
         self.sig_move_animation_ended = sig_move_animation_ended
 
         # Tracking for drag/drop operation
@@ -531,6 +531,8 @@ class ViewCanvas(QWidget):
         """
         if event.button() == Qt.LeftButton and not self.__running_animations:  # We don't allow clicks during animations
             self.__click_pos = self.__convert_point(event.y(), event.x())  # Register the click point
+        elif event.button() == Qt.RightButton and not self.__running_animations:
+            self.sig_tile_info.emit(self.__relative_grid_position(self.__convert_point(event.y(), event.x())))
 
     def mouseMoveEvent(self, event):
         """
