@@ -98,7 +98,7 @@ class MainController(QObject):
         self.sig_select_tile.connect(self.attr_ctrl.on_attribute_selection_changed)
         self.sig_quit.connect(self.do_quit)
         self.sig_canvas_click.connect(self.course_ctrl.add_desk)
-        self.sig_desk_selected.connect(self.course_ctrl.on_desk_selection_change)
+        self.sig_desk_selected.connect(self.course_ctrl.on_desk_selection_changed_on_app)
         self.sig_canvas_drag.connect(self.course_ctrl.move_desk)
         self.sig_canvas_right_click.connect(self.attr_ctrl.show_student_attributes)
         self.sig_shuffle.connect(self.course_ctrl.desk_shuffle)
@@ -114,7 +114,7 @@ class MainController(QObject):
         self.sig_delete_course.connect(self.course_ctrl.on_delete_course)
         self.sig_attr_selection_changed.connect(self.attr_ctrl.on_attribute_selection_changed)
         self.sig_attribute_cell_selected.connect(self.attr_ctrl.on_attribute_cell_selected)
-        self.sig_flask_desk_selection_changed.connect(self.course_ctrl.on_desk_selection_changed)
+        self.sig_flask_desk_selection_changed.connect(self.course_ctrl.on_desk_selection_changed_on_web)
 
         self.actions_table = {  # Action buttons
             "import_csv": self.group_ctrl.import_pronote,

@@ -27,11 +27,6 @@ class CourseController:
 
     # desks methods
 
-    @Slot(int, bool)
-    def on_desk_selection_changed(self, student_id: int, selected: bool) -> None:
-        desk_id = self.mod_bdd.get_desk_id_by_student_id_and_course_id(student_id, self.main_ctrl.id_course)
-        self.do_desk_selection_change(desk_id, selected)
-
     @Slot(tuple)
     def add_desk(self, coords):
         """Add a new desk at mouse place"""
@@ -162,16 +157,29 @@ class CourseController:
         self.show_all_courses()
 
     @Slot(int, bool)
-    def on_desk_selection_change(self, desk_id: int, selected: bool):
+    def on_desk_selection_changed_on_app(self, desk_id: int, selected: bool):
+        """updates the web interface when selection changes"""
         student = self.mod_bdd.get_student_by_desk_id(desk_id)
         if student is not None:
             self.main_ctrl.flask_client.emit("selection_changed", {"id": student.id, "selected": selected})
+
+    @Slot(int, bool)
+    def on_desk_selection_changed_on_web(self, student_id: int, selected: bool) -> None:
+        """updates the app when web selection changes"""
+        desk_id = self.mod_bdd.get_desk_id_by_student_id_and_course_id(student_id, self.main_ctrl.id_course)
+        self.do_desk_selection_change(desk_id, selected)
 
     #
     # General methods
     #
 
     # desks methods
+
+    def do_desk_selection_change(self, desk_id, selected):
+        self.v_canvas.change_desk_selection_by_desk_id(desk_id, selected)
+        self.attr_ctrl.on_attribute_selection_changed()  # reflects selection on attr tab
+        self.get_unselected_occupied_desks_id()          # refresh choice buttons state
+        self.v_canvas.repaint()
 
     def get_desks(self, is_free):
         """return a list of desk ids
@@ -198,12 +206,6 @@ class CourseController:
             self.gui.maintoolbar.enable_choices_buttons(False)
         return unselected_desks_id
 
-    def do_desk_selection_change(self, desk_id, selected):
-        self.v_canvas.change_desk_selection_by_desk_id(desk_id, selected)
-        self.attr_ctrl.on_attribute_selection_changed()
-        self.get_unselected_occupied_desks_id()
-        self.v_canvas.repaint()
-
     def auto_select_desks(self) -> None:
         """Select Desks, rotate selection mode
         - 3 = all,
@@ -224,6 +226,16 @@ class CourseController:
         else:
             self.v_canvas.select_tiles_to(True)
             self.gui.status_bar.showMessage(f"Selection de tous les emplacements", 3000)
+
+        if self.main_ctrl.selection_mode >= 2:
+            all_desks = self.get_desks(False)
+            for desk_id  in all_desks:
+                self.on_desk_selection_changed_on_app(desk_id, True)
+        else:
+            all_desks = self.get_desks(False)
+            for desk_id  in all_desks:
+                self.on_desk_selection_changed_on_app(desk_id, False)
+
         self.main_ctrl.selection_mode = (self.main_ctrl.selection_mode + 1) % 4
         self.attr_ctrl.on_attribute_selection_changed()
         self.v_canvas.repaint()
@@ -331,4 +343,5 @@ class CourseController:
         if desks_id:
             # should be always be true otherwise the hutton is disabled
             desk_id = choice(desks_id)
-            self.do_desk_selection_change(desk_id, True)
+            self.do_desk_selection_change(desk_id, True)  # change selection on app
+            self.on_desk_selection_changed_on_app(desk_id, True)  # change selection on web
