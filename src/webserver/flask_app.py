@@ -3,7 +3,7 @@ import sqlite3
 import socketio
 from PySide2.QtCore import QThread
 from flask import Flask, render_template, request, jsonify
-from src.controller import Controller
+from src.Controllers.main_controller import MainController
 from src.Model.mod_bdd import ModBdd
 from flask_socketio import SocketIO
 
@@ -11,7 +11,7 @@ flask_app = Flask(__name__)
 flask_app.config['SECRET_KEY'] = 'secret!'
 socket_io = SocketIO(flask_app)
 
-controller: Controller = None
+controller: MainController = None
 
 
 @flask_app.route('/')
