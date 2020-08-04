@@ -223,7 +223,7 @@ class ViewMainFrame(QMainWindow):
         if not is_view_classroom:
             self.maintoolbar.enable_one_attributes_buttons(self.sidewidget.attributes().get_selected_rows_count() == 1)
 
-    def on_side_widget_docked_state_changed(self):
+    def on_side_widget_docked_state_changed(self) -> None:
         """
         Triggered when the side dockable widget has been docked or undocked
         """
