@@ -81,6 +81,14 @@ class ViewMainToolBar(QToolBar):
         self.__btn_perspective.setEnabled(do_enable)
         self.__btn_shuffle.setEnabled(do_enable)
 
+    def enable_one_attributes_buttons(self, do_enable: bool) -> None:
+        """
+        Enables or disables buttons that can be used only if exactly one attribute is selected.
+
+        :param do_enable: new enable state
+        """
+        self.__btn_lot_change.setEnabled(do_enable)
+
     def on_btn_perspective_clicked(self):
         pass
 
