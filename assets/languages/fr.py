@@ -38,5 +38,6 @@ dico = {"perspective_student_txt": "Vue élève",
         "attr_mark": "Note",
 
         "confirm_message_delete": "Êtes-vous sûr de vouloir supprimer ?",
-        "confirm_message_shuffle": "Êtes-vous sûr de vouloir mélanger ?"
+        "confirm_message_shuffle": "Êtes-vous sûr de vouloir mélanger ?",
+        "confirm_message_RAZ": "Êtes-vous sûr de vouloir \nremettre à 0 tous les compteurs ?",
 }

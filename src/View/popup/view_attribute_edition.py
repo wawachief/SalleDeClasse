@@ -72,6 +72,7 @@ class VDlgEditCounter(VDialogEdit):
         VDialogEdit.__init__(self, parent, current_val)
 
         self.spin_box = QSpinBox()
+        self.spin_box.setMinimum(-10)
         if current_val:
             self.spin_box.setValue(int(current_val))
 
