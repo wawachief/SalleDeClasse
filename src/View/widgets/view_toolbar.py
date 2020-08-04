@@ -27,13 +27,14 @@ class ViewMainToolBar(QToolBar):
         self.__btn_perspective = ToolBarButton("teacher", "Changer de perspective", self.on_btn_perspective_clicked)
         self.__btn_shuffle = ToolBarButton("shuffle", "Mélanger", self.on_btn_shuffle_clicked)
         self.__btn_select = ToolBarButton("selection", "Sélectionner", lambda: self.sig_TBbutton.emit("select"))
-        self.__btn_choice = ToolBarButton("choixvolontaire", "Choisir un élève", lambda: self.sig_TBbutton.emit("choix"))
+        self.__btn_choice = ToolBarButton("choixvolontaire", "Choisir un élève", lambda: self.sig_TBbutton.emit("choice"))
+        self.__btn_attr_choice = ToolBarButton("choixvolontaire_attr", "Choisir un élève d'après un attribut", lambda: self.sig_TBbutton.emit("choice_attr"))
         self.__btn_delete = ToolBarButton("corbeille", "Effacer", lambda: self.sig_TBbutton.emit("delete"))
         self.__btn_lot_change = ToolBarButton("fill", "Changement par Lot", lambda: self.sig_TBbutton.emit("lot_change"))
-        self.__btn_undo = ToolBarButton("shit", "Annuler", lambda: self.sig_TBbutton.emit("undo"))
+        self.__btn_undo = ToolBarButton("shit", "Annuler", lambda: self.sig_TBbutton.emit("test"))
 
         self.actions_table = {self.__btn_magic: None, self.__btn_perspective: None, self.__btn_shuffle: None,
-                              self.__btn_select: None, self.__btn_choice: None, self.__btn_delete: None, self.__btn_lot_change: None, self.__btn_undo: None}
+                              self.__btn_select: None, self.__btn_choice: None, self.__btn_attr_choice: None, self.__btn_delete: None, self.__btn_lot_change: None, self.__btn_undo: None}
 
         # Signals
         self.sig_enable_animation_btns.connect(self.enable_animation_btns)
@@ -60,6 +61,7 @@ class ViewMainToolBar(QToolBar):
         self.actions_table[self.__btn_shuffle].setVisible(is_view_classroom)
         self.actions_table[self.__btn_select].setVisible(is_view_classroom)
         self.actions_table[self.__btn_choice].setVisible(is_view_classroom)
+        self.actions_table[self.__btn_attr_choice].setVisible(is_view_classroom)
         self.actions_table[self.__btn_delete].setVisible(is_view_classroom)
         self.actions_table[self.__btn_lot_change].setVisible(not is_view_classroom)
         self.actions_table[self.__btn_undo].setVisible(True)
@@ -88,6 +90,18 @@ class ViewMainToolBar(QToolBar):
         :param do_enable: new enable state
         """
         self.__btn_lot_change.setEnabled(do_enable)
+        self.__btn_attr_choice.setEnabled(self.__btn_attr_choice.isEnabled() and do_enable)
+
+    def enable_choices_buttons(self, do_enable: bool, both: bool=True) -> None:
+        """
+        Enables or disables buttons that can be used only if exactly one attribute is selected.
+
+        :param do_enable: new enable state
+        :param both: change state of both buttons
+        """
+        self.__btn_choice.setEnabled(do_enable)
+        if both:
+            self.__btn_attr_choice.setEnabled(do_enable)
 
     def on_btn_perspective_clicked(self):
         pass
