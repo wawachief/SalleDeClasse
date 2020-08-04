@@ -90,15 +90,18 @@ class ViewMainToolBar(QToolBar):
         :param do_enable: new enable state
         """
         self.__btn_lot_change.setEnabled(do_enable)
+        self.__btn_attr_choice.setEnabled(self.__btn_attr_choice.isEnabled() and do_enable)
 
-    def enable_choices_buttons(self, do_enable: bool) -> None:
+    def enable_choices_buttons(self, do_enable: bool, both: bool=True) -> None:
         """
         Enables or disables buttons that can be used only if exactly one attribute is selected.
 
         :param do_enable: new enable state
+        :param both: change state of both buttons
         """
         self.__btn_choice.setEnabled(do_enable)
-        self.__btn_attr_choice.setEnabled(do_enable)
+        if both:
+            self.__btn_attr_choice.setEnabled(do_enable)
 
     def on_btn_perspective_clicked(self):
         pass
