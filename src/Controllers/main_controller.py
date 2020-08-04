@@ -13,6 +13,10 @@ from src.View.view_mainframe import ViewMainFrame
 from src.View.widgets.view_menubutton import ViewMenuButton
 from src.View.popup.view_student_attributes import VStdAttributesDialog
 
+# web sockets
+import socketio
+
+
 
 class MainController(QObject):
     # Constants
@@ -25,6 +29,7 @@ class MainController(QObject):
     sig_select_tile = Signal()
     sig_quit = Signal()
     sig_shuffle = Signal()
+    sig_desk_selected = Signal(int, bool)
     sig_canvas_click = Signal(tuple)
     sig_canvas_drag = Signal(tuple, tuple)
     sig_canvas_right_click = Signal(tuple)
@@ -73,6 +78,7 @@ class MainController(QObject):
         self.gui.central_widget.sig_shuffle = self.sig_shuffle
         self.gui.sig_quit = self.sig_quit
         self.v_canvas.sig_canvas_click = self.sig_canvas_click
+        self.v_canvas.sig_desk_selected = self.sig_desk_selected
         self.v_canvas.sig_canvas_drag = self.sig_canvas_drag
         self.v_canvas.sig_tile_info = self.sig_canvas_right_click
         self.gui.sidewidget.courses().sig_course_changed = self.sig_course_changed
@@ -92,6 +98,7 @@ class MainController(QObject):
         self.sig_select_tile.connect(self.attr_ctrl.on_attribute_selection_changed)
         self.sig_quit.connect(self.do_quit)
         self.sig_canvas_click.connect(self.course_ctrl.add_desk)
+        self.sig_desk_selected.connect(self.course_ctrl.on_desk_selection_change)
         self.sig_canvas_drag.connect(self.course_ctrl.move_desk)
         self.sig_canvas_right_click.connect(self.attr_ctrl.show_student_attributes)
         self.sig_shuffle.connect(self.course_ctrl.desk_shuffle)
@@ -140,6 +147,11 @@ class MainController(QObject):
         self.group_ctrl.show_all_groups()
         self.attr_ctrl.show_all_attributes()
         self.gui.update()
+
+        # initialize connection to flask server
+        self.flask_client = socketio.Client()
+        self.flask_client.connect('http://localhost:5000')
+
 
     #
     # Signals handling

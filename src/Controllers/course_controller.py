@@ -161,6 +161,12 @@ class CourseController:
         self.__bdd.commit()
         self.show_all_courses()
 
+    @Slot(int, bool)
+    def on_desk_selection_change(self, desk_id: int, selected: bool):
+        student = self.mod_bdd.get_student_by_desk_id(desk_id)
+        if student is not None:
+            self.main_ctrl.flask_client.emit("selection_changed", {"id": student.id, "selected": selected})
+
     #
     # General methods
     #
@@ -185,7 +191,8 @@ class CourseController:
         desks_id = self.get_desks(False)
         unselected_desks_id = [desk_id for desk_id in desks_id if desk_id not in selected_desks_id]
         if unselected_desks_id:
-            self.gui.maintoolbar.enable_choices_buttons(True, self.gui.sidewidget.attributes().get_selected_rows_count() == 1)
+            self.gui.maintoolbar.enable_choices_buttons(True,
+                                                        self.gui.sidewidget.attributes().get_selected_rows_count() == 1)
         else:
             # all students are selected,
             self.gui.maintoolbar.enable_choices_buttons(False)

@@ -284,6 +284,7 @@ class ViewCanvas(QWidget):
         self.__do_switch = False
 
         self.sig_canvas_click = None  # Signal triggered when a click is performed on a desk
+        self.sig_desk_selected = None  # Signal triggered when a non empty desk is selected
         self.sig_canvas_drag = None  # Signal triggered when a drag operation is performed on the canvas
         self.sig_select_tile = None  # pushed by the controller. emits when tile selection change.
         self.sig_tile_info = None  # Signal triggered when a right-click is performed on a desk. Info is to be displayed
@@ -572,6 +573,7 @@ class ViewCanvas(QWidget):
                 self.sig_canvas_click.emit(rel_end_pos)
             else:
                 selected_tile.toggle_selection()
+                self.sig_desk_selected.emit(selected_tile.id(), selected_tile.is_selected())
         else:  # Drag/Drop operation
             self.sig_canvas_drag.emit(rel_start_pos, rel_end_pos)
 
