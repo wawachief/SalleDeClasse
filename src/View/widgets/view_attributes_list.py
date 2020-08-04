@@ -85,10 +85,27 @@ class ViewAttributePanel(QWidget):
 
         return attributes_ids
 
-    def on_selection_changed(self, item=None):
+    def on_selection_changed(self, item=None) -> None:
         """
         Enables the delete button when at least an attribute is selected and emits the selection changed signal
         """
-        self.attributes_toolbar.add_widget.enable_delete_btn(len(self.tableview.selectionModel().selectedRows()) > 0)
+        self.attributes_toolbar.add_widget.enable_delete_btn(self.get_selected_rows_count() > 0)
 
         self.sig_selection_changed.emit()
+
+        # Call the method to enable/disable toolbar buttons
+        self.attributes_selection_changed(self.get_selected_rows_count() == 1)
+
+    def get_selected_rows_count(self) -> int:
+        """
+        Gets the number of selected rows
+        """
+        return len(self.tableview.selectionModel().selectedRows())
+
+    def attributes_selection_changed(self, do_enable: bool) -> None:
+        """
+        Override to enable/disable toolbar buttons
+
+        :param do_enable: new enable state
+        """
+        pass
