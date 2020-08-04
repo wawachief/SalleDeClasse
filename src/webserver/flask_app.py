@@ -20,7 +20,7 @@ def load_app():
     active_course_name = mod_bdd.get_course_name_by_id(active_course)
     students = mod_bdd.get_students_in_course_by_id(active_course)
     print(students)
-    return render_template('template_v2.html', titre="Liste des élèves de la classe " + active_course_name,
+    return render_template('salle_de_classe.html', titre="Liste des élèves de la classe " + active_course_name,
                            students=students)
 
 
@@ -52,17 +52,17 @@ def confirm_connection_event(json):
     ids = controller.v_canvas.get_selected_tiles()
     for desk_id in ids:
         student = mod_bdd.get_student_by_desk_id(desk_id)
-        select_student(student.id, True)
+        send_student_selection(student.id, True)
         print("selected students : " + str(student.id))
 
 
 @socket_io.on('selection_changed')
 def on_selection_changed(json):
     print('selection changed: ' + str(json))
-    select_student(json['id'], json['selected'])
+    send_student_selection(json['id'], json['selected'])
 
 
-def select_student(student_id: int, selected: bool):
+def send_student_selection(student_id: int, selected: bool):
     socket_io.emit('select_student', {"id": student_id, "selected": selected})
 
 
