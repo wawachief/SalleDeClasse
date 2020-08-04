@@ -4,7 +4,7 @@ from src.View.popup.view_confirm_dialogs import VConfirmDialog
 
 from src.assets_manager import AssetManager
 
-from random import shuffle
+from random import shuffle, choice
 
 
 class CourseController:
@@ -30,9 +30,7 @@ class CourseController:
     @Slot(int, bool)
     def on_desk_selection_changed(self, student_id: int, selected: bool) -> None:
         desk_id = self.mod_bdd.get_desk_id_by_student_id_and_course_id(student_id, self.main_ctrl.id_course)
-        self.v_canvas.change_desk_selection_by_desk_id(desk_id, selected)
-        self.attr_ctrl.on_attribute_selection_changed()
-        self.v_canvas.repaint()
+        self.do_desk_selection_change(desk_id, selected)
 
     @Slot(tuple)
     def add_desk(self, coords):
@@ -169,6 +167,36 @@ class CourseController:
 
     # desks methods
 
+    def get_desks(self, is_free):
+        """return a list of desk ids
+        param :
+        - is_free : status of the desks that are being returned"""
+        all_desks = self.mod_bdd.get_course_all_desks(self.main_ctrl.id_course)
+        if is_free:
+            return [d.id for d in all_desks if d.id_student == 0]
+        else:
+            return [d.id for d in all_desks if d.id_student != 0]
+
+    def get_unselected_occupied_desks_id(self):
+        """returns the mist of unselected occupied desks ids
+        if there are some, the choice button is enabled
+        if there are none, the choice button is disabled"""
+        selected_desks_id = self.v_canvas.get_selected_tiles()
+        desks_id = self.get_desks(False)
+        unselected_desks_id = [desk_id for desk_id in desks_id if desk_id not in selected_desks_id]
+        if unselected_desks_id:
+            self.gui.maintoolbar.enable_choices_buttons(True, self.gui.sidewidget.attributes().get_selected_rows_count() == 1)
+        else:
+            # all students are selected,
+            self.gui.maintoolbar.enable_choices_buttons(False)
+        return unselected_desks_id
+
+    def do_desk_selection_change(self, desk_id, selected):
+        self.v_canvas.change_desk_selection_by_desk_id(desk_id, selected)
+        self.attr_ctrl.on_attribute_selection_changed()
+        self.get_unselected_occupied_desks_id()
+        self.v_canvas.repaint()
+
     def auto_select_desks(self) -> None:
         """Select Desks, rotate selection mode
         - 3 = all,
@@ -177,21 +205,14 @@ class CourseController:
         - 0 = none
         """
 
-        def get_desks(is_free):
-            all_desks = self.mod_bdd.get_course_all_desks(self.main_ctrl.id_course)
-            if is_free:
-                return [d.id for d in all_desks if d.id_student == 0]
-            else:
-                return [d.id for d in all_desks if d.id_student != 0]
-
         if self.main_ctrl.selection_mode == self.main_ctrl.SEL_NONE:
             self.v_canvas.select_tiles_to(False)
             self.gui.status_bar.showMessage(f"Déselection de tous les emplacements", 3000)
         elif self.main_ctrl.selection_mode == self.main_ctrl.SEL_EMPTY:
-            self.v_canvas.select_tiles_from_desks_ids(get_desks(True))
+            self.v_canvas.select_tiles_from_desks_ids(self.get_desks(True))
             self.gui.status_bar.showMessage(f"Selection des emplacements libres", 3000)
         elif self.main_ctrl.selection_mode == self.main_ctrl.SEL_OCCUPIED:
-            self.v_canvas.select_tiles_from_desks_ids(get_desks(False))
+            self.v_canvas.select_tiles_from_desks_ids(self.get_desks(False))
             self.gui.status_bar.showMessage(f"Selection des emplacements occupés", 3000)
         else:
             self.v_canvas.select_tiles_to(True)
@@ -290,9 +311,17 @@ class CourseController:
 
     def set_course(self, course_name):
         """Sets current course to course_name
-        if course_name does not exisis, creates it, with current topic id
+        if course_name does not exists, creates it, with current topic id
         YOU MUST CALL commit after !
         The new course have topic_id of 1 (main topic)
         """
         self.main_ctrl.id_course = self.mod_bdd.create_course_with_name(course_name)
         self.main_ctrl.selection_mode = self.main_ctrl.SEL_ALL
+
+    def student_random_pick(self):
+        """Randomly chooses a student among not selected ones"""
+        desks_id = self.get_unselected_occupied_desks_id()
+        if desks_id:
+            # should be always be true otherwise the hutton is disabled
+            desk_id = choice(desks_id)
+            self.do_desk_selection_change(desk_id, True)

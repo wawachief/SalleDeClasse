@@ -70,6 +70,8 @@ class AttrController:
             self.main_ctrl.std_dialog_info.attributes_updated(attrs)
 
         list_id_attr = self.gui.sidewidget.attributes().selected_attributes()
+        # update the choice button status
+        self.main_ctrl.course_ctrl.get_unselected_occupied_desks_id()
 
         if list_id_attr:
             id_topic = self.mod_bdd.get_topic_id_by_course_id(self.main_ctrl.id_course)
@@ -192,24 +194,25 @@ class AttrController:
             attr_type = self.mod_bdd.get_attribute_type_from_id(attr_id)
 
             dlg = None  # QDialog
-            val = ""
             if attr_type == EAttributesTypes.TEXT.value:
-                dlg = VDlgEditText(self.gui, val)
+                dlg = VDlgEditText(self.gui, "")
             elif attr_type == EAttributesTypes.MARK.value:
-                dlg = VDlgEditMark(self.gui, val)
+                dlg = VDlgEditMark(self.gui, "")
             elif attr_type == EAttributesTypes.COLOR.value:
-                dlg = VDlgEditColor(self.gui, val)
+                dlg = VDlgEditColor(self.gui, "")
             elif attr_type == EAttributesTypes.COUNTER.value:
-                dlg = VDlgEditCounter(self.gui, val)
+                dlg = VDlgEditCounter(self.gui, "1")
 
             if dlg and dlg.exec_():
                 if attr_type == EAttributesTypes.COUNTER.value:
+                    if dlg.new_value() == 0 and not VConfirmDialog(self.gui, "confirm_message_RAZ").exec_():
+                        return
                     for s in students:
                         if dlg.new_value() == 0:
                             val = "0"
                         else:
                             val = self.mod_bdd.get_attribute_value(s[0], attr_id, id_topic)
-                            val = str(int(val) + dlg.new_value()) if val else "1"
+                            val = str(int(val) + dlg.new_value()) if val else str(dlg.new_value())
                         self.mod_bdd.update_attr_with_ids(s[0], attr_id, id_topic, val)
                 else:
                     for s in students:
