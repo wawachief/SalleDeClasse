@@ -2,12 +2,12 @@ import sqlite3
 
 from PySide2.QtCore import QThread
 from flask import Flask, render_template, request, jsonify
-from src.controller import Controller
+from src.Controllers.main_controller import MainController
 from src.Model.mod_bdd import ModBdd
 
 flask_app = Flask(__name__)
 
-controller: Controller = None
+controller: MainController = None
 
 
 @flask_app.route('/')
