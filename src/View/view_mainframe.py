@@ -181,7 +181,7 @@ class ViewMainFrame(QMainWindow):
         self.status_bar = QStatusBar()
         self.status_bar.setStyleSheet("QStatusBar {background: lightgrey; color: black;}")
         self.maintoolbar = ViewMainToolBar()
-        self.central_widget = CentralWidget(self.status_bar.showMessage, self.maintoolbar.set_widgets)
+        self.central_widget = CentralWidget(self.status_bar.showMessage, self.__active_tab_changed)
         self.sidewidget = SideDockWidget()
 
         self.sidewidget.dockLocationChanged.connect(self.on_side_widget_docked_state_changed)
@@ -207,6 +207,21 @@ class ViewMainFrame(QMainWindow):
         self.maintoolbar.on_btn_shuffle_clicked = self.central_widget.do_shuffle
 
         self.central_widget.sig_enable_animation_btns = self.maintoolbar.sig_enable_animation_btns
+
+        self.sidewidget.attributes().attributes_selection_changed = self.maintoolbar.enable_one_attributes_buttons
+
+    def __active_tab_changed(self, is_view_classroom: bool) -> None:
+        """
+        Triggered when the active tab changed.
+        Updates main toolbar widgets
+
+        :param is_view_classroom: View classroom or view table attributes
+        """
+        self.maintoolbar.set_widgets(is_view_classroom)
+
+        # Manually update buttons enable state given the number of selected attributes
+        if not is_view_classroom:
+            self.maintoolbar.enable_one_attributes_buttons(self.sidewidget.attributes().get_selected_rows_count() == 1)
 
     def on_side_widget_docked_state_changed(self):
         """
