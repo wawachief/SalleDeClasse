@@ -15,7 +15,7 @@ class VConfirmDialog(QDialog):
         """
         QDialog.__init__(self, parent)
 
-        self.setFixedSize(QSize(350, 80))
+        self.setFixedSize(QSize(350, 120))
 
         self.question = QLabel(AssetManager.getInstance().get_text(message_key))
         self.question.setAlignment(Qt.AlignCenter)
