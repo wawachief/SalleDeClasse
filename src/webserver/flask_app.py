@@ -10,8 +10,8 @@ from flask_socketio import SocketIO
 flask_app = Flask(__name__)
 flask_app.config['SECRET_KEY'] = 'secret!'
 socket_io = SocketIO(flask_app)
-
 controller: MainController = None
+clients = []
 
 
 @flask_app.route('/')
@@ -34,6 +34,18 @@ def select_student():
     return resp
 
 
+@socket_io.on('connect')
+def handle_connect():
+    print('Client connected')
+    clients.append(request.sid)
+
+
+@socket_io.on('disconnect')
+def handle_disconnect():
+    print('Client disconnected')
+    clients.remove(request.sid)
+
+
 @socket_io.on('confirm_connect')
 def confirm_connection_event(json):
     print('received json: ' + str(json))
@@ -43,6 +55,23 @@ def confirm_connection_event(json):
         student = mod_bdd.get_student_by_desk_id(desk_id)
         select_student(student.id, True)
         print("selected students : " + str(student.id))
+
+
+@socket_io.on('selection_changed')
+def on_selection_changed(json):
+    print('selection changed: ' + str(json))
+    select_student(json['id'], json['selected'])
+
+
+def on_desk_selection_change(desk_id: int, selected: bool):
+    sio = socketio.Client()
+    sio.connect('http://localhost:5000')
+    mod_bdd = get_bdd_connection()
+    student = mod_bdd.get_student_by_desk_id(desk_id)
+    if student is not None:
+        for client_id in clients:
+            sio.emit("selection_changed", {"id": student.id, "selected": selected})
+            # select_student(student.id, selected)
 
 
 def select_student(student_id: int, selected: bool):
@@ -66,3 +95,4 @@ class FlaskThread(QThread):
     def init_controller(self, controller_param):
         global controller
         controller = controller_param
+        controller.sig_desk_selected.connect(on_desk_selection_change)

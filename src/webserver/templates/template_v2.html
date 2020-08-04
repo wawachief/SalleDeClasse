@@ -13,6 +13,7 @@
         var socket = io();
         socket.on('connect', function() {
             socket.emit('confirm_connect', {data: 'I\'m connected!'});
+            console.log("connected");
         });
         socket.on('select_student', function(msg) {
             console.log("Received select_student event :  id: "+msg.id+" selected:"+msg.selected);

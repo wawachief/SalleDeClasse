@@ -25,6 +25,7 @@ class MainController(QObject):
     sig_select_tile = Signal()
     sig_quit = Signal()
     sig_shuffle = Signal()
+    sig_desk_selected = Signal(int, bool)
     sig_canvas_click = Signal(tuple)
     sig_canvas_drag = Signal(tuple, tuple)
     sig_canvas_right_click = Signal(tuple)
@@ -73,6 +74,7 @@ class MainController(QObject):
         self.gui.central_widget.sig_shuffle = self.sig_shuffle
         self.gui.sig_quit = self.sig_quit
         self.v_canvas.sig_canvas_click = self.sig_canvas_click
+        self.v_canvas.sig_desk_selected = self.sig_desk_selected
         self.v_canvas.sig_canvas_drag = self.sig_canvas_drag
         self.v_canvas.sig_tile_info = self.sig_canvas_right_click
         self.gui.sidewidget.courses().sig_course_changed = self.sig_course_changed
