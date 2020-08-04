@@ -13,6 +13,10 @@ from src.View.view_mainframe import ViewMainFrame
 from src.View.widgets.view_menubutton import ViewMenuButton
 from src.View.popup.view_student_attributes import VStdAttributesDialog
 
+# web sockets
+import socketio
+
+
 
 class MainController(QObject):
     # Constants
@@ -94,6 +98,7 @@ class MainController(QObject):
         self.sig_select_tile.connect(self.attr_ctrl.on_attribute_selection_changed)
         self.sig_quit.connect(self.do_quit)
         self.sig_canvas_click.connect(self.course_ctrl.add_desk)
+        self.sig_desk_selected.connect(self.course_ctrl.on_desk_selection_change)
         self.sig_canvas_drag.connect(self.course_ctrl.move_desk)
         self.sig_canvas_right_click.connect(self.attr_ctrl.show_student_attributes)
         self.sig_shuffle.connect(self.course_ctrl.desk_shuffle)
@@ -142,6 +147,11 @@ class MainController(QObject):
         self.group_ctrl.show_all_groups()
         self.attr_ctrl.show_all_attributes()
         self.gui.update()
+
+        # initialize connection to flask server
+        self.flask_client = socketio.Client()
+        self.flask_client.connect('http://localhost:5000')
+
 
     #
     # Signals handling

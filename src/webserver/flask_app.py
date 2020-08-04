@@ -1,6 +1,5 @@
 import sqlite3
 
-import socketio
 from PySide2.QtCore import QThread
 from flask import Flask, render_template, request, jsonify
 from src.Controllers.main_controller import MainController
@@ -63,17 +62,6 @@ def on_selection_changed(json):
     select_student(json['id'], json['selected'])
 
 
-def on_desk_selection_change(desk_id: int, selected: bool):
-    sio = socketio.Client()
-    sio.connect('http://localhost:5000')
-    mod_bdd = get_bdd_connection()
-    student = mod_bdd.get_student_by_desk_id(desk_id)
-    if student is not None:
-        for client_id in clients:
-            sio.emit("selection_changed", {"id": student.id, "selected": selected})
-            # select_student(student.id, selected)
-
-
 def select_student(student_id: int, selected: bool):
     socket_io.emit('select_student', {"id": student_id, "selected": selected})
 
@@ -95,4 +83,3 @@ class FlaskThread(QThread):
     def init_controller(self, controller_param):
         global controller
         controller = controller_param
-        controller.sig_desk_selected.connect(on_desk_selection_change)
