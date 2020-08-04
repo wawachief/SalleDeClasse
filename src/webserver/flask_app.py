@@ -40,9 +40,9 @@ def confirm_connection_event(json):
     mod_bdd = get_bdd_connection()
     ids = controller.v_canvas.get_selected_tiles()
     for desk_id in ids:
-        student_id = mod_bdd.get_desk_id_by_student_id_and_course_id(desk_id, controller.id_course)
-        select_student(student_id, True)
-        print("selected students : " + str(student_id))
+        student = mod_bdd.get_student_by_desk_id(desk_id)
+        select_student(student.id, True)
+        print("selected students : " + str(student.id))
 
 
 def select_student(student_id: int, selected: bool):
