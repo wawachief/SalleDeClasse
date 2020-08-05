@@ -32,9 +32,12 @@ class ViewMainToolBar(QToolBar):
         self.__btn_delete = ToolBarButton("corbeille", "Effacer", lambda: self.sig_TBbutton.emit("delete"))
         self.__btn_lot_change = ToolBarButton("fill", "Changement par Lot", lambda: self.sig_TBbutton.emit("lot_change"))
         self.__btn_undo = ToolBarButton("shit", "Annuler", lambda: self.sig_TBbutton.emit("test"))
+        self.__btn_qr = ToolBarButton("qr-code", "Afficher le QR code", lambda: self.sig_TBbutton.emit("show_qr"))
 
         self.actions_table = {self.__btn_magic: None, self.__btn_perspective: None, self.__btn_shuffle: None,
-                              self.__btn_select: None, self.__btn_choice: None, self.__btn_attr_choice: None, self.__btn_delete: None, self.__btn_lot_change: None, self.__btn_undo: None}
+                              self.__btn_select: None, self.__btn_choice: None, self.__btn_attr_choice: None,
+                              self.__btn_delete: None, self.__btn_lot_change: None, self.__btn_undo: None,
+                              self.__btn_qr: None}
 
         # Signals
         self.sig_enable_animation_btns.connect(self.enable_animation_btns)
@@ -65,6 +68,7 @@ class ViewMainToolBar(QToolBar):
         self.actions_table[self.__btn_delete].setVisible(is_view_classroom)
         self.actions_table[self.__btn_lot_change].setVisible(not is_view_classroom)
         self.actions_table[self.__btn_undo].setVisible(True)
+        self.actions_table[self.__btn_qr].setVisible(True)
 
     def __set_style(self):
         """

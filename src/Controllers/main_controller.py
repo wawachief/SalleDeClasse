@@ -12,6 +12,7 @@ from src.Model.mod_bdd import ModBdd
 from src.View.view_mainframe import ViewMainFrame
 from src.View.widgets.view_menubutton import ViewMenuButton
 from src.View.popup.view_student_attributes import VStdAttributesDialog
+from src.View.popup.view_qrcode import VQRCode
 
 # web sockets
 import socketio
@@ -133,6 +134,7 @@ class MainController(QObject):
             "delete": self.course_ctrl.delete,
             "lot_change": self.attr_ctrl.lot_change,
             "test": self.debug,
+            "show_qr": self.show_qr
         }
 
         # properties
@@ -179,3 +181,5 @@ class MainController(QObject):
     def debug(self):
         self.gui.status_bar.showMessage("ouaf")
 
+    def show_qr(self):
+        VQRCode(self.gui).exec_()
