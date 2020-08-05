@@ -19,10 +19,18 @@ def load_app():
     mod_bdd = get_bdd_connection()
     active_course_name = mod_bdd.get_course_name_by_id(active_course)
     students = mod_bdd.get_students_in_course_by_id(active_course)
-    print(students)
     return render_template('salle_de_classe.html', titre="Liste des élèves de la classe " + active_course_name,
                            students=students)
 
+
+@flask_app.route('/mobile')
+def load_app_mobile():
+    active_course = controller.id_course
+    mod_bdd = get_bdd_connection()
+    active_course_name = mod_bdd.get_course_name_by_id(active_course)
+    students = mod_bdd.get_students_in_course_by_id(active_course)
+    return render_template('salle_de_classe_mobile.html', titre="Liste des élèves de la classe " + active_course_name,
+                           students=students)
 
 @flask_app.route('/api/student')
 def select_student():

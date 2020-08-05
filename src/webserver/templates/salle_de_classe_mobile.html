@@ -5,24 +5,35 @@
     <title>{{ titre }}</title>
 
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.5/css/responsive.dataTables.min.css">
+
+
 
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.5/js/dataTables.responsive.min.js"></script>
 
-    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"
+            integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
     <script type="text/javascript" charset="utf-8">
         var socket = io();
-        socket.on('connect', function() {
+        socket.on('connect', function () {
             socket.emit('confirm_connect', {data: 'I\'m connected!'});
             console.log("connected");
         });
-        socket.on('select_student', function(msg) {
-            console.log("Received select_student event :  id: "+msg.id+" selected:"+msg.selected);
-            $("#"+msg.id).toggleClass("selected");
+        socket.on('select_student', function (msg) {
+            console.log("Received select_student event :  id: " + msg.id + " selected:" + msg.selected);
+            $("#" + msg.id).toggleClass("selected");
         });
     </script>
 
     <script type="text/javascript">
+        $.extend( $.fn.dataTable.defaults, {
+            responsive: true
+        } );
         $(document).ready(function () {
             var table = $('#students-table').DataTable({
                 paging: false,
@@ -37,10 +48,10 @@
                 const id = $(this).attr('id');
                 const selected = $(this).hasClass("selected");
                 $.ajax({
-                        url: '/api/student?id=' + id+"&selected="+selected,
-                        success: function (data) {
-                        }
-                    });
+                    url: '/api/student?id=' + id + "&selected=" + selected,
+                    success: function (data) {
+                    }
+                });
                 return false;
             });
 
@@ -52,14 +63,12 @@
 
 </head>
 
-<body>
-<h1>{{ titre }}</h1>
-<table id="students-table" class="display" style="width:100%">
+<body style="font-size: 3rem">
+<table id="students-table"  class="display responsive nowrap" style="width:100%">
     <thead>
     <tr>
         <th>Prénom</th>
         <th>Nom</th>
-        <th>Id</th>
     </tr>
     </thead>
     <tbody>
@@ -67,7 +76,6 @@
     <tr id="{{ student.id }}">
         <td>{{ student.firstname }}</td>
         <td>{{ student.lastname }}</td>
-        <td>{{ student.id }}</td>
     </tr>
     {% endfor %}
     </tbody>
