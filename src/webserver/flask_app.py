@@ -5,6 +5,7 @@ from flask import Flask, render_template, request, jsonify
 from src.Controllers.main_controller import MainController
 from src.Model.mod_bdd import ModBdd
 from flask_socketio import SocketIO
+from random import choice
 
 flask_app = Flask(__name__)
 flask_app.config['SECRET_KEY'] = 'secret!'
@@ -31,6 +32,7 @@ def load_app_mobile():
     students = mod_bdd.get_students_in_course_by_id(active_course)
     return render_template('salle_de_classe_mobile.html', titre="Liste des élèves de la classe " + active_course_name,
                            students=students)
+
 
 @flask_app.route('/api/student')
 def select_student():
@@ -68,6 +70,19 @@ def confirm_connection_event(json):
 def on_selection_changed(json):
     print('selection changed: ' + str(json))
     send_student_selection(json['id'], json['selected'])
+
+
+@socket_io.on('random_selection')
+def random_selection_request():
+    print('Random Selection requested')
+    mod_bdd = get_bdd_connection()
+    desks_id = controller.course_ctrl.get_unselected_occupied_desks_id(bdd=mod_bdd)
+    if desks_id:
+        # should be always be true otherwise the hutton is disabled
+        desk_id = choice(desks_id)
+        student = mod_bdd.get_student_by_desk_id(desk_id)
+        controller.sig_flask_desk_selection_changed.emit(student.id, True)
+        send_student_selection(student.id, True)
 
 
 def send_student_selection(student_id: int, selected: bool):

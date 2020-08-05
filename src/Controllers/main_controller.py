@@ -178,3 +178,4 @@ class MainController(QObject):
 
     def debug(self):
         self.gui.status_bar.showMessage("ouaf")
+
