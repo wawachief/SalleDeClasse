@@ -181,22 +181,24 @@ class CourseController:
         self.get_unselected_occupied_desks_id()          # refresh choice buttons state
         self.v_canvas.repaint()
 
-    def get_desks(self, is_free):
+    def get_desks(self, is_free, bdd=None):
         """return a list of desk ids
         param :
         - is_free : status of the desks that are being returned"""
-        all_desks = self.mod_bdd.get_course_all_desks(self.main_ctrl.id_course)
+        if bdd is None:
+            bdd = self.mod_bdd
+        all_desks = bdd.get_course_all_desks(self.main_ctrl.id_course)
         if is_free:
             return [d.id for d in all_desks if d.id_student == 0]
         else:
             return [d.id for d in all_desks if d.id_student != 0]
 
-    def get_unselected_occupied_desks_id(self):
+    def get_unselected_occupied_desks_id(self, bdd=None):
         """returns the mist of unselected occupied desks ids
         if there are some, the choice button is enabled
         if there are none, the choice button is disabled"""
         selected_desks_id = self.v_canvas.get_selected_tiles()
-        desks_id = self.get_desks(False)
+        desks_id = self.get_desks(False, bdd)
         unselected_desks_id = [desk_id for desk_id in desks_id if desk_id not in selected_desks_id]
         if unselected_desks_id:
             self.gui.maintoolbar.enable_choices_buttons(True,
