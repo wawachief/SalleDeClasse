@@ -27,6 +27,7 @@ class VQRCode(QDialog):
 
         # IP and Port
         local_ip_address = s.getsockname()[0]
+        s.close()
         port = AssetManager.getInstance().config('webapp', 'port')
 
         s = f"http://{local_ip_address}:{port}"  # String which represents the QR code
