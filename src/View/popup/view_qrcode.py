@@ -30,7 +30,7 @@ class VQRCode(QDialog):
         s.close()
         port = AssetManager.getInstance().config('webapp', 'port')
 
-        s = f"http://{local_ip_address}:{port}"  # String which represents the QR code
+        s = f"http://{local_ip_address}:{port}/mobile"  # String which represents the QR code
         self.url = pyqrcode.create(s)  # Generate QR code
         self.url.png(QR_PATH, scale=6)  # Create and save the QR png file
 
