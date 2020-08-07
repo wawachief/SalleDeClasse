@@ -8,6 +8,7 @@ from flask_socketio import SocketIO
 from random import choice
 import os, signal
 
+flask_thread = None
 flask_app = Flask(__name__)
 flask_app.config['SECRET_KEY'] = 'secret!'
 socket_io = SocketIO(flask_app)
@@ -21,7 +22,6 @@ def load_app():
     mod_bdd = get_bdd_connection()
     active_course_name = mod_bdd.get_course_name_by_id(active_course)
     students = mod_bdd.get_students_in_course_by_id(active_course)
-    mod_bdd.close_bdd()
     return render_template('salle_de_classe.html', titre="Liste des élèves de la classe " + active_course_name,
                            students=students)
 
@@ -32,7 +32,7 @@ def load_app_mobile():
     mod_bdd = get_bdd_connection()
     active_course_name = mod_bdd.get_course_name_by_id(active_course)
     students = mod_bdd.get_students_in_course_by_id(active_course)
-    mod_bdd.close_bdd()
+    controller.close_qr()
     return render_template('salle_de_classe_mobile.html', titre="Liste des élèves de la classe " + active_course_name,
                            students=students)
 
@@ -42,6 +42,7 @@ def select_student():
     student_id = int(request.args.get('id', 0))
     selected = request.args.get('selected', 0) == "true"
     controller.sig_flask_desk_selection_changed.emit(student_id, selected)
+
     resp = jsonify(success=True)
     return resp
 
@@ -61,8 +62,9 @@ def handle_disconnect():
 @socket_io.on('stop-server')
 def stop_server():
     print('Stopping server')
+    controller.flask_server.stop_flask()
     # socket_io.stop()
-    os.kill(os.getpid(), signal.SIGINT)
+    os.kill(os.getpid(), signal.SIGABRT)
     print("Stopped socketio")
 
 
@@ -75,7 +77,6 @@ def confirm_connection_event(json):
         student = mod_bdd.get_student_by_desk_id(desk_id)
         send_student_selection(student.id, True)
         print("selected students : " + str(student.id))
-    mod_bdd.close_bdd()
 
 
 @socket_io.on('selection_changed')
@@ -95,7 +96,6 @@ def random_selection_request():
         student = mod_bdd.get_student_by_desk_id(desk_id)
         controller.sig_flask_desk_selection_changed.emit(student.id, True)
         send_student_selection(student.id, True)
-    mod_bdd.close_bdd()
 
 
 def send_student_selection(student_id: int, selected: bool):
@@ -122,5 +122,4 @@ class FlaskThread(QThread):
         controller.flask_server = self
 
     def stop_flask(self):
-        flask_app.do_teardown_appcontext()
-        self.quit()
+        self.exit()
