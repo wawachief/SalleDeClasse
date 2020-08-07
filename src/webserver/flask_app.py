@@ -6,6 +6,7 @@ from src.Controllers.main_controller import MainController
 from src.Model.mod_bdd import ModBdd
 from flask_socketio import SocketIO
 from random import choice
+import os, signal
 
 flask_app = Flask(__name__)
 flask_app.config['SECRET_KEY'] = 'secret!'
@@ -20,6 +21,7 @@ def load_app():
     mod_bdd = get_bdd_connection()
     active_course_name = mod_bdd.get_course_name_by_id(active_course)
     students = mod_bdd.get_students_in_course_by_id(active_course)
+    mod_bdd.close_bdd()
     return render_template('salle_de_classe.html', titre="Liste des élèves de la classe " + active_course_name,
                            students=students)
 
@@ -30,6 +32,7 @@ def load_app_mobile():
     mod_bdd = get_bdd_connection()
     active_course_name = mod_bdd.get_course_name_by_id(active_course)
     students = mod_bdd.get_students_in_course_by_id(active_course)
+    mod_bdd.close_bdd()
     return render_template('salle_de_classe_mobile.html', titre="Liste des élèves de la classe " + active_course_name,
                            students=students)
 
@@ -55,6 +58,14 @@ def handle_disconnect():
     clients.remove(request.sid)
 
 
+@socket_io.on('stop-server')
+def stop_server():
+    print('Stopping server')
+    # socket_io.stop()
+    os.kill(os.getpid(), signal.SIGINT)
+    print("Stopped socketio")
+
+
 @socket_io.on('confirm_connect')
 def confirm_connection_event(json):
     print('received json: ' + str(json))
@@ -64,6 +75,7 @@ def confirm_connection_event(json):
         student = mod_bdd.get_student_by_desk_id(desk_id)
         send_student_selection(student.id, True)
         print("selected students : " + str(student.id))
+    mod_bdd.close_bdd()
 
 
 @socket_io.on('selection_changed')
@@ -83,6 +95,7 @@ def random_selection_request():
         student = mod_bdd.get_student_by_desk_id(desk_id)
         controller.sig_flask_desk_selection_changed.emit(student.id, True)
         send_student_selection(student.id, True)
+    mod_bdd.close_bdd()
 
 
 def send_student_selection(student_id: int, selected: bool):
@@ -101,8 +114,13 @@ class FlaskThread(QThread):
         self.start()
 
     def run(self):
-        socket_io.run(flask_app, host='0.0.0.0')
+        socket_io.run(flask_app, port=5000, host='0.0.0.0')
 
     def init_controller(self, controller_param):
         global controller
         controller = controller_param
+        controller.flask_server = self
+
+    def stop_flask(self):
+        flask_app.do_teardown_appcontext()
+        self.quit()
