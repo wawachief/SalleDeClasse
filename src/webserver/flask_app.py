@@ -32,7 +32,6 @@ def load_app_mobile():
     mod_bdd = get_bdd_connection()
     active_course_name = mod_bdd.get_course_name_by_id(active_course)
     students = mod_bdd.get_students_in_course_by_id(active_course)
-    controller.close_qr()
     return render_template('salle_de_classe_mobile.html', titre="Liste des élèves de la classe " + active_course_name,
                            students=students)
 
