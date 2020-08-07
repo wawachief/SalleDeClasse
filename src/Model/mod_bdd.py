@@ -324,7 +324,7 @@ class ModBdd:
     #
 
     def get_topic_from_course_id(self, id_course):
-        """Returns a Student object
+        """Returns a topic object
         Input : id_course - course id
         Output : topic name or '' """
 
@@ -334,7 +334,7 @@ class ModBdd:
         return "" if r is None else r[0]
 
     def get_topics_names(self):
-        """Returns a Student object"""
+        """Returns a topic object"""
 
         req = "SELECT TopicName FROM Topics"
         self.__cursor.execute(req)

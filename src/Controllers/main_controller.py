@@ -152,6 +152,7 @@ class MainController(QObject):
         # initialize connection to flask server
         self.flask_client = socketio.Client()
         self.flask_client.connect('http://localhost:5000')
+        self.flask_server = None
 
 
     #
@@ -172,6 +173,9 @@ class MainController(QObject):
     def do_quit(self):
         self.v_canvas.application_closing()
         self.__bdd.close()
+        # self.flask_server.stop_flask()
+        self.flask_client.emit("stop-server")
+
 
     #
     # General methods
