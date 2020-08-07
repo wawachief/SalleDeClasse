@@ -105,15 +105,11 @@ class ModBdd:
     def create_course_with_name(self, name):
         """Creates a new room.
         Input : name - course name
-        Output : idCourse 
-            if name already exist, idCourse is the id of the existing course
-            if name doesn't exist, idCourse is the id of the course just created
+        Output : idCourse
         The topic id of the new course is 1 (main topic)"""
-        idc = self.get_course_id_by_name(name)
-        if idc == 0:
-            req = "INSERT INTO Courses (CourseName, IdTopic) VALUES (?, 1)"
-            self.__cursor.execute(req, [name])
-            idc = self.__cursor.lastrowid
+        req = "INSERT INTO Courses (CourseName, IdTopic) VALUES (?, 1)"
+        self.__cursor.execute(req, [name])
+        idc = self.__cursor.lastrowid
         return idc
 
     def delete_course_with_id(self, course_id):
@@ -343,7 +339,7 @@ class ModBdd:
         req = "SELECT TopicName FROM Topics"
         self.__cursor.execute(req)
         r = self.__cursor.fetchall()
-        return ["Cueillette de fraises"] if r is None else [t[0] for t in r]
+        return [""] if r is None else [t[0] for t in r]
     
     def set_topic_to_course_id(self, id_course, new_topic):
         req = "UPDATE Courses SET IdTopic = ( SELECT Topics.IdTopic FROM Topics WHERE Topics.TopicName = ? ) WHERE IdCourse = ?"

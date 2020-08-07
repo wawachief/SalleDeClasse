@@ -18,7 +18,6 @@ from src.View.popup.view_qrcode import VQRCode
 import socketio
 
 
-
 class MainController(QObject):
     # Constants
     SEL_NONE = 0
@@ -130,7 +129,7 @@ class MainController(QObject):
             "filter_select": self.attr_ctrl.change_filter_selection,
             "select": self.course_ctrl.auto_select_desks,
             "choice": self.course_ctrl.student_random_pick,
-            "choice_attr": self.debug,
+            "choice_attr": self.course_ctrl.student_attr_pick,
             "delete": self.course_ctrl.delete,
             "lot_change": self.attr_ctrl.lot_change,
             "test": self.debug,

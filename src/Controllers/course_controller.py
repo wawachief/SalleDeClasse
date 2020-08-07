@@ -3,6 +3,7 @@ from PySide2.QtCore import Slot
 from src.View.popup.view_confirm_dialogs import VConfirmDialog
 
 from src.assets_manager import AssetManager
+from src.enumerates import EAttributesTypes
 
 from random import shuffle, choice
 
@@ -231,11 +232,11 @@ class CourseController:
 
         if self.main_ctrl.selection_mode >= 2:
             all_desks = self.get_desks(False)
-            for desk_id  in all_desks:
+            for desk_id in all_desks:
                 self.on_desk_selection_changed_on_app(desk_id, True)
         else:
             all_desks = self.get_desks(False)
-            for desk_id  in all_desks:
+            for desk_id in all_desks:
                 self.on_desk_selection_changed_on_app(desk_id, False)
 
         self.main_ctrl.selection_mode = (self.main_ctrl.selection_mode + 1) % 4
@@ -307,7 +308,8 @@ class CourseController:
                 else:
                     self.v_canvas.new_tile(d.row, d.col, d.id)
             # Display course's topic
-            self.gui.central_widget.classroom_tab.topic.select_topic(topic_name)
+            if topic_name:
+                self.gui.central_widget.classroom_tab.topic.select_topic(topic_name)
         self.v_canvas.repaint()
 
     def show_all_courses(self):
@@ -338,12 +340,65 @@ class CourseController:
         """
         self.main_ctrl.id_course = self.mod_bdd.create_course_with_name(course_name)
         self.main_ctrl.selection_mode = self.main_ctrl.SEL_ALL
+        self.__bdd.commit()
 
     def student_random_pick(self):
         """Randomly chooses a student among not selected ones"""
         desks_id = self.get_unselected_occupied_desks_id()
         if desks_id:
-            # should be always be true otherwise the hutton is disabled
+            # should be always be true otherwise the button is disabled
             desk_id = choice(desks_id)
             self.do_desk_selection_change(desk_id, True)  # change selection on app
             self.on_desk_selection_changed_on_app(desk_id, True)  # change selection on web
+
+    def student_attr_pick(self):
+        """Randomly chooses a student among not selected ones"""
+        desks_id = self.get_unselected_occupied_desks_id()
+        list_id_attr = self.gui.sidewidget.attributes().selected_attributes()
+        if not desks_id or len(list_id_attr) != 1:
+            # should be always be true otherwise the hutton is disabled
+            self.gui.status_bar.showMessage("Houston, we have a problem !")
+            return
+
+        id_attr = list_id_attr[0]
+        attr_type = self.mod_bdd.get_attribute_type_from_id(id_attr)
+        id_topic = self.mod_bdd.get_topic_id_by_course_id(self.main_ctrl.id_course)
+
+        canditates = dict()
+        colors = AssetManager.getInstance().config('colors', 'attr_colors').split()
+
+        for d_id in desks_id:
+            desk = self.mod_bdd.get_desk_by_id(d_id)
+            val = self.mod_bdd.get_attribute_value(desk.id_student, id_attr, id_topic)
+            # Determine a order key depending on the attribute type
+            if attr_type == EAttributesTypes.TEXT.value:
+                # for text attr, we select empty attributes first
+                key = 1 if val else 0
+            elif attr_type == EAttributesTypes.MARK.value:
+                # for mark attribute, the key is the number of marks
+                key = len(val.split())
+            elif attr_type == EAttributesTypes.COLOR.value:
+                # for color value, key is the order in config.ini
+                if val in colors:
+                    key = colors.index(val)
+                else:
+                    key = -1
+            elif attr_type == EAttributesTypes.COUNTER.value:
+                # for counter attribute, key is the counter value
+                key = 0 if val == "" else int(val)
+            else:
+                key = 0
+
+            # Update the dictionary of candidates
+            if key in canditates:
+                canditates[key].append(d_id)
+            else:
+                canditates[key] = [d_id]
+
+        # Now we pick a desk by choosing in the minimum key value
+        minkey = min(canditates.keys())
+        desk_id = choice(canditates[minkey])
+
+        # Make selection
+        self.do_desk_selection_change(desk_id, True)  # change selection on app
+        self.on_desk_selection_changed_on_app(desk_id, True)  # change selection on web
