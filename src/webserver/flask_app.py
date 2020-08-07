@@ -11,7 +11,7 @@ import os, signal
 flask_thread = None
 flask_app = Flask(__name__)
 flask_app.config['SECRET_KEY'] = 'secret!'
-socket_io = SocketIO(flask_app)
+socket_io = SocketIO(flask_app, logger=True, async_mode="eventlet", engineio_logger=True)
 controller: MainController = None
 clients = []
 
