@@ -7,6 +7,7 @@ from src.Model.mod_bdd import ModBdd
 from flask_socketio import SocketIO
 from random import choice
 import os, signal
+from engineio.async_drivers import eventlet
 
 flask_thread = None
 flask_app = Flask(__name__)
