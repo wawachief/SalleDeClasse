@@ -1,6 +1,8 @@
 from PySide2.QtGui import QIcon
 from importlib import import_module
 from configparser import ConfigParser
+from os import path
+import shutil
 
 CONFIG_PATH = 'config.ini'
 
@@ -45,8 +47,20 @@ class AssetManager:
             raise Exception("Use getInstance() to access the unique AssetManager instance")
 
         # Application's config file
+        # Copy config file into home directory
+        self.config_path = path.expanduser("~/.SdCrc")
+        if not path.exists(self.config_path):
+            shutil.copyfile(CONFIG_PATH, self.config_path)
+
+        # Compare local version with app version
+        config_ori = ConfigParser()
+        config_ori.read(CONFIG_PATH)
         self.__config = ConfigParser()
-        self.__config.read(CONFIG_PATH)
+        self.__config.read(self.config_path)
+        if config_ori.get('main', 'version') != self.__config.get('main', 'version'):
+            # .SdCrc is obsolete, We overwrite the config file
+            shutil.copyfile(CONFIG_PATH, self.config_path)
+            self.__config.read(self.config_path)
 
         language = import_module("assets.languages." + self.__config.get("main", "language"))
         self.__language_dico = language.dico
