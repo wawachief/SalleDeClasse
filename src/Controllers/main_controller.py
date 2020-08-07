@@ -18,7 +18,6 @@ from src.View.popup.view_qrcode import VQRCode
 import socketio
 
 
-
 class MainController(QObject):
     # Constants
     SEL_NONE = 0

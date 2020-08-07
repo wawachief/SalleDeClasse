@@ -232,11 +232,11 @@ class CourseController:
 
         if self.main_ctrl.selection_mode >= 2:
             all_desks = self.get_desks(False)
-            for desk_id  in all_desks:
+            for desk_id in all_desks:
                 self.on_desk_selection_changed_on_app(desk_id, True)
         else:
             all_desks = self.get_desks(False)
-            for desk_id  in all_desks:
+            for desk_id in all_desks:
                 self.on_desk_selection_changed_on_app(desk_id, False)
 
         self.main_ctrl.selection_mode = (self.main_ctrl.selection_mode + 1) % 4
@@ -308,7 +308,8 @@ class CourseController:
                 else:
                     self.v_canvas.new_tile(d.row, d.col, d.id)
             # Display course's topic
-            self.gui.central_widget.classroom_tab.topic.select_topic(topic_name)
+            if topic_name:
+                self.gui.central_widget.classroom_tab.topic.select_topic(topic_name)
         self.v_canvas.repaint()
 
     def show_all_courses(self):
@@ -339,6 +340,7 @@ class CourseController:
         """
         self.main_ctrl.id_course = self.mod_bdd.create_course_with_name(course_name)
         self.main_ctrl.selection_mode = self.main_ctrl.SEL_ALL
+        self.__bdd.commit()
 
     def student_random_pick(self):
         """Randomly chooses a student among not selected ones"""
@@ -384,8 +386,10 @@ class CourseController:
             elif attr_type == EAttributesTypes.COUNTER.value:
                 # for counter attribute, key is the counter value
                 key = 0 if val == "" else int(val)
+            else:
+                key = 0
 
-            # Update the dictionnary of candidates
+            # Update the dictionary of candidates
             if key in canditates:
                 canditates[key].append(d_id)
             else:
