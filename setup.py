@@ -11,7 +11,7 @@ from configparser import ConfigParser
 
 # Dependencies are automatically detected, but it might need fine tuning.
 build_exe_options = {
-    "packages": ["os", "pyside2", "pypng", "pyqrcode", "flask_socketio", "configparser"],
+    "packages": ["os", "pyside2",  "flask", "pyqrcode", "flask_socketio", "configparser"],
     "include_files": ["doc/", "assets/", "src/", "README.md", "config.ini"],
     "excludes": []
 }
@@ -23,7 +23,7 @@ if sys.platform == "win32":
         sys.argv += ['--initial-target-dir', 'c:\sdc']
 
 config = ConfigParser()
-config.read("src/config.ini")
+config.read("config.ini")
 
 setup(  name = "SalleDeClasse",
         version = config.get('main', 'version'),
