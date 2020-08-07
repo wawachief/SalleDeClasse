@@ -11,7 +11,7 @@ from configparser import ConfigParser
 
 # Dependencies are automatically detected, but it might need fine tuning.
 build_exe_options = {
-    "packages": ["os", "pyside2",  "flask", "pyqrcode", "flask_socketio", "configparser"],
+    "packages": ["os", "pyside2", "sqlite3", "pyqrcode", "engineio", "flask_socketio", "configparser"],
     "include_files": ["doc/", "assets/", "src/", "README.md", "config.ini"],
     "excludes": []
 }
