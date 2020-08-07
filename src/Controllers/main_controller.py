@@ -52,6 +52,7 @@ class MainController(QObject):
     sig_attribute_cell_selected = Signal(int, int)
 
     sig_flask_desk_selection_changed = Signal(int, bool)
+    sig_close_qr = Signal()
 
     def __init__(self):
         """
@@ -115,6 +116,7 @@ class MainController(QObject):
         self.sig_attr_selection_changed.connect(self.attr_ctrl.on_attribute_selection_changed)
         self.sig_attribute_cell_selected.connect(self.attr_ctrl.on_attribute_cell_selected)
         self.sig_flask_desk_selection_changed.connect(self.course_ctrl.on_desk_selection_changed_on_web)
+        self.sig_close_qr.connect(self.close_qr)
 
         self.actions_table = {  # Action buttons
             "import_csv": self.group_ctrl.import_pronote,
@@ -142,6 +144,7 @@ class MainController(QObject):
         self.selection_mode = self.SEL_ALL
         self.filter_selection = False
         self.std_dialog_info: VStdAttributesDialog = None
+        self.qr_dialog: VQRCode = None
 
         # initialize the views
         self.course_ctrl.show_all_courses()
@@ -153,7 +156,6 @@ class MainController(QObject):
         self.flask_client = socketio.Client()
         self.flask_client.connect('http://localhost:5000')
         self.flask_server = None
-
 
     #
     # Signals handling
@@ -176,7 +178,6 @@ class MainController(QObject):
         # self.flask_server.stop_flask()
         self.flask_client.emit("stop-server")
 
-
     #
     # General methods
     #
@@ -185,4 +186,10 @@ class MainController(QObject):
         self.gui.status_bar.showMessage("ouaf")
 
     def show_qr(self):
-        VQRCode(self.gui).exec_()
+        self.qr_dialog = VQRCode(self.gui)
+        self.qr_dialog.exec_()
+
+    @Slot()
+    def close_qr(self):
+        if self.qr_dialog and self.qr_dialog.isVisible():
+            self.qr_dialog.close()
