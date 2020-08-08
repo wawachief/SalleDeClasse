@@ -1,0 +1,10 @@
+socketio
+flask
+flask_socketio
+pypng
+pyqrcode
+pyside2
+sqlite3
+engineio
+eventlet
+configparser

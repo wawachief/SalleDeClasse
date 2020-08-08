@@ -41,7 +41,7 @@ class AssetManager:
     __instance = None
 
     def __init__(self):
-        if AssetManager.__instance == None:
+        if AssetManager.__instance is None:
             AssetManager.__instance = self
         else:
             raise Exception("Use getInstance() to access the unique AssetManager instance")
@@ -76,13 +76,25 @@ class AssetManager:
 
     def config(self, section: str, key: str) -> str:
         """
-        Gets the value of the specefied section, key in the configuration file.
+        Gets the value of the specified section, key in the configuration file.
 
         :param section: Config's section
         :param key: Section's key
         :return: value
         """
         return self.__config.get(section, key)
+
+    def bdd_path(self):
+        """return the BDD path or None if no bdd is found"""
+        bp = path.expanduser(self.__config.get("main", "bdd_path"))
+        return bp, path.isfile(bp)
+
+    def set_bdd_path(self, bp):
+        """return the BDD path or None if no bdd is found"""
+        self.__config.set("main", "bdd_path", bp)
+        print(self.config_path)
+        with open(self.config_path, 'w') as configfile:
+            self.__config.write(configfile)
 
     def get_text(self, key: str) -> str:
         if key in self.__language_dico:
