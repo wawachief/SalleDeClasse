@@ -1,7 +1,9 @@
+from PySide2.QtCore import QModelIndex
 from PySide2.QtWidgets import QWidget, QVBoxLayout
 
 from src.View.widgets.view_toolbar import ViewCourseListToolbar
 from src.View.widgets.view_table import CustomTableModel, CustomTableView
+from src.View.popup.view_topic import VTopicSelectionDialog
 
 from src.assets_manager import AssetManager
 
@@ -30,10 +32,13 @@ class ViewCoursePanel(QWidget):
         self.datamodel: CustomTableModel = None  # TableView datamodel
         self.current_selection: int = None  # Stores the selected course ID
         self.items = {}  # All the displayed courses items -> {(name, topic): id, ...}
+        self.topics = []  # All existing topics
 
         # Signals
         self.sig_course_changed = None
+        self.sig_topic_changed = None
         self.tableview.clicked.connect(self.on_selection_changed)
+        self.tableview.doubleClicked.connect(self.__on_double_clicked)
 
         # layout
         self.__set_layout()
@@ -50,6 +55,28 @@ class ViewCoursePanel(QWidget):
         layout.addWidget(self.tableview)
 
         self.setLayout(layout)
+
+    def __on_double_clicked(self, model_index: QModelIndex):
+        """
+        Displays the edition dialog popup for the topic.
+
+        The doubleClicked event is triggered after the "simple" clicked event. So this method will be called after
+        the selection changed one.
+        """
+        if model_index.column() == 1:
+            dlg = VTopicSelectionDialog(self, self.topics, self.datamodel.index(model_index.row(), 1).data(),
+                                        self.datamodel.index(model_index.row(), 0).data())
+            if dlg.exec_():
+                new_topic = dlg.new_topic()
+                if new_topic:
+                    self.sig_topic_changed.emit(new_topic)
+
+    def set_topics(self, topics: list) -> None:
+        """
+        Registers the given topics
+        :param topics: existing topics list
+        """
+        self.topics = topics
 
     def resizeEvent(self, event):
         """
