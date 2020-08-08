@@ -6,6 +6,7 @@ from src.View.widgets.view_table import CustomTableModel, CustomTableView
 
 from src.assets_manager import AssetManager
 
+
 class ViewStudentPanel(QWidget):
 
     def __init__(self):
