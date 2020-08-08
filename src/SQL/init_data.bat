@@ -19,6 +19,8 @@ echo "Create Gropups"
 c:\sqlite\sqlite3 sdc_db < create_Groups.sql
 echo "Create IsIn"
 c:\sqlite\sqlite3 sdc_db < create_isIn.sql
+echo "Create Params"
+c:\sqlite\sqlite3 sdc_db < create_Params.sql
 
 echo "Populate Students"
 c:\sqlite\sqlite3 sdc_db < insert_Students.sql
@@ -38,3 +40,5 @@ echo "Populate Groups"
 c:\sqlite\sqlite3 sdc_db < insert_Groups.sql
 echo "Populate isIn"
 c:\sqlite\sqlite3 sdc_db < insert_isIn.sql
+echo "Populate Params"
+c:\sqlite\sqlite3 sdc_db < insert_Params.sql

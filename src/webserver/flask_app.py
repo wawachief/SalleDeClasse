@@ -3,11 +3,11 @@ import sqlite3
 from PySide2.QtCore import QThread
 from flask import Flask, render_template, request, jsonify
 from src.Controllers.main_controller import MainController
+from src.assets_manager import AssetManager
 from src.Model.mod_bdd import ModBdd
 from flask_socketio import SocketIO
 from random import choice
 import os, signal
-from engineio.async_drivers import eventlet
 
 flask_thread = None
 flask_app = Flask(__name__)
@@ -104,7 +104,8 @@ def send_student_selection(student_id: int, selected: bool):
 
 
 def get_bdd_connection():
-    bdd = sqlite3.connect("src/SQL/sdc_db")
+    bdd_path, _ = AssetManager.getInstance().bdd_path()
+    bdd = sqlite3.connect(bdd_path)
     return ModBdd(bdd)
 
 

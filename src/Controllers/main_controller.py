@@ -2,6 +2,8 @@ import sqlite3
 
 from PySide2.QtCore import QObject, Signal, Slot
 
+from src.assets_manager import AssetManager
+
 # Secondary controllers
 from src.Controllers.course_controller import CourseController
 from src.Controllers.group_controller import GroupController
@@ -13,7 +15,9 @@ from src.View.view_mainframe import ViewMainFrame
 from src.View.widgets.view_menubutton import ViewMenuButton
 from src.View.popup.view_student_attributes import VStdAttributesDialog
 from src.View.popup.view_qrcode import VQRCode
+from PySide2.QtWidgets import QFileDialog
 
+from os import path
 # web sockets
 import socketio
 
@@ -60,14 +64,29 @@ class MainController(QObject):
         """
         QObject.__init__(self)
 
-
-        # BDD connection
-        self.__bdd = sqlite3.connect("src/SQL/sdc_db")
-        self.mod_bdd = ModBdd(self.__bdd)
-
         # Create the Views
         self.gui = ViewMainFrame(self.sig_quit)
         self.v_canvas = self.gui.central_widget.classroom_tab.v_canvas
+
+        # BDD connection
+        bdd_path, bdd_exists = AssetManager.getInstance().bdd_path()
+        if not bdd_exists :
+            bp = QFileDialog.getExistingDirectory(self.gui, "Select the database folder")
+            if bp == "" or not path.isdir(bp):
+                self.mod_bdd = None
+                return
+            bdd_path = path.normpath(bp + "/sdc_db")
+            if path.isfile(bdd_path):
+                self.__bdd = sqlite3.connect(bdd_path)
+            else:
+                # we initialize a new BDD
+                print(f"Initializing a new BDD in {bdd_path}")
+                self.__bdd = self.initialize_bdd(bdd_path)
+            AssetManager.getInstance().set_bdd_path(bdd_path)
+        else:
+            self.__bdd = sqlite3.connect(bdd_path)
+        self.mod_bdd = ModBdd(self.__bdd)
+        print(f"bdd version : {self.mod_bdd.get_version()}")
 
         # Create secondary controllers
         self.attr_ctrl = AttrController(self, self.__bdd)
@@ -184,6 +203,23 @@ class MainController(QObject):
 
     def debug(self):
         self.gui.status_bar.showMessage("ouaf")
+
+    def initialize_bdd(self, bdd_path):
+        """Initializes a new database"""
+        connection = sqlite3.connect(bdd_path)
+        cursor = connection.cursor()
+        sql_files = ["create_Attributes.sql",  "create_Params.sql",  "create_Courses.sql", "create_Desks.sql",
+                     "create_Groups.sql", "create_isIn.sql",  "create_StdAttrs.sql", "create_Students.sql",  "create_Topics.sql",
+                     "insert_Attributes.sql", "insert_Params.sql", "insert_Courses.sql", "insert_Desks.sql",
+                     "insert_Groups.sql", "insert_isIn.sql", "insert_StdAttrs.sql", "insert_Students.sql",
+                     "insert_Topics.sql"]
+        prefix_folder = "src/SQL"
+        for s in sql_files:
+            sql_file = open(path.normpath(f"{prefix_folder}/{s}"))
+            sql_as_string = sql_file.read()
+            cursor.executescript(sql_as_string)
+        connection.commit()
+        return connection
 
     def show_qr(self):
         self.qr_dialog = VQRCode(self.gui)

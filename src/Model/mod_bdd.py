@@ -8,7 +8,15 @@ class ModBdd:
     def __init__(self, bdd):
         self.__bdd = bdd
         self.__cursor = self.__bdd.cursor()
-    
+
+    def get_version(self):
+        """returns the BDD version
+        Useful when bdd updates are required"""
+
+        req = "SELECT ParamValue FROM Params WHERE ParamName = 'bdd_version';"
+        self.__cursor.execute(req)
+        r = self.__cursor.fetchone()
+        return int(r[0])
     #
     # Courses related requests
     #
