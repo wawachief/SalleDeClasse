@@ -36,6 +36,8 @@ def get_stylesheet(file):
     with open(ASSETS_PATH + STYLE_PATH + file + STYLE_EXT, "r") as f:
         return f.read()
 
+def tr(message):
+    return AssetManager.getInstance().get_text(message)
 
 class AssetManager:
     __instance = None
@@ -58,9 +60,13 @@ class AssetManager:
         self.__config = ConfigParser()
         self.__config.read(self.config_path)
         if config_ori.get('main', 'version') != self.__config.get('main', 'version'):
+            # but we read the old bdd path
+            bdd_path = self.__config.get('main', 'bdd_path')
             # .SdCrc is obsolete, We overwrite the config file
             shutil.copyfile(CONFIG_PATH, self.config_path)
             self.__config.read(self.config_path)
+            # we write the bdd path into the new config file
+            self.set_bdd_path(bdd_path)
 
         language = import_module("assets.languages." + self.__config.get("main", "language"))
         self.__language_dico = language.dico
@@ -92,7 +98,6 @@ class AssetManager:
     def set_bdd_path(self, bp):
         """return the BDD path or None if no bdd is found"""
         self.__config.set("main", "bdd_path", bp)
-        print(self.config_path)
         with open(self.config_path, 'w') as configfile:
             self.__config.write(configfile)
 

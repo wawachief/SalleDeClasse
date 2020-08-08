@@ -38,6 +38,9 @@ dico = {"perspective_student_txt": "Student perspective",
         "attr_mark": "Mark",
 
         "confirm_message_delete": "Do you confirm the deletion?",
-        "confirm_message_shuffle": "Are you sure you want to shuffle?"
+        "confirm_message_shuffle": "Are you sure you want to shuffle?",
         "confirm_message_RAZ": "Are you sure you want \nto reset all the counters ?",
+
+        "select_db": "Select the database folder",
+        "confirm_db_creation": "Do you want to create a new database ?",
         }
