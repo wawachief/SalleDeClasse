@@ -300,16 +300,12 @@ class CourseController:
         self.v_canvas.delete_all_tiles()
         if self.main_ctrl.id_course > 0:
             all_desks = self.mod_bdd.get_course_all_desks(self.main_ctrl.id_course)
-            topic_name = self.mod_bdd.get_topic_from_course_id(self.main_ctrl.id_course)
             for d in all_desks:
                 std = self.mod_bdd.get_student_by_id(d.id_student)
                 if std:
                     self.v_canvas.new_tile(d.row, d.col, d.id, firstname=std.firstname, lastname=std.lastname)
                 else:
                     self.v_canvas.new_tile(d.row, d.col, d.id)
-            # Display course's topic
-            if topic_name:
-                self.gui.central_widget.classroom_tab.topic.select_topic(topic_name)
         self.v_canvas.repaint()
 
     def show_all_courses(self):
@@ -322,12 +318,10 @@ class CourseController:
         if self.main_ctrl.id_course == 0 and len(courses) > 0:
             self.main_ctrl.id_course = courses[0][0]
         if self.main_ctrl.id_course != 0:
-            topic_name = self.mod_bdd.get_topic_from_course_id(self.main_ctrl.id_course)
-
             self.gui.sidewidget.courses().init_table(
                 list_courses=courses, selected_id=None if self.main_ctrl.id_course == 0 else self.main_ctrl.id_course)
 
-            self.gui.central_widget.classroom_tab.topic.set_topics(topic_names, topic_name)
+            self.gui.sidewidget.courses().set_topics(topic_names)
         else:
             self.gui.sidewidget.courses().init_table([])
         self.show_course()

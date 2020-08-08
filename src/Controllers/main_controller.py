@@ -107,7 +107,7 @@ class MainController(QObject):
         self.v_canvas.sig_tile_info = self.sig_canvas_right_click
         self.gui.sidewidget.courses().sig_course_changed = self.sig_course_changed
         self.gui.sidewidget.courses().courses_toolbar.add_widget.sig_new_element = self.sig_create_course
-        self.gui.central_widget.classroom_tab.topic.sig_topic_changed = self.sig_topic_changed
+        self.gui.sidewidget.courses().sig_topic_changed = self.sig_topic_changed
         self.gui.sidewidget.students().students_toolbar.sig_combo_changed = self.sig_student_group_changed
         ViewMenuButton.sig_action = self.sig_action_triggered
         self.gui.maintoolbar.sig_TBbutton = self.sig_TBbutton

@@ -3,7 +3,7 @@ from PySide2.QtCore import Qt, Signal
 
 from src.View.view_canvas import ViewCanvas
 from src.View.view_sidepanel import ViewSidePanel
-from src.View.widgets.view_board import ViewTeacherDeskLabel, ViewTopics
+from src.View.widgets.view_board import ViewTeacherDeskLabel
 from src.View.widgets.view_toolbar import ViewMainToolBar
 from src.View.widgets.view_courses import ViewCoursePanel
 from src.View.widgets.view_students import ViewStudentPanel
@@ -101,7 +101,6 @@ class ClassRoomTab(QWidget):
         self.v_canvas = ViewCanvas(sig_move_animation_ended)  # Central canvas
         self.view_students = ViewTeacherDeskLabel("Vue élève", AssetManager.getInstance().config('colors', 'board_bg'))
         self.view_teacher = ViewTeacherDeskLabel("Vue prof", AssetManager.getInstance().config('colors', 'board_bg'))
-        self.topic = ViewTopics()
 
         # Layout
         self.__set_layout()
@@ -114,13 +113,11 @@ class ClassRoomTab(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
 
         # Widgets
-        layout.addWidget(self.topic, 0, 0)
         layout.addWidget(self.view_students, 0, 1)
         layout.addWidget(self.v_canvas, 1, 0, 1, 3)
         layout.addWidget(self.view_teacher, 2, 0, 1, 3)
 
         # Alignments
-        layout.setAlignment(self.topic, Qt.AlignLeft)
         layout.setAlignment(self.view_students, Qt.AlignCenter)
         layout.setAlignment(self.v_canvas, Qt.AlignCenter)
         layout.setAlignment(self.view_teacher, Qt.AlignCenter)
