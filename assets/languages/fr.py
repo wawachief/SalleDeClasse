@@ -40,4 +40,7 @@ dico = {"perspective_student_txt": "Vue élève",
         "confirm_message_delete": "Êtes-vous sûr de vouloir supprimer ?",
         "confirm_message_shuffle": "Êtes-vous sûr de vouloir mélanger ?",
         "confirm_message_RAZ": "Êtes-vous sûr de vouloir \nremettre à 0 tous les compteurs ?",
+
+        "select_db": "Sélectionnez le dossier de la base de données",
+        "confirm_db_creation": "Voulez-vous initialiser une nouvelle base de données ?",
 }

@@ -2,7 +2,7 @@ import sqlite3
 
 from PySide2.QtCore import QObject, Signal, Slot
 
-from src.assets_manager import AssetManager
+from src.assets_manager import AssetManager, tr
 
 # Secondary controllers
 from src.Controllers.course_controller import CourseController
@@ -14,6 +14,7 @@ from src.Model.mod_bdd import ModBdd
 from src.View.view_mainframe import ViewMainFrame
 from src.View.widgets.view_menubutton import ViewMenuButton
 from src.View.popup.view_student_attributes import VStdAttributesDialog
+from src.View.popup.view_confirm_dialogs import VConfirmDialog
 from src.View.popup.view_qrcode import VQRCode
 from PySide2.QtWidgets import QFileDialog
 
@@ -71,7 +72,7 @@ class MainController(QObject):
         # BDD connection
         bdd_path, bdd_exists = AssetManager.getInstance().bdd_path()
         if not bdd_exists :
-            bp = QFileDialog.getExistingDirectory(self.gui, "Select the database folder")
+            bp = QFileDialog.getExistingDirectory(self.gui, tr("select_db"))
             if bp == "" or not path.isdir(bp):
                 self.mod_bdd = None
                 return
@@ -80,6 +81,9 @@ class MainController(QObject):
                 self.__bdd = sqlite3.connect(bdd_path)
             else:
                 # we initialize a new BDD
+                if not VConfirmDialog(self.gui, "confirm_db_creation").exec_():
+                    self.mod_bdd = None
+                    return
                 print(f"Initializing a new BDD in {bdd_path}")
                 self.__bdd = self.initialize_bdd(bdd_path)
             AssetManager.getInstance().set_bdd_path(bdd_path)
