@@ -350,8 +350,19 @@ class ModBdd:
         return [""] if r is None else [t[0] for t in r]
     
     def set_topic_to_course_id(self, id_course, new_topic):
-        req = "UPDATE Courses SET IdTopic = ( SELECT Topics.IdTopic FROM Topics WHERE Topics.TopicName = ? ) WHERE IdCourse = ?"
-        self.__cursor.execute(req, [new_topic, id_course])
+        req = "SELECT IdTopic FROM Topics WHERE TopicName = ?"
+        self.__cursor.execute(req, [new_topic])
+        r = self.__cursor.fetchone()
+        if r is None:
+            # We create a new topic
+            req = "INSERT INTO Topics (TopicName) VALUES (?)"
+            self.__cursor.execute(req, [new_topic])
+            topic_id = self.__cursor.lastrowid
+            self.__bdd.commit()
+        else:
+            topic_id = r[0]
+        req = "UPDATE Courses SET IdTopic = ? WHERE IdCourse = ?"
+        self.__cursor.execute(req, [topic_id, id_course])
     
     #
     # Attributes relative requests
