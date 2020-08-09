@@ -8,10 +8,12 @@ from src.Model.mod_bdd import ModBdd
 from flask_socketio import SocketIO
 from random import choice
 import os, signal
+from engineio.payload import Payload
 
 flask_thread = None
 flask_app = Flask(__name__)
 flask_app.config['SECRET_KEY'] = 'secret!'
+Payload.max_decode_packets = 50
 socket_io = SocketIO(flask_app, logger=True, async_mode="eventlet", engineio_logger=True)
 controller: MainController = None
 clients = []
