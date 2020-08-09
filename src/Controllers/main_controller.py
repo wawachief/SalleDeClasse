@@ -177,7 +177,7 @@ class MainController(QObject):
 
         # initialize connection to flask server
         self.flask_client = socketio.Client()
-        self.flask_client.connect('http://localhost:5000')
+        self.flask_client.connect('http://localhost:'+AssetManager.getInstance().config('webapp', 'port'))
         self.flask_server = None
 
     #

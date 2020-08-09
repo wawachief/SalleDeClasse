@@ -116,7 +116,8 @@ class FlaskThread(QThread):
         self.start()
 
     def run(self):
-        socket_io.run(flask_app, port=5000, host='0.0.0.0')
+        asset_manager = AssetManager.getInstance()
+        socket_io.run(flask_app, port=asset_manager.config('webapp', 'port'), host='0.0.0.0')
 
     def init_controller(self, controller_param):
         global controller
