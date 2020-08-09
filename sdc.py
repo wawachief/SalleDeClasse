@@ -4,7 +4,7 @@ from src.Controllers.main_controller import MainController
 from src.webserver import flask_app
 import logging
 import sys
-
+from os import path
 
 class StreamToLogger(object):
    """
@@ -24,7 +24,7 @@ if __name__ == "__main__":
 
     logging.basicConfig(level=logging.INFO,
         format='%(asctime)s:%(levelname)s:%(name)s:%(message)s',
-        filename="sdc1.log",
+        filename=path.expanduser("~/sdc.log"),
         filemode='a'
     )
     stdout_logger = logging.getLogger('STDOUT')
