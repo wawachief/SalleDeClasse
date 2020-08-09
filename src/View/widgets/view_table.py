@@ -1,6 +1,8 @@
 import PySide2
+from PySide2.QtGui import QColor
 from PySide2.QtWidgets import QTableView, QAbstractItemView, QHeaderView
 from PySide2.QtCore import QAbstractTableModel, Qt, QModelIndex
+
 import typing
 import operator
 
@@ -22,6 +24,7 @@ class CustomTableModel(QAbstractTableModel):
 
         self.data_list = data_list
         self.header = header
+        self.light_selection: list = []
 
         parent.setModel(self)
 
@@ -32,9 +35,22 @@ class CustomTableModel(QAbstractTableModel):
         return len(self.header)
 
     def data(self, index: QModelIndex, role: int = ...) -> typing.Any:
-        if not index.isValid() or role != Qt.DisplayRole:
+        if not index.isValid():
             return None
-        return self.data_list[index.row()][index.column()]
+
+        if role == Qt.ForegroundRole:
+            d = ""  # Current data, a complete row, with columns separated by a blank space
+            for i in range(len(self.header)):
+                if d:
+                    d += " "
+                d += self.data_list[index.row()][i]
+
+            return QColor("green") if d in self.light_selection else None
+
+        elif role == Qt.DisplayRole:
+            return self.data_list[index.row()][index.column()]
+
+        return None
 
     def headerData(self, section: int, orientation: Qt.Orientation, role: int = ...) -> typing.Any:
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
@@ -46,6 +62,16 @@ class CustomTableModel(QAbstractTableModel):
         self.data_list = sorted(self.data_list, key=operator.itemgetter(column), reverse=order != Qt.AscendingOrder)
         self.layoutChanged.emit()
         self.parent().clearSelection()
+
+    def update_light_selection(self, light_selection: list) -> None:
+        """
+        Light selection items will appear with a different foreground color than regular items
+
+        :param light_selection: items with different foreground
+        """
+        self.layoutAboutToBeChanged.emit()
+        self.light_selection = light_selection
+        self.layoutChanged.emit()
 
 
 class CustomTableView(QTableView):
