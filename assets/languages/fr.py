@@ -28,7 +28,7 @@ dico = {"app_title": "Salle de Classe",
         "grp_action_sort_desc": "Tri aphabétique décroissant",
         "grp_action_sort_by_place": "Tri selon les places",
 
-        "attr_tab_tooltip": "Gestion des attributs and compétences",
+        "attr_tab_tooltip": "Gestion des attributs et compétences",
 
         "select_topic": "Discipline :",
         "btn_change_perspective": "Changer de perspective",
