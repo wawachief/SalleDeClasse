@@ -219,7 +219,7 @@ class MainController(QObject):
                      "insert_Topics.sql"]
         prefix_folder = "src/SQL"
         for s in sql_files:
-            sql_file = open(path.normpath(f"{prefix_folder}/{s}"))
+            sql_file = open(path.normpath(f"{prefix_folder}/{s}"), encoding="utf-8")
             sql_as_string = sql_file.read()
             cursor.executescript(sql_as_string)
         connection.commit()
