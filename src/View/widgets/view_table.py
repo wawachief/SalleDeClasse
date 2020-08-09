@@ -1,6 +1,8 @@
+import PySide2
 from PySide2.QtWidgets import QTableView, QAbstractItemView, QHeaderView
 from PySide2.QtCore import QAbstractTableModel, Qt, QModelIndex
 import typing
+import operator
 
 
 class CustomTableModel(QAbstractTableModel):
@@ -38,6 +40,12 @@ class CustomTableModel(QAbstractTableModel):
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
             return self.header[section]
         return None
+
+    def sort(self, column: int, order: PySide2.QtCore.Qt.SortOrder = ...):
+        self.layoutAboutToBeChanged.emit()
+        self.data_list = sorted(self.data_list, key=operator.itemgetter(column), reverse=order != Qt.AscendingOrder)
+        self.layoutChanged.emit()
+        self.parent().clearSelection()
 
 
 class CustomTableView(QTableView):

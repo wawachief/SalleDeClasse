@@ -23,6 +23,7 @@ class ViewCoursePanel(QWidget):
 
         # Table
         self.tableview = CustomTableView()
+        self.tableview.setSortingEnabled(True)
 
         # Toolbar
         self.courses_toolbar = ViewCourseListToolbar()

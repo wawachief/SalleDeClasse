@@ -1,5 +1,5 @@
 from PySide2.QtWidgets import QWidget, QVBoxLayout
-from PySide2.QtCore import Signal
+from PySide2.QtCore import Signal, Qt
 
 from src.View.widgets.view_toolbar import ViewAttributeListToolbar
 from src.View.widgets.view_table import CustomTableModel, CustomTableView
@@ -17,6 +17,7 @@ class ViewAttributePanel(QWidget):
 
         # Widgets
         self.tableview = CustomTableView(False)
+        self.tableview.setSortingEnabled(True)
         self.attributes_toolbar = ViewAttributeListToolbar()
 
         # DataModel and additional info

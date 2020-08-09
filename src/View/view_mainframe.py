@@ -219,6 +219,9 @@ class ViewMainFrame(QMainWindow):
         # Manually update buttons enable state given the number of selected attributes
         self.maintoolbar.enable_one_attributes_buttons(self.sidewidget.attributes().get_selected_rows_count() == 1)
 
+        self.sidewidget.sidepanel.tabBar().setTabEnabled(0, is_view_classroom)  # Courses
+        self.sidewidget.sidepanel.tabBar().setTabEnabled(1, is_view_classroom)  # Students
+
     def on_side_widget_docked_state_changed(self) -> None:
         """
         Triggered when the side dockable widget has been docked or undocked
