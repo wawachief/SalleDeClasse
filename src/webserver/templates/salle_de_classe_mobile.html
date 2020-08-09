@@ -30,15 +30,15 @@
 <table id="students-table"  class="display responsive nowrap" style="width:100%">
     <thead>
     <tr>
-        <th>Prénom</th>
         <th>Nom</th>
+        <th>Prénom</th>
     </tr>
     </thead>
     <tbody>
     {% for student in students %}
     <tr id="{{ student.id }}">
-        <td>{{ student.firstname }}</td>
         <td>{{ student.lastname }}</td>
+        <td>{{ student.firstname }}</td>
     </tr>
     {% endfor %}
     </tbody>
