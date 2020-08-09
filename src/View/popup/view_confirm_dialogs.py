@@ -1,7 +1,7 @@
 from PySide2.QtWidgets import QDialog, QGridLayout, QLabel, QPushButton
 from PySide2.QtCore import Qt, QSize
 
-from src.assets_manager import AssetManager, get_stylesheet
+from src.assets_manager import tr, get_stylesheet
 
 
 class VConfirmDialog(QDialog):
@@ -17,7 +17,7 @@ class VConfirmDialog(QDialog):
 
         self.setFixedSize(QSize(350, 120))
 
-        self.question = QLabel(AssetManager.getInstance().get_text(message_key))
+        self.question = QLabel(tr(message_key))
         self.question.setAlignment(Qt.AlignCenter)
 
         # Quit buttons
@@ -25,7 +25,7 @@ class VConfirmDialog(QDialog):
         self.ok_btn.clicked.connect(self.accept)
         self.ok_btn.setFixedSize(QSize(60, 33))
 
-        self.cancel_btn = QPushButton("Annuler")
+        self.cancel_btn = QPushButton(tr("btn_cancel"))
         self.cancel_btn.clicked.connect(self.reject)
         self.cancel_btn.setFixedSize(QSize(90, 33))
 

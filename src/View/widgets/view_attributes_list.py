@@ -4,7 +4,7 @@ from PySide2.QtCore import Signal
 from src.View.widgets.view_toolbar import ViewAttributeListToolbar
 from src.View.widgets.view_table import CustomTableModel, CustomTableView
 
-from src.assets_manager import AssetManager
+from src.assets_manager import tr
 
 
 class ViewAttributePanel(QWidget):
@@ -63,7 +63,7 @@ class ViewAttributePanel(QWidget):
         data_list = []
 
         for id, name, type in attributes:
-            data = (name, AssetManager.getInstance().get_text(type))
+            data = (name, tr(type))
             self.attributes[data] = id
             data_list.append(data)
 

@@ -4,7 +4,7 @@ from PySide2.QtCore import QModelIndex
 from src.View.widgets.view_toolbar import ViewStudentListToolbar
 from src.View.widgets.view_table import CustomTableModel, CustomTableView
 
-from src.assets_manager import AssetManager
+from src.assets_manager import tr
 
 
 class ViewStudentPanel(QWidget):
@@ -71,8 +71,8 @@ class ViewStudentPanel(QWidget):
             data_list.append(data)
 
         self.datamodel = CustomTableModel(self.tableview, data_list,
-                                          (AssetManager.getInstance().get_text("grp_surname"),
-                                           AssetManager.getInstance().get_text("grp_name")))
+                                          (tr("grp_surname"),
+                                           tr("grp_name")))
 
         self.repaint()
 

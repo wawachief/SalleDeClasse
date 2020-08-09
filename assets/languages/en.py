@@ -1,4 +1,9 @@
-dico = {"perspective_student_txt": "Student perspective",
+dico = {"app_title": "Classroom",
+
+        "tab_course_plan": "Classroom layout",
+        "tab_attributes": "Students' skills and attributes",
+
+        "perspective_student_txt": "Student perspective",
         "perspective_teacher_txt": "Teacher perspective",
         "perspective_tootip": "Board position",
 
@@ -6,6 +11,8 @@ dico = {"perspective_student_txt": "Student perspective",
         "crs_courses": "Courses",
         "crs_topic": "Topic",
         "crs_create_btn_tooltip": "Create",
+        "btn_cancel": "Cancel",
+        "btn_suppr": "Remove",
 
         "grp_tab_tooltip": "Groups",
         "grp_name": "Name",
@@ -21,13 +28,18 @@ dico = {"perspective_student_txt": "Student perspective",
         "grp_action_sort_desc": "Sorting descending order",
         "grp_action_sort_by_place": "Sorting by seats",
 
-        "attr_tab_tooltip": "Skills & Attributes",
+        "attr_tab_tooltip": "Skills and Attributes management",
 
         "select_topic": "Topic:",
         "btn_change_perspective": "Change perspective",
         "btn_shuffle": "Shuffle",
         "btn_select": "Select",
         "btn_delete": "Delete",
+        "btn_selection_filter": "Filtrer la sélection",
+        "btn_choose_student": "Choose a student",
+        "btn_choose_student_with_attr": "Choose a student given the selected attribute",
+        "btn_lot_change": "Group change",
+        "btn_qr": "Connect a smartphone via QRCode",
 
         "status_bar_active_view_teacher": "Teacher perspective",
         "status_bar_active_view_student": "Student perspective",
@@ -43,4 +55,9 @@ dico = {"perspective_student_txt": "Student perspective",
 
         "select_db": "Select the database folder",
         "confirm_db_creation": "Do you want to create a new database ?",
-        }
+
+        "create_new_topic": "Create a new topic",
+        "group_name": "Group name",
+        "std_name": "Student name",
+        "add_to_group": "Add to group:",
+}
