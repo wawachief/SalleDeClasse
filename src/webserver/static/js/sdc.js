@@ -9,7 +9,9 @@ $(document).ready(function () {
     });
     socket.on('select_student', function (msg) {
         console.log("Received select_student event :  id: " + msg.id + " selected:" + msg.selected);
-        $("#" + msg.id).toggleClass("selected");
+        if ((msg.selected && !$("#" + msg.id).hasClass("selected")) || (!msg.selected && $("#" + msg.id).hasClass("selected"))){
+            $("#" + msg.id).toggleClass("selected");
+        }
     });
     var table = $('#students-table').DataTable({
         paging: false,

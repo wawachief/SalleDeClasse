@@ -40,6 +40,8 @@ class GroupController:
         self.main_ctrl.id_group = self.mod_bdd.get_group_id_by_name(new_group)
         self.gui.sidewidget.students().set_students_list(self.mod_bdd.get_students_in_group(new_group))
 
+        self.course_ctrl.synchronize_canvas_selection_with_side_list()
+
     @Slot(str)
     def on_create_grp_std(self, new_grp_std: str):
         """

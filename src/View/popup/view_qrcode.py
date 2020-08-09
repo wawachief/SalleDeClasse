@@ -9,7 +9,6 @@ import tempfile
 from src.assets_manager import AssetManager
 
 
-
 class VQRCode(QDialog):
 
     def __init__(self, parent):

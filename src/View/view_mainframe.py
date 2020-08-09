@@ -9,7 +9,7 @@ from src.View.widgets.view_courses import ViewCoursePanel
 from src.View.widgets.view_students import ViewStudentPanel
 from src.View.widgets.view_attributes_list import ViewAttributePanel
 from src.View.view_attributes_tab import AttributesTab
-from src.assets_manager import AssetManager
+from src.assets_manager import AssetManager, tr
 
 from src.View.popup.view_confirm_dialogs import VConfirmDialog
 
@@ -56,8 +56,8 @@ class CentralWidget(QTabWidget):
         """
         Initializes the layout of this widget
         """
-        self.addTab(self.classroom_tab, "Plan de classe")
-        self.addTab(self.attributes_tab, "Attributs")
+        self.addTab(self.classroom_tab, tr("tab_course_plan"))
+        self.addTab(self.attributes_tab, tr("tab_attributes"))
 
     def on_perspective_changed(self):
         """
@@ -73,11 +73,11 @@ class CentralWidget(QTabWidget):
         if self.is_view_students:
             self.classroom_tab.view_students.set_label_visible(True)
             self.classroom_tab.view_teacher.set_label_visible(False)
-            self.status_message(AssetManager.getInstance().get_text("status_bar_active_view_student"), 3000)
+            self.status_message(tr("status_bar_active_view_student"), 3000)
         else:
             self.classroom_tab.view_students.set_label_visible(False)
             self.classroom_tab.view_teacher.set_label_visible(True)
-            self.status_message(AssetManager.getInstance().get_text("status_bar_active_view_teacher"), 3000)
+            self.status_message(tr("status_bar_active_view_teacher"), 3000)
 
     def do_shuffle(self):
         if not VConfirmDialog(self.parent(), "confirm_message_shuffle").exec_():
@@ -99,8 +99,8 @@ class ClassRoomTab(QWidget):
 
         # Widgets
         self.v_canvas = ViewCanvas(sig_move_animation_ended)  # Central canvas
-        self.view_students = ViewTeacherDeskLabel("Vue élève", AssetManager.getInstance().config('colors', 'board_bg'))
-        self.view_teacher = ViewTeacherDeskLabel("Vue prof", AssetManager.getInstance().config('colors', 'board_bg'))
+        self.view_students = ViewTeacherDeskLabel(tr("perspective_student_txt"), AssetManager.getInstance().config('colors', 'board_bg'))
+        self.view_teacher = ViewTeacherDeskLabel(tr("perspective_teacher_txt"), AssetManager.getInstance().config('colors', 'board_bg'))
 
         # Layout
         self.__set_layout()
@@ -171,7 +171,7 @@ class ViewMainFrame(QMainWindow):
         """
         QMainWindow.__init__(self)
 
-        self.setWindowTitle(f"Salle de Classe | {AssetManager.getInstance().config('main', 'version')}")
+        self.setWindowTitle(f"{tr('app_title')} | {AssetManager.getInstance().config('main', 'version')}")
         self.setContextMenuPolicy(Qt.PreventContextMenu)
 
         # Widgets
@@ -218,6 +218,9 @@ class ViewMainFrame(QMainWindow):
 
         # Manually update buttons enable state given the number of selected attributes
         self.maintoolbar.enable_one_attributes_buttons(self.sidewidget.attributes().get_selected_rows_count() == 1)
+
+        self.sidewidget.sidepanel.tabBar().setTabEnabled(0, is_view_classroom)  # Courses
+        self.sidewidget.sidepanel.tabBar().setTabEnabled(1, is_view_classroom)  # Students
 
     def on_side_widget_docked_state_changed(self) -> None:
         """

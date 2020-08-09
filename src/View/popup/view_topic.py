@@ -1,7 +1,7 @@
 from PySide2.QtWidgets import QDialog, QVBoxLayout, QPushButton, QLineEdit, QComboBox
 from PySide2.QtCore import Qt, QSize
 
-from src.assets_manager import get_stylesheet, AssetManager
+from src.assets_manager import get_stylesheet, tr
 
 
 class VTopicSelectionDialog(QDialog):
@@ -20,7 +20,7 @@ class VTopicSelectionDialog(QDialog):
         self.topics = topics
         self.current_selection = current_selection
 
-        self.setWindowTitle(course_name + " - " + AssetManager.getInstance().get_text("select_topic"))
+        self.setWindowTitle(course_name + " - " + tr("select_topic"))
         self.setFixedSize(QSize(300, 140))
 
         # Widgets
@@ -29,7 +29,7 @@ class VTopicSelectionDialog(QDialog):
         self.__default_selection(current_selection)
 
         self.new_topic_line = QLineEdit()
-        self.new_topic_line.setPlaceholderText("Créer une nouvelle discipline")
+        self.new_topic_line.setPlaceholderText(tr("create_new_topic"))
         self.new_topic_line.textChanged.connect(self.__enable_combo)
 
         # Close button

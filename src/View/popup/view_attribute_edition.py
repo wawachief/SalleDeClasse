@@ -1,7 +1,7 @@
 from PySide2.QtWidgets import QDialog, QGridLayout, QLineEdit, QPushButton, QTextEdit, QSpinBox, QHBoxLayout
-from PySide2.QtCore import QSize
+from PySide2.QtCore import QSize, Qt
 
-from src.assets_manager import AssetManager
+from src.assets_manager import AssetManager, tr
 
 
 class VDialogEdit(QDialog):
@@ -16,12 +16,13 @@ class VDialogEdit(QDialog):
         QDialog.__init__(self, parent)
 
         self.setWindowTitle("Edition")
+        self.setWindowFlag(Qt.WindowStaysOnTopHint)
 
         # Quit buttons
         self.ok_btn = QPushButton("Ok")
         self.ok_btn.clicked.connect(self.accept)
 
-        self.cancel_btn = QPushButton("Annuler")
+        self.cancel_btn = QPushButton(tr("btn_cancel"))
         self.cancel_btn.clicked.connect(self.reject)
 
         # Layout

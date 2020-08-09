@@ -1,7 +1,7 @@
 from PySide2.QtWidgets import QToolBar, QPushButton, QComboBox, QWidget, QSizePolicy
 from PySide2.QtCore import Signal, Slot, QSize
 
-from src.assets_manager import get_icon, get_stylesheet, AssetManager
+from src.assets_manager import get_icon, get_stylesheet, tr
 from src.View.widgets.view_add_widget import ViewAddWidget, ViewAddLine, ViewAddAttributeWidget
 from src.View.widgets.view_menubutton import ViewMenuButton
 
@@ -23,16 +23,15 @@ class ViewMainToolBar(QToolBar):
         self.sig_TBbutton = None
 
         # Buttons
-        self.__btn_magic = ToolBarButton("unkwown", "Filtrer Sélection", lambda: self.sig_TBbutton.emit("filter_select"))
-        self.__btn_perspective = ToolBarButton("teacher", "Changer de perspective", self.on_btn_perspective_clicked)
-        self.__btn_shuffle = ToolBarButton("shuffle", "Mélanger", self.on_btn_shuffle_clicked)
-        self.__btn_select = ToolBarButton("selection", "Sélectionner", lambda: self.sig_TBbutton.emit("select"))
-        self.__btn_choice = ToolBarButton("choixvolontaire", "Choisir un élève", lambda: self.sig_TBbutton.emit("choice"))
-        self.__btn_attr_choice = ToolBarButton("choixvolontaire_attr", "Choisir un élève d'après un attribut", lambda: self.sig_TBbutton.emit("choice_attr"))
-        self.__btn_delete = ToolBarButton("corbeille", "Effacer", lambda: self.sig_TBbutton.emit("delete"))
-        self.__btn_lot_change = ToolBarButton("fill", "Changement par Lot", lambda: self.sig_TBbutton.emit("lot_change"))
-        # self.__btn_undo = ToolBarButton("shit", "Annuler", lambda: self.sig_TBbutton.emit("test"))
-        self.__btn_qr = ToolBarButton("qr-code", "Afficher le QR code", lambda: self.sig_TBbutton.emit("show_qr"))
+        self.__btn_magic = ToolBarButton("unkwown", tr("btn_selection_filter"), lambda: self.sig_TBbutton.emit("filter_select"))
+        self.__btn_perspective = ToolBarButton("teacher", tr("btn_change_perspective"), self.on_btn_perspective_clicked)
+        self.__btn_shuffle = ToolBarButton("shuffle", tr("btn_shuffle"), self.on_btn_shuffle_clicked)
+        self.__btn_select = ToolBarButton("selection", tr("btn_select"), lambda: self.sig_TBbutton.emit("select"))
+        self.__btn_choice = ToolBarButton("choixvolontaire", tr("btn_choose_student"), lambda: self.sig_TBbutton.emit("choice"))
+        self.__btn_attr_choice = ToolBarButton("choixvolontaire_attr", tr("btn_choose_student_with_attr"), lambda: self.sig_TBbutton.emit("choice_attr"))
+        self.__btn_delete = ToolBarButton("corbeille", tr("btn_delete"), lambda: self.sig_TBbutton.emit("delete"))
+        self.__btn_lot_change = ToolBarButton("fill", tr("btn_lot_change"), lambda: self.sig_TBbutton.emit("lot_change"))
+        self.__btn_qr = ToolBarButton("qr-code", tr("btn_qr"), lambda: self.sig_TBbutton.emit("show_qr"))
 
         self.actions_table = {self.__btn_magic: None, self.__btn_perspective: None, self.__btn_shuffle: None,
                               self.__btn_select: None, self.__btn_choice: None, self.__btn_attr_choice: None,
@@ -67,8 +66,7 @@ class ViewMainToolBar(QToolBar):
         self.actions_table[self.__btn_attr_choice].setVisible(is_view_classroom)
         self.actions_table[self.__btn_delete].setVisible(is_view_classroom)
         self.actions_table[self.__btn_lot_change].setVisible(not is_view_classroom)
-        # self.actions_table[self.__btn_undo].setVisible(True)
-        self.actions_table[self.__btn_qr].setVisible(True)
+        self.actions_table[self.__btn_qr].setVisible(is_view_classroom)
 
     def __set_style(self):
         """
@@ -126,7 +124,7 @@ class ViewCourseListToolbar(QToolBar):
         self.delete_btn = QPushButton()
         self.delete_btn.setIcon(get_icon("del"))
         self.delete_btn.setIconSize(QSize(35, 35))
-        self.delete_btn.setToolTip("Supprimer")
+        self.delete_btn.setToolTip(tr("btn_suppr"))
         self.delete_btn.setEnabled(False)
 
         self.add_widget = ViewAddWidget(self.delete_btn)
@@ -176,18 +174,18 @@ class ViewStudentListToolbar(QToolBar):
         self.combo_groups = QComboBox()
         self.create_field = ViewAddLine()
         self.action_menu = ViewMenuButton("Actions", self.create_field.show_field,
-                                          [(AssetManager.getInstance().get_text("grp_action_import_csv"), "import_csv"),
-                                           (AssetManager.getInstance().get_text("grp_action_create_group"), "create_group"),
-                                           (AssetManager.getInstance().get_text("grp_action_del_group"), "delete_group"),
+                                          [(tr("grp_action_import_csv"), "import_csv"),
+                                           (tr("grp_action_create_group"), "create_group"),
+                                           (tr("grp_action_del_group"), "delete_group"),
                                            'sep',
-                                           (AssetManager.getInstance().get_text("grp_action_create_student"), "create_student"),
-                                           (AssetManager.getInstance().get_text("grp_action_del_student"), "killstudent"),
+                                           (tr("grp_action_create_student"), "create_student"),
+                                           (tr("grp_action_del_student"), "killstudent"),
                                            'sep',
-                                           (AssetManager.getInstance().get_text("grp_action_auto_placement"), "auto_place"),
+                                           (tr("grp_action_auto_placement"), "auto_place"),
                                            'sep',
-                                           (AssetManager.getInstance().get_text("grp_action_sort_asc"), "sort_asc"),
-                                           (AssetManager.getInstance().get_text("grp_action_sort_desc"), "sort_desc"),
-                                           (AssetManager.getInstance().get_text("grp_action_sort_by_place"), "sort_desks")])
+                                           (tr("grp_action_sort_asc"), "sort_asc"),
+                                           (tr("grp_action_sort_desc"), "sort_desc"),
+                                           (tr("grp_action_sort_by_place"), "sort_desks")])
 
         # Signals
         self.sig_combo_changed: Signal = None

@@ -4,7 +4,7 @@ from PySide2.QtCore import QModelIndex
 from src.View.widgets.view_toolbar import ViewStudentListToolbar
 from src.View.widgets.view_table import CustomTableModel, CustomTableView
 
-from src.assets_manager import AssetManager
+from src.assets_manager import tr
 
 
 class ViewStudentPanel(QWidget):
@@ -58,7 +58,7 @@ class ViewStudentPanel(QWidget):
         Sets the specified student list inside the table view
 
         :param students: students list
-        :type students: list
+        :param light_selection: light selection (selection from the canvas)
         """
         self.datamodel = None
         self.students = {}
@@ -71,9 +71,8 @@ class ViewStudentPanel(QWidget):
             data_list.append(data)
 
         self.datamodel = CustomTableModel(self.tableview, data_list,
-                                          (AssetManager.getInstance().get_text("grp_surname"),
-                                           AssetManager.getInstance().get_text("grp_name")))
-
+                                          (tr("grp_surname"),
+                                           tr("grp_name")))
         self.repaint()
 
     def selected_students(self) -> list:
@@ -88,3 +87,12 @@ class ViewStudentPanel(QWidget):
             students_ids.append(self.students[data])
 
         return students_ids
+
+    def light_selection(self, selection: list) -> None:
+        """
+        Updates the datamodel with the light selection so that the selected student in the canvas will have a different
+        foreground color than the other students.
+
+        :param selection: light selection (selection from the canvas), list of Students
+        """
+        self.datamodel.update_light_selection([f"{s.lastname} {s.firstname}" for s in selection if s])

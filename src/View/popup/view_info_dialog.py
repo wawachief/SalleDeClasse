@@ -8,7 +8,7 @@ class VInfoDialog(QDialog):
 
     def __init__(self, parent, message: str):
         """
-        Confirm dialog for dangerous actions
+        Information dialog
 
         :param parent: gui's main window
         :param message: Message to display

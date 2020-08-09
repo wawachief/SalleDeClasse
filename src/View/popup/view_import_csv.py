@@ -1,6 +1,8 @@
 from PySide2.QtWidgets import QDialog, QFileDialog, QGridLayout, QComboBox, QLabel
 from PySide2.QtCore import Qt
 
+from src.assets_manager import tr
+
 
 class DialogImportCsv(QDialog):
     def __init__(self, parent, groups: list):
@@ -11,7 +13,7 @@ class DialogImportCsv(QDialog):
         """
         QDialog.__init__(self, parent)
 
-        self.setWindowTitle("Import Pronote")
+        self.setWindowTitle(tr("grp_action_import_csv"))
 
         # Widgets
         self.fileDialog = QFileDialog(self)
@@ -26,7 +28,7 @@ class DialogImportCsv(QDialog):
                                    "stop: 0 #283747, stop: 0.25 #1A5276, stop: 0.5 #2980B9, "
                                    "stop: 0.75 #1A5276, stop: 1 #283747);")
 
-        self.lab_group = QLabel("Ajouter au groupe :")
+        self.lab_group = QLabel(tr("add_to_group"))
 
         self.combo_group = QComboBox()
         self.combo_group.addItems(groups)
