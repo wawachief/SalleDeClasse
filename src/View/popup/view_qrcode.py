@@ -4,11 +4,10 @@ from PySide2.QtGui import QPixmap, QImage
 
 import pyqrcode
 import socket
-from subprocess import check_output
+import tempfile
 
 from src.assets_manager import AssetManager
 
-QR_PATH = 'assets/qr.png'
 
 
 class VQRCode(QDialog):
@@ -30,13 +29,16 @@ class VQRCode(QDialog):
         s.close()
         port = AssetManager.getInstance().config('webapp', 'port')
 
+        # get tmp folder
+        qr_path = tempfile.mktemp()
+
         s = f"http://{local_ip_address}:{port}/mobile"  # String which represents the QR code
         self.url = pyqrcode.create(s)  # Generate QR code
-        self.url.png(QR_PATH, scale=6)  # Create and save the QR png file
+        self.url.png(qr_path, scale=6)  # Create and save the QR png file
 
         # Widgets
         self.qr = QLabel()  # Label that contains the QR
-        pix = QPixmap(QImage(QR_PATH))
+        pix = QPixmap(QImage(qr_path))
         self.qr.setPixmap(pix)
 
         # Layout
