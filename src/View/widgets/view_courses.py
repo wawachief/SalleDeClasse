@@ -5,7 +5,7 @@ from src.View.widgets.view_toolbar import ViewCourseListToolbar
 from src.View.widgets.view_table import CustomTableModel, CustomTableView
 from src.View.popup.view_topic import VTopicSelectionDialog
 
-from src.assets_manager import AssetManager
+from src.assets_manager import tr
 
 
 class ViewCoursePanel(QWidget):
@@ -23,6 +23,7 @@ class ViewCoursePanel(QWidget):
 
         # Table
         self.tableview = CustomTableView()
+        self.tableview.setSortingEnabled(True)
 
         # Toolbar
         self.courses_toolbar = ViewCourseListToolbar()
@@ -108,8 +109,8 @@ class ViewCoursePanel(QWidget):
                 selection = len(data_list) - 1
 
         self.datamodel = CustomTableModel(self.tableview, data_list,
-                                          (AssetManager.getInstance().get_text("crs_courses"),
-                                           AssetManager.getInstance().get_text("crs_topic")))
+                                          (tr("crs_courses"),
+                                           tr("crs_topic")))
         self.tableview.selectionModel().selectionChanged.connect(
             lambda: self.courses_toolbar.enable_delete_btn(len(self.tableview.selectionModel().selectedRows()) > 0))
 

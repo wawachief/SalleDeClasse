@@ -164,11 +164,22 @@ class CourseController:
         if student is not None:
             self.main_ctrl.flask_client.emit("selection_changed", {"id": student.id, "selected": selected})
 
+        self.synchronize_canvas_selection_with_side_list()
+
     @Slot(int, bool)
     def on_desk_selection_changed_on_web(self, student_id: int, selected: bool) -> None:
         """updates the app when web selection changes"""
         desk_id = self.mod_bdd.get_desk_id_by_student_id_and_course_id(student_id, self.main_ctrl.id_course)
         self.do_desk_selection_change(desk_id, selected)
+
+        self.synchronize_canvas_selection_with_side_list()
+
+    def synchronize_canvas_selection_with_side_list(self) -> None:
+        """
+        Update the foreground color of canvas' selected students in the list
+        """
+        self.gui.sidewidget.students().light_selection(
+            [self.mod_bdd.get_student_by_desk_id(desk_id) for desk_id in self.v_canvas.get_selected_tiles()])
 
     #
     # General methods

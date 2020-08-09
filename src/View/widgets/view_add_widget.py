@@ -2,7 +2,7 @@ from PySide2.QtWidgets import QWidget, QPushButton, QLineEdit, QHBoxLayout, QSho
 from PySide2.QtCore import QSize, Qt, Signal
 from PySide2.QtGui import QKeySequence
 
-from src.assets_manager import get_icon, AssetManager
+from src.assets_manager import get_icon, tr
 
 from src.enumerates import EAttributesTypes
 
@@ -23,7 +23,7 @@ class ViewAddWidget(QWidget):
         self.add_btn = QPushButton()
         self.add_btn.setIcon(get_icon("add"))
         self.add_btn.setIconSize(QSize(35, 35))
-        self.add_btn.setToolTip("Créer")
+        self.add_btn.setToolTip(tr("crs_create_btn_tooltip"))
 
         self.field = QLineEdit()
         self.field.setVisible(False)
@@ -63,7 +63,7 @@ class ViewAddWidget(QWidget):
 
         if self.is_creating:
             self.add_btn.setIcon(get_icon("close"))
-            self.add_btn.setToolTip("Annuler")
+            self.add_btn.setToolTip(tr("btn_cancel"))
 
             self.field.setVisible(True)
             self.field.setFocus()
@@ -71,7 +71,7 @@ class ViewAddWidget(QWidget):
         else:
             self.field.clear()
             self.add_btn.setIcon(get_icon("add"))
-            self.add_btn.setToolTip("Créer")
+            self.add_btn.setToolTip(tr("crs_create_btn_tooltip"))
 
             self.field.setVisible(False)
 
@@ -132,9 +132,9 @@ class ViewAddLine(QWidget):
         self.create_field.setFocus()
 
         if origin == 'create_group':
-            self.create_field.setPlaceholderText("Nom du groupe")
+            self.create_field.setPlaceholderText(tr("group_name"))
         elif origin == 'create_student':
-            self.create_field.setPlaceholderText("Nom/Prénom de l'élève")
+            self.create_field.setPlaceholderText(tr("std_name"))
         else:  # We are editing a student, the origin is the student id
             self.create_field.setText(default_text)
 
@@ -184,12 +184,12 @@ class ViewAddAttributeWidget(QWidget):
 
         self.attr_types_dico = {}
         for attr_type in [t.value for t in EAttributesTypes]:
-            self.attr_types_dico[AssetManager.getInstance().get_text(attr_type)] = attr_type
+            self.attr_types_dico[tr(attr_type)] = attr_type
 
         self.add_btn = QPushButton()
         self.add_btn.setIcon(get_icon("add"))
         self.add_btn.setIconSize(QSize(35, 35))
-        self.add_btn.setToolTip("Créer")
+        self.add_btn.setToolTip(tr("crs_create_btn_tooltip"))
 
         self.field = QLineEdit()
         self.field.setVisible(False)
@@ -202,14 +202,14 @@ class ViewAddAttributeWidget(QWidget):
         self.ok_btn = QPushButton()
         self.ok_btn.setIcon(get_icon("valid"))
         self.ok_btn.setIconSize(QSize(25, 25))
-        self.ok_btn.setToolTip("Créer")
+        self.ok_btn.setToolTip(tr("crs_create_btn_tooltip"))
         self.ok_btn.setVisible(False)
         self.ok_btn.clicked.connect(self.__on_field_enter)
 
         self.delete_btn = QPushButton()
         self.delete_btn.setIcon(get_icon("del"))
         self.delete_btn.setIconSize(QSize(35, 35))
-        self.delete_btn.setToolTip("Supprimer")
+        self.delete_btn.setToolTip(tr("btn_suppr"))
         self.delete_btn.setEnabled(False)
 
         # Current state
@@ -250,7 +250,7 @@ class ViewAddAttributeWidget(QWidget):
 
         if self.is_creating:
             self.add_btn.setIcon(get_icon("close"))
-            self.add_btn.setToolTip("Annuler")
+            self.add_btn.setToolTip(tr("btn_cancel"))
 
             self.delete_btn.setVisible(False)
             self.field.setVisible(True)
@@ -260,7 +260,7 @@ class ViewAddAttributeWidget(QWidget):
         else:
             self.field.clear()
             self.add_btn.setIcon(get_icon("add"))
-            self.add_btn.setToolTip("Créer")
+            self.add_btn.setToolTip(tr("crs_create_btn_tooltip"))
 
             self.field.setVisible(False)
             self.combo.setVisible(False)
