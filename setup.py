@@ -30,4 +30,4 @@ setup(  name = "SalleDeClasse",
         description = "Salle de Classe",
         author="Olivier Lecluse - Thomas Lecluse - Nicolas Lecluse",
         options = {"build_exe": build_exe_options},
-        executables = [Executable("sdc.py", base=base)])
+        executables = [Executable("sdc.py", base=base, icon="C:\sdc.ico")])
