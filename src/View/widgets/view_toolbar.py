@@ -31,11 +31,12 @@ class ViewMainToolBar(QToolBar):
         self.__btn_attr_choice = ToolBarButton("choixvolontaire_attr", tr("btn_choose_student_with_attr"), lambda: self.sig_TBbutton.emit("choice_attr"))
         self.__btn_delete = ToolBarButton("corbeille", tr("btn_delete"), lambda: self.sig_TBbutton.emit("delete"))
         self.__btn_lot_change = ToolBarButton("fill", tr("btn_lot_change"), lambda: self.sig_TBbutton.emit("lot_change"))
+        self.__btn_pdf = ToolBarButton("print", tr("export_PDF"), lambda: self.sig_TBbutton.emit("print"))
         self.__btn_qr = ToolBarButton("qr-code", tr("btn_qr"), lambda: self.sig_TBbutton.emit("show_qr"))
 
         self.actions_table = {self.__btn_magic: None, self.__btn_perspective: None, self.__btn_shuffle: None,
                               self.__btn_select: None, self.__btn_choice: None, self.__btn_attr_choice: None,
-                              self.__btn_delete: None, self.__btn_lot_change: None,
+                              self.__btn_delete: None, self.__btn_lot_change: None, self.__btn_pdf: None,
                               self.__btn_qr: None}
 
         # Signals

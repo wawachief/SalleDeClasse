@@ -64,4 +64,5 @@ dico = {"app_title": "Classroom",
         "group_name": "Group name",
         "std_name": "Student name",
         "add_to_group": "Add to group:",
+        "export_PDF": "Print the plan",
 }

@@ -469,3 +469,7 @@ class CourseController:
         # Make selection
         self.do_desk_selection_change(desk_id, True)  # change selection on app
         self.on_desk_selection_changed_on_app(desk_id, True)  # change selection on web
+
+    def export_pdf(self):
+        """Print / Export plan widget in PDF format"""
+        self.v_canvas.print_pdf()

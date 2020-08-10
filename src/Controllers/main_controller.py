@@ -160,7 +160,7 @@ class MainController(QObject):
             "choice_attr": self.course_ctrl.student_attr_pick,
             "delete": self.course_ctrl.delete,
             "lot_change": self.attr_ctrl.lot_change,
-            "test": self.debug,
+            "print": self.course_ctrl.export_pdf,
             "show_qr": self.show_qr
         }
 

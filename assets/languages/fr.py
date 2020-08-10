@@ -64,4 +64,5 @@ dico = {"app_title": "Salle de Classe",
         "group_name": "Nom du groupe",
         "std_name": "Nom/Prénom de l'élève",
         "add_to_group": "Ajouter au groupe :",
+        "export_PDF": "Impression du plan de classe",
 }
