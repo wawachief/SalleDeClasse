@@ -23,6 +23,8 @@ class ViewMainToolBar(QToolBar):
         QToolBar.__init__(self)
         self.sig_TBbutton = None
 
+        self.config_mode = False
+
         # Buttons
         self.__btn_config = ToggleSwitchButton(self, "unlock", "lock", self.on_config_mode)
 
@@ -81,8 +83,8 @@ class ViewMainToolBar(QToolBar):
         """
         self.config_mode = is_config_mode
 
-        self.__btn_shuffle.setEnabled(is_config_mode)
-        self.__btn_delete.setEnabled(is_config_mode)
+        self.actions_table[self.__btn_shuffle].setEnabled(is_config_mode)
+        self.actions_table[self.__btn_delete].setEnabled(is_config_mode)
 
     def __set_style(self):
         """

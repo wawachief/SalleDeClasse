@@ -41,6 +41,7 @@ class ToggleSwitchButton(QWidget):
         self.setLayout(layout)
 
 
+# --- Following widget found on: https://stackoverflow.com/a/51023362 ---
 class SwitchButton(QWidget):
 
     clicked = Signal(bool)
