@@ -15,6 +15,7 @@ $(document).ready(function () {
     });
     var table = $('#students-table').DataTable({
         paging: false,
+        order: [],
         fixedHeader: {
             header: false,
             footer: false
