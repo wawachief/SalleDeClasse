@@ -1,9 +1,10 @@
-from PySide2.QtWidgets import QToolBar, QPushButton, QComboBox, QWidget, QSizePolicy
+from PySide2.QtWidgets import QToolBar, QPushButton, QComboBox, QWidget, QSizePolicy, QLabel
 from PySide2.QtCore import Signal, Slot, QSize
 
 from src.assets_manager import get_icon, get_stylesheet, tr
 from src.View.widgets.view_add_widget import ViewAddWidget, ViewAddLine, ViewAddAttributeWidget
 from src.View.widgets.view_menubutton import ViewMenuButton
+from src.View.widgets.ToggleSwitchButton import ToggleSwitchButton
 
 BUTTON_SIZE = QSize(60, 60)
 ICON_SIZE = QSize(45, 45)
@@ -22,10 +23,10 @@ class ViewMainToolBar(QToolBar):
         QToolBar.__init__(self)
         self.sig_TBbutton = None
 
-        self.config_mode = False
-
         # Buttons
-        self.__btn_config = ToolBarButton("fill", tr("btn_config"), self.config_mode_clicked)
+        self.__btn_config = ToggleSwitchButton(self, "unlock", "lock", self.on_config_mode)
+
+        # self.__btn_config = ToolBarButton("fill", tr("btn_config"), self.config_mode_clicked)
         self.__btn_magic = ToolBarButton("unkwown", tr("btn_selection_filter"), lambda: self.sig_TBbutton.emit("filter_select"))
         self.__btn_perspective = ToolBarButton("teacher", tr("btn_change_perspective"), self.on_btn_perspective_clicked)
         self.__btn_shuffle = ToolBarButton("shuffle", tr("btn_shuffle"), self.on_btn_shuffle_clicked)
@@ -126,13 +127,6 @@ class ViewMainToolBar(QToolBar):
     def on_btn_shuffle_clicked(self) -> None:
         pass
 
-    def config_mode_clicked(self):
-        """
-        Triggered when config switch is clicked. Changes the config flag and triggers the callback method
-        """
-        self.config_mode = not self.config_mode
-        self.on_config_mode(self.config_mode)
-
     def on_config_mode(self, is_in_config_mode: bool) -> None:
         pass
 
@@ -194,7 +188,7 @@ class ViewStudentListToolbar(QToolBar):
         """
         QToolBar.__init__(self)
         self.current_group: str = None
-        self.config_mode = False
+        self.__config_mode = False
 
         # Widgets
         self.combo_groups = QComboBox()
@@ -244,16 +238,15 @@ class ViewStudentListToolbar(QToolBar):
         :param student_id: student id
         :param student_data: student last name + first name
         """
-        if self.config_mode:
+        if self.__config_mode:
             self.create_field.show_field(str(student_id), student_data)
 
     def switch_config_mode(self, is_config_mode: bool) -> None:
-        self.config_mode = is_config_mode
+        self.__config_mode = is_config_mode
 
-        self.a_combo.setVisible(self.config_mode)
-        self.a_conf_menu.setVisible(self.config_mode)
-        self.a_sort_menu.setVisible(not self.config_mode)
-
+        self.a_combo.setVisible(self.__config_mode)
+        self.a_conf_menu.setVisible(self.__config_mode)
+        self.a_sort_menu.setVisible(not self.__config_mode)
 
     def on_group_changed(self) -> None:
         """
