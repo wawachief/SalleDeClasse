@@ -2,7 +2,7 @@ from PySide2.QtCore import Slot
 
 from src.View.popup.view_confirm_dialogs import VConfirmDialog
 
-from src.assets_manager import AssetManager
+from src.assets_manager import AssetManager, tr
 from src.enumerates import EAttributesTypes
 
 from random import shuffle, choice
@@ -254,27 +254,88 @@ class CourseController:
         self.attr_ctrl.on_attribute_selection_changed()
         self.v_canvas.repaint()
 
-    def sort_desks(self):
-        self.gui.status_bar.showMessage("Tri d'après les places", 3000)
+    def sort_desks(self, sort_type="Z"):
+        def type_Z():
+            # sorts row by row
+            for row in range(max_row):
+                for col in range(max_col):
+                    id_desk = self.mod_bdd.get_desk_id_in_course_by_coords(self.main_ctrl.id_course, row, col)
+                    if id_desk != 0:
+                        student = self.mod_bdd.get_student_by_desk_id(id_desk)
+                        if student is not None:
+                            sortlist.append(student.id)
+
+        def type_2():
+            # sorts row by row with continuity
+            line = 0
+            for row in range(max_row):
+                empty = True
+                for col in range(max_col):
+                    c = max_col-col-1 if line % 2 else col  # only non empty lines matter
+                    id_desk = self.mod_bdd.get_desk_id_in_course_by_coords(self.main_ctrl.id_course, row, c)
+                    if id_desk != 0:
+                        empty = False
+                        student = self.mod_bdd.get_student_by_desk_id(id_desk)
+                        if student is not None:
+                            sortlist.append(student.id)
+                if not empty:
+                    line += 1
+
+        def type_W():
+            # sorts col by col
+            for col in range(max_col):
+                for row in range(max_row):
+                    id_desk = self.mod_bdd.get_desk_id_in_course_by_coords(self.main_ctrl.id_course, row, col)
+                    if id_desk != 0:
+                        student = self.mod_bdd.get_student_by_desk_id(id_desk)
+                        if student is not None:
+                            sortlist.append(student.id)
+
+        def type_U():
+            # sorts col by col with continuity
+            co = 0
+            for col in range(max_col):
+                empty = True
+                for row in range(max_row):
+                    r = max_row-row-1 if co % 2 else row  # only non empty cols matters
+                    id_desk = self.mod_bdd.get_desk_id_in_course_by_coords(self.main_ctrl.id_course, r, col)
+                    if id_desk != 0:
+                        empty = False
+                        student = self.mod_bdd.get_student_by_desk_id(id_desk)
+                        if student is not None:
+                            sortlist.append(student.id)
+                if not empty:
+                    co += 1
+
+        self.gui.status_bar.showMessage(tr("grp_action_sort_by_place"), 3000)
         max_row = int(AssetManager.getInstance().config("size", "default_room_rows"))
         max_col = int(AssetManager.getInstance().config("size", "default_room_columns"))
+        infty = max_row * max_col + 1
         group_name = self.mod_bdd.get_group_name_by_id(self.main_ctrl.id_group)
 
-        sortlist = []
-        for row in range(max_row):
-            for col in range(max_col):
-                id_desk = self.mod_bdd.get_desk_id_in_course_by_coords(self.main_ctrl.id_course, row, col)
-                if id_desk != 0:
-                    student = self.mod_bdd.get_student_by_desk_id(id_desk)
-                    if student is not None:
-                        sortlist.append(student.id)
+        # First we initialize the sort key for the group to infty
+        group_students_id = self.mod_bdd.get_students_in_group(self.mod_bdd.get_group_name_by_id(self.main_ctrl.id_group))
+        for std in group_students_id:
+            self.mod_bdd.update_student_order_with_id(std.id, infty)
 
+        # Now we get an ordered list of students matching the desk disposition
+        sortlist = []  # this list is modified in one of the following function
+        if sort_type == "Z":
+            type_Z()
+        elif sort_type == "2":
+            type_2()
+        elif sort_type == "W":
+            type_W()
+        else:
+            type_U()
+        # At last, we update the sort key to re-order the list
         orderkey = 0
         for s in sortlist:
             self.mod_bdd.update_student_order_with_id(s, orderkey)
             orderkey += 1
         self.__bdd.commit()
         self.gui.sidewidget.students().set_students_list(self.mod_bdd.get_students_in_group(group_name))
+        self.synchronize_canvas_selection_with_side_list()
 
     def remove_desk_by_id(self, id_desk):
         """Removes the desk designed by id_desk
@@ -302,6 +363,7 @@ class CourseController:
                 self.mod_bdd.set_student_in_desk_by_id(0, d)
 
         self.__bdd.commit()
+        self.synchronize_canvas_selection_with_side_list()
         self.v_canvas.repaint()
 
     # Course methods

@@ -185,7 +185,11 @@ class ViewStudentListToolbar(QToolBar):
                                            'sep',
                                            (tr("grp_action_sort_asc"), "sort_asc"),
                                            (tr("grp_action_sort_desc"), "sort_desc"),
-                                           (tr("grp_action_sort_by_place"), "sort_desks")])
+                                           (tr("grp_action_sort_by_place")+" Z", "sort_desks_Z"),
+                                           (tr("grp_action_sort_by_place")+" 2", "sort_desks_2"),
+                                           (tr("grp_action_sort_by_place")+" W", "sort_desks_W"),
+                                           (tr("grp_action_sort_by_place")+" U", "sort_desks_U"),
+                                           ])
 
         # Signals
         self.sig_combo_changed: Signal = None
