@@ -201,10 +201,9 @@ class ViewAddAttributeWidget(QWidget):
 
         self.ok_btn = QPushButton()
         self.ok_btn.setIcon(get_icon("valid"))
-        self.ok_btn.setIconSize(QSize(25, 25))
+        self.ok_btn.setIconSize(QSize(35, 35))
         self.ok_btn.setToolTip(tr("crs_create_btn_tooltip"))
         self.ok_btn.setVisible(False)
-        self.ok_btn.clicked.connect(self.__on_field_enter)
 
         self.delete_btn = QPushButton()
         self.delete_btn.setIcon(get_icon("del"))
@@ -216,7 +215,8 @@ class ViewAddAttributeWidget(QWidget):
         self.is_creating = False
 
         # Signals
-        self.add_btn.clicked.connect(self.__on_field_enter)
+        self.ok_btn.clicked.connect(self.__on_field_enter)
+        self.add_btn.clicked.connect(self.__on_add_pressed)
         self.sig_new_element = None  # Signal emitted when a new element is created
         self.sig_delete = None  # Signal emitted when the delete button is clicked
         self.field.returnPressed.connect(self.__on_field_enter)
