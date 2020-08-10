@@ -148,19 +148,20 @@ class AttrController:
         topic = self.mod_bdd.get_topic_id_by_course_id(self.main_ctrl.id_course)
 
         attrs = []
-        for attr_id, attr_name, attr_type in self.mod_bdd.get_all_attributes():
-            attrs.append((attr_id, attr_name, self.mod_bdd.get_attribute_value(std.id, attr_id, topic)))
+        if std is not None:
+            for attr_id, attr_name, attr_type in self.mod_bdd.get_all_attributes():
+                attrs.append((attr_id, attr_name, self.mod_bdd.get_attribute_value(std.id, attr_id, topic)))
 
-        if self.main_ctrl.std_dialog_info and self.main_ctrl.std_dialog_info.isVisible():  # Closes any opened info dialog
-            self.main_ctrl.std_dialog_info.close()
+            if self.main_ctrl.std_dialog_info and self.main_ctrl.std_dialog_info.isVisible():  # Closes any opened info dialog
+                self.main_ctrl.std_dialog_info.close()
 
-        self.main_ctrl.std_dialog_info = VStdAttributesDialog(self.gui, self.main_ctrl.sig_attribute_cell_selected, std, attrs)
+            self.main_ctrl.std_dialog_info = VStdAttributesDialog(self.gui, self.main_ctrl.sig_attribute_cell_selected, std, attrs)
 
-        # We can't use exec_() method, nor make the dialog modal because for some reason, at least on OSX, once closed,
-        # most of the HMI does not respond to user interaction.
-        # The chosen workaround is to just show() the dialog, and make it always on top. If a new dialog is to be
-        # displayed, the previous one would be closed before.
-        self.main_ctrl.std_dialog_info.show()
+            # We can't use exec_() method, nor make the dialog modal because for some reason, at least on OSX, once closed,
+            # most of the HMI does not respond to user interaction.
+            # The chosen workaround is to just show() the dialog, and make it always on top. If a new dialog is to be
+            # displayed, the previous one would be closed before.
+            self.main_ctrl.std_dialog_info.show()
 
     #
     # General methods

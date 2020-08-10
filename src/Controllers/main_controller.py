@@ -144,9 +144,12 @@ class MainController(QObject):
         self.actions_table = {  # Action buttons
             "import_csv": self.group_ctrl.import_pronote,
             "auto_place": self.group_ctrl.auto_place,
-            "sort_asc": self.group_ctrl.sort_asc,
-            "sort_desc": self.group_ctrl.sort_desc,
-            "sort_desks": self.course_ctrl.sort_desks,
+            "sort_asc": lambda: self.group_ctrl.sort_alpha(False),
+            "sort_desc": lambda: self.group_ctrl.sort_alpha(True),
+            "sort_desks_Z": lambda: self.course_ctrl.sort_desks(sort_type="Z"),
+            "sort_desks_2": lambda: self.course_ctrl.sort_desks(sort_type="2"),
+            "sort_desks_W": lambda: self.course_ctrl.sort_desks(sort_type="W"),
+            "sort_desks_U": lambda: self.course_ctrl.sort_desks(sort_type="U"),
             "killstudent": self.group_ctrl.killstudent,
             "delete_group": self.group_ctrl.on_delete_group,
 
@@ -157,7 +160,7 @@ class MainController(QObject):
             "choice_attr": self.course_ctrl.student_attr_pick,
             "delete": self.course_ctrl.delete,
             "lot_change": self.attr_ctrl.lot_change,
-            "test": self.debug,
+            "print": self.course_ctrl.export_pdf,
             "show_qr": self.show_qr
         }
 
