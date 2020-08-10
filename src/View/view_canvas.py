@@ -472,10 +472,10 @@ class ViewCanvas(QWidget):
         # Drawing of all the tiles
         for t in list(self.__tiles.values()):
             y, x = self.__relative_mouse_position(t.real_position())
-            if self.__relative_grid_position(t.grid_position()) == self.__click_pos:  # If the tile is selected
+            if self.__relative_grid_position(t.grid_position()) == self.__click_pos and self.__is_config:  # If the tile is selected
                 tile_selected = t
                 color = QColor(AssetManager.getInstance().config('colors', 'drag_selected_tile'))
-            elif self.__relative_grid_position(t.grid_position()) == tile_selected_pos:  # If the mouse is hover
+            elif self.__relative_grid_position(t.grid_position()) == tile_selected_pos and self.__is_config:  # If the mouse is hover
                 self.hovered = True
                 color = QColor(AssetManager.getInstance().config('colors', 'hovered_tile'))
             elif t.is_selected():
@@ -488,7 +488,7 @@ class ViewCanvas(QWidget):
 
         # Dragged tile
         if self.__click_pos != self.__relative_grid_position(tile_selected_pos) \
-                and tile_selected and self.__mouse_pos:
+                and tile_selected and self.__mouse_pos and self.__is_config:
             # If the mouse is no longer hover the clicked tile we draw the dragged tile
             self.__draw_dragged_tile(painter, tile_selected, self.__mouse_pos[0], self.__mouse_pos[1])
 
@@ -555,7 +555,7 @@ class ViewCanvas(QWidget):
         """
         Updates the mouse position
         """
-        if not self.__click_pos:  # The drag operation is performed only with a left click
+        if not self.__click_pos or not self.__is_config:  # The drag operation is performed only with a left click
             return
 
         self.__mouse_pos = (event.y(), event.x())
@@ -583,12 +583,12 @@ class ViewCanvas(QWidget):
                     break
 
             # We emit the signal only if we clicked on an empty tile (e.g. no tile is selected)
-            if not selected_tile:
+            if not selected_tile and self.__is_config:
                 self.sig_canvas_click.emit(rel_end_pos)
-            else:
+            elif selected_tile:
                 selected_tile.toggle_selection()
                 self.sig_desk_selected.emit(selected_tile.id(), selected_tile.is_selected())
-        else:  # Drag/Drop operation
+        elif self.__is_config:  # Drag/Drop operation
             self.sig_canvas_drag.emit(rel_start_pos, rel_end_pos)
 
         self.__click_pos = ()

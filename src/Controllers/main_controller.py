@@ -59,6 +59,8 @@ class MainController(QObject):
     sig_flask_desk_selection_changed = Signal(int, bool)
     sig_close_qr = Signal()
 
+    sig_config_mode_changed = Signal()
+
     def __init__(self):
         """
         Application main controller.
@@ -66,7 +68,7 @@ class MainController(QObject):
         QObject.__init__(self)
 
         # Create the Views
-        self.gui = ViewMainFrame(self.sig_quit)
+        self.gui = ViewMainFrame(self.sig_quit, self.sig_config_mode_changed)
         self.v_canvas = self.gui.central_widget.classroom_tab.v_canvas
 
         # BDD connection
@@ -140,6 +142,7 @@ class MainController(QObject):
         self.sig_attribute_cell_selected.connect(self.attr_ctrl.on_attribute_cell_selected)
         self.sig_flask_desk_selection_changed.connect(self.course_ctrl.on_desk_selection_changed_on_web)
         self.sig_close_qr.connect(self.close_qr)
+        self.sig_config_mode_changed.connect(self.on_config_changed)
 
         self.actions_table = {  # Action buttons
             "import_csv": self.group_ctrl.import_pronote,
@@ -176,6 +179,7 @@ class MainController(QObject):
         self.course_ctrl.show_all_courses()
         self.group_ctrl.show_all_groups()
         self.attr_ctrl.show_all_attributes()
+        self.gui.on_config_mode(False)
         self.gui.update()
 
         # initialize connection to flask server
@@ -236,3 +240,15 @@ class MainController(QObject):
     def close_qr(self):
         if self.qr_dialog and self.qr_dialog.isVisible():
             self.qr_dialog.close()
+
+    @Slot()
+    def on_config_changed(self):
+        """
+        Triggered when the user switched configuration mode
+        """
+        print("Configuration is on: " + str(self.gui.get_config()))
+
+        # TODO
+        #  - use GUI's current config
+        #  - use self.gui.sidewidget.students().set_students_list()
+        #    to set the students visibles in the canvas inside the list
