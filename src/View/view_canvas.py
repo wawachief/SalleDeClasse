@@ -283,6 +283,7 @@ class ViewCanvas(QWidget):
 
         self.is_view_students = True
         self.__do_switch = False
+        self.__is_config = False
 
         self.sig_canvas_click = None  # Signal triggered when a click is performed on a desk
         self.sig_desk_selected = None  # Signal triggered when a non empty desk is selected
@@ -310,9 +311,19 @@ class ViewCanvas(QWidget):
         """
         Sets the background of this canvas widget
         """
+        color = AssetManager.getInstance().config('colors', 'room_bg') if self.__is_config else "white"
+
         pal = QPalette()
-        pal.setColor(QPalette.Background, AssetManager.getInstance().config('colors', 'room_bg'))
+        pal.setColor(QPalette.Background, QColor(color))
         self.setPalette(pal)
+
+    def config_mode(self, is_config: bool) -> None:
+        """
+        Switches the config mode flag
+        """
+        self.__is_config = is_config
+        self.__init_style()
+        self.repaint()
 
     def remove_tile(self, desk_id):
         """
@@ -429,8 +440,10 @@ class ViewCanvas(QWidget):
         Draws the desks and students' names given the self.tiles list
         """
         painter = QPainter(self)
+        color = AssetManager.getInstance().config('colors', 'room_grid') if self.__is_config else "white"
+
         pen = QPen()
-        pen.setColor(QColor(AssetManager.getInstance().config('colors', 'room_grid')))
+        pen.setColor(QColor(color))
         pen.setWidth(2)
         painter.setPen(pen)
 

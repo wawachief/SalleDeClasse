@@ -22,7 +22,10 @@ class ViewMainToolBar(QToolBar):
         QToolBar.__init__(self)
         self.sig_TBbutton = None
 
+        self.config_mode = False
+
         # Buttons
+        self.__btn_config = ToolBarButton("fill", tr("btn_config"), self.config_mode_clicked)
         self.__btn_magic = ToolBarButton("unkwown", tr("btn_selection_filter"), lambda: self.sig_TBbutton.emit("filter_select"))
         self.__btn_perspective = ToolBarButton("teacher", tr("btn_change_perspective"), self.on_btn_perspective_clicked)
         self.__btn_shuffle = ToolBarButton("shuffle", tr("btn_shuffle"), self.on_btn_shuffle_clicked)
@@ -34,10 +37,10 @@ class ViewMainToolBar(QToolBar):
         self.__btn_pdf = ToolBarButton("print", tr("export_PDF"), lambda: self.sig_TBbutton.emit("print"))
         self.__btn_qr = ToolBarButton("qr-code", tr("btn_qr"), lambda: self.sig_TBbutton.emit("show_qr"))
 
-        self.actions_table = {self.__btn_magic: None, self.__btn_perspective: None, self.__btn_shuffle: None,
-                              self.__btn_select: None, self.__btn_choice: None, self.__btn_attr_choice: None,
-                              self.__btn_delete: None, self.__btn_lot_change: None, self.__btn_pdf: None,
-                              self.__btn_qr: None}
+        self.actions_table = {self.__btn_config: None, self.__btn_magic: None, self.__btn_perspective: None,
+                              self.__btn_shuffle: None, self.__btn_select: None, self.__btn_choice: None,
+                              self.__btn_attr_choice: None, self.__btn_delete: None, self.__btn_lot_change: None,
+                              self.__btn_pdf: None, self.__btn_qr: None}
 
         # Signals
         self.sig_enable_animation_btns.connect(self.enable_animation_btns)
@@ -59,6 +62,7 @@ class ViewMainToolBar(QToolBar):
 
         :param is_view_classroom: True if the current central panel tab is the classroom's widget
         """
+        self.actions_table[self.__btn_config].setVisible(is_view_classroom)
         self.actions_table[self.__btn_magic].setVisible(not is_view_classroom)
         self.actions_table[self.__btn_perspective].setVisible(is_view_classroom)
         self.actions_table[self.__btn_shuffle].setVisible(is_view_classroom)
@@ -68,6 +72,16 @@ class ViewMainToolBar(QToolBar):
         self.actions_table[self.__btn_delete].setVisible(is_view_classroom)
         self.actions_table[self.__btn_lot_change].setVisible(not is_view_classroom)
         self.actions_table[self.__btn_qr].setVisible(is_view_classroom)
+        self.actions_table[self.__btn_pdf].setVisible(True)
+
+    def lock_buttons(self, is_config_mode: bool) -> None:
+        """
+        Locks buttons that cannot be used when not in config mode
+        """
+        self.config_mode = is_config_mode
+
+        self.__btn_shuffle.setEnabled(is_config_mode)
+        self.__btn_delete.setEnabled(is_config_mode)
 
     def __set_style(self):
         """
@@ -84,7 +98,7 @@ class ViewMainToolBar(QToolBar):
         :type do_enable: bool
         """
         self.__btn_perspective.setEnabled(do_enable)
-        self.__btn_shuffle.setEnabled(do_enable)
+        self.__btn_shuffle.setEnabled(do_enable and self.config_mode)
 
     def enable_one_attributes_buttons(self, do_enable: bool) -> None:
         """
@@ -106,10 +120,20 @@ class ViewMainToolBar(QToolBar):
         if both:
             self.__btn_attr_choice.setEnabled(do_enable)
 
-    def on_btn_perspective_clicked(self):
+    def on_btn_perspective_clicked(self) -> None:
         pass
 
-    def on_btn_shuffle_clicked(self):
+    def on_btn_shuffle_clicked(self) -> None:
+        pass
+
+    def config_mode_clicked(self):
+        """
+        Triggered when config switch is clicked. Changes the config flag and triggers the callback method
+        """
+        self.config_mode = not self.config_mode
+        self.on_config_mode(self.config_mode)
+
+    def on_config_mode(self, is_in_config_mode: bool) -> None:
         pass
 
 
@@ -170,11 +194,12 @@ class ViewStudentListToolbar(QToolBar):
         """
         QToolBar.__init__(self)
         self.current_group: str = None
+        self.config_mode = False
 
         # Widgets
         self.combo_groups = QComboBox()
         self.create_field = ViewAddLine()
-        self.action_menu = ViewMenuButton("Actions", self.create_field.show_field,
+        self.config_action_menu = ViewMenuButton("Actions", self.create_field.show_field,
                                           [(tr("grp_action_import_csv"), "import_csv"),
                                            (tr("grp_action_create_group"), "create_group"),
                                            (tr("grp_action_del_group"), "delete_group"),
@@ -182,23 +207,25 @@ class ViewStudentListToolbar(QToolBar):
                                            (tr("grp_action_create_student"), "create_student"),
                                            (tr("grp_action_del_student"), "killstudent"),
                                            'sep',
-                                           (tr("grp_action_auto_placement"), "auto_place"),
-                                           'sep',
-                                           (tr("grp_action_sort_asc"), "sort_asc"),
-                                           (tr("grp_action_sort_desc"), "sort_desc"),
-                                           (tr("grp_action_sort_by_place")+" Z", "sort_desks_Z"),
-                                           (tr("grp_action_sort_by_place")+" 2", "sort_desks_2"),
-                                           (tr("grp_action_sort_by_place")+" W", "sort_desks_W"),
-                                           (tr("grp_action_sort_by_place")+" U", "sort_desks_U"),
-                                           ])
+                                           (tr("grp_action_auto_placement"), "auto_place")])
+
+        self.sort_actions_menu = ViewMenuButton("Tri", self.create_field.show_field,
+                                                 [(tr("grp_action_sort_asc"), "sort_asc"),
+                                                  (tr("grp_action_sort_desc"), "sort_desc"),
+                                                  (tr("grp_action_sort_by_place") + " Z", "sort_desks_Z"),
+                                                  (tr("grp_action_sort_by_place") + " 2", "sort_desks_2"),
+                                                  (tr("grp_action_sort_by_place") + " W", "sort_desks_W"),
+                                                  (tr("grp_action_sort_by_place") + " U", "sort_desks_U"),
+                                                  ])
 
         # Signals
         self.sig_combo_changed: Signal = None
         self.combo_groups.activated.connect(self.on_group_changed)
 
         # Layout
-        self.addWidget(self.combo_groups)
-        self.addWidget(self.action_menu)
+        self.a_combo = self.addWidget(self.combo_groups)
+        self.a_conf_menu = self.addWidget(self.config_action_menu)
+        self.a_sort_menu = self.addWidget(self.sort_actions_menu)
         self.addWidget(self.create_field)
 
         self.__set_style()
@@ -217,7 +244,16 @@ class ViewStudentListToolbar(QToolBar):
         :param student_id: student id
         :param student_data: student last name + first name
         """
-        self.create_field.show_field(str(student_id), student_data)
+        if self.config_mode:
+            self.create_field.show_field(str(student_id), student_data)
+
+    def switch_config_mode(self, is_config_mode: bool) -> None:
+        self.config_mode = is_config_mode
+
+        self.a_combo.setVisible(self.config_mode)
+        self.a_conf_menu.setVisible(self.config_mode)
+        self.a_sort_menu.setVisible(not self.config_mode)
+
 
     def on_group_changed(self) -> None:
         """
