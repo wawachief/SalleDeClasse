@@ -60,13 +60,28 @@ class AssetManager:
         self.__config = ConfigParser()
         self.__config.read(self.config_path)
         if config_ori.get('main', 'version') != self.__config.get('main', 'version'):
-            # but we read the old bdd path
-            bdd_path = self.__config.get('main', 'bdd_path')
+            # backup old settings in a dictionary
+            old_settings = dict()
+            for s in self.__config.sections():
+                old_settings[s] = dict()
+                for o in self.__config.options(s):
+                    old_settings[s][o] = self.__config.get(s, o)
+
             # .SdCrc is obsolete, We overwrite the config file
             shutil.copyfile(CONFIG_PATH, self.config_path)
+            self.__config = ConfigParser()
             self.__config.read(self.config_path)
-            # we write the bdd path into the new config file
-            self.set_bdd_path(bdd_path)
+
+            # we integrate old settings except version back in .SdCrc
+            for s in old_settings:
+                if s in config_ori.sections():                           # check section still exists
+                    optn_ori = config_ori.options(s)
+                    for o in old_settings[s]:
+                        if o in optn_ori and o != "version":             # check option still exists and exclude version
+                            self.__config.set(s, o, old_settings[s][o])  # reintegrate old value in current config
+
+            with open(self.config_path, 'w') as configfile:              # write the config file
+                self.__config.write(configfile)                          # in ~/.SdCrc
 
         language = import_module("assets.languages." + self.__config.get("main", "language"))
         self.__language_dico = language.dico
@@ -94,12 +109,6 @@ class AssetManager:
         """return the BDD path or None if no bdd is found"""
         bp = path.expanduser(self.__config.get("main", "bdd_path"))
         return bp, path.isfile(bp)
-
-    def set_bdd_path(self, bp):
-        """return the BDD path or None if no bdd is found"""
-        self.__config.set("main", "bdd_path", bp)
-        with open(self.config_path, 'w') as configfile:
-            self.__config.write(configfile)
 
     def get_text(self, key: str) -> str:
         if key in self.__language_dico:
