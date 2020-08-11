@@ -58,7 +58,6 @@ class ViewStudentPanel(QWidget):
         Sets the specified student list inside the table view
 
         :param students: students list
-        :param light_selection: light selection (selection from the canvas)
         """
         self.datamodel = None
         self.students = {}

@@ -163,11 +163,12 @@ class SideDockWidget(QDockWidget):
 
 class ViewMainFrame(QMainWindow):
 
-    def __init__(self, sig_quit):
+    def __init__(self, sig_quit, sig_config_mode_changed):
         """
         Main application's frame
 
         :param sig_quit: signal to trigger when the application closes
+        :param sig_config_mode_changed= signal to trigger when the configuration mode changes
         """
         QMainWindow.__init__(self)
 
@@ -183,6 +184,7 @@ class ViewMainFrame(QMainWindow):
 
         self.sidewidget.dockLocationChanged.connect(self.on_side_widget_docked_state_changed)
 
+        self.__config_mode = False  # Config mode flag, should be initialized to False in all widgets
         self.__init_callbacks()
 
         # Layout
@@ -191,7 +193,9 @@ class ViewMainFrame(QMainWindow):
         self.addToolBar(Qt.RightToolBarArea, self.maintoolbar)
         self.setStatusBar(self.status_bar)
 
+        # Signals
         self.sig_quit = sig_quit
+        self.sig_config_mode_changed = sig_config_mode_changed
 
         self.setStyleSheet("QMainWindow {" + f"background-color: {AssetManager.getInstance().config('colors', 'main_bg')};" + "}")
 
@@ -202,6 +206,7 @@ class ViewMainFrame(QMainWindow):
         """
         self.maintoolbar.on_btn_perspective_clicked = self.central_widget.on_perspective_changed
         self.maintoolbar.on_btn_shuffle_clicked = self.central_widget.do_shuffle
+        self.maintoolbar.on_config_mode = self.on_config_mode
 
         self.central_widget.sig_enable_animation_btns = self.maintoolbar.sig_enable_animation_btns
 
@@ -221,6 +226,30 @@ class ViewMainFrame(QMainWindow):
 
         self.sidewidget.sidepanel.tabBar().setTabEnabled(0, is_view_classroom)  # Courses
         self.sidewidget.sidepanel.tabBar().setTabEnabled(1, is_view_classroom)  # Students
+
+    def on_config_mode(self, is_in_config_mode: bool) -> None:
+        """
+        Switches the current mode. If in config mode, almost all features are made available, whereas in 'secured'
+        mode, some features will be inaccessible to prevent the user from doing critic modification actions.
+        """
+        self.__config_mode = is_in_config_mode
+
+        # TODO change student's sidepanel icon & tooltip
+        self.maintoolbar.lock_buttons(self.__config_mode)
+        self.central_widget.classroom_tab.v_canvas.config_mode(self.__config_mode)
+        self.sidewidget.courses().courses_toolbar.setVisible(self.__config_mode)
+        self.sidewidget.attributes().attributes_toolbar.setVisible(self.__config_mode)
+        self.sidewidget.students().students_toolbar.switch_config_mode(self.__config_mode)
+
+        self.sig_config_mode_changed.emit()
+
+    def get_config(self) -> bool:
+        """
+        Getter for the config mode
+
+        :return: True if the user is in Configuration mode
+        """
+        return self.__config_mode
 
     def on_side_widget_docked_state_changed(self) -> None:
         """
