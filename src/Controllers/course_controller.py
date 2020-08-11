@@ -227,21 +227,22 @@ class CourseController:
         - 1 = empty desks,
         - 0 = none
         """
+        sel_mode = self.main_ctrl.selection_mode if self.gui.get_config() else (2 * self.main_ctrl.selection_mode) % 4
 
-        if self.main_ctrl.selection_mode == self.main_ctrl.SEL_NONE:
+        if sel_mode == self.main_ctrl.SEL_NONE:
             self.v_canvas.select_tiles_to(False)
             self.gui.status_bar.showMessage(f"Déselection de tous les emplacements", 3000)
-        elif self.main_ctrl.selection_mode == self.main_ctrl.SEL_EMPTY:
+        elif sel_mode == self.main_ctrl.SEL_EMPTY:
             self.v_canvas.select_tiles_from_desks_ids(self.get_desks(True))
             self.gui.status_bar.showMessage(f"Selection des emplacements libres", 3000)
-        elif self.main_ctrl.selection_mode == self.main_ctrl.SEL_OCCUPIED:
+        elif sel_mode == self.main_ctrl.SEL_OCCUPIED:
             self.v_canvas.select_tiles_from_desks_ids(self.get_desks(False))
             self.gui.status_bar.showMessage(f"Selection des emplacements occupés", 3000)
         else:
             self.v_canvas.select_tiles_to(True)
             self.gui.status_bar.showMessage(f"Selection de tous les emplacements", 3000)
 
-        if self.main_ctrl.selection_mode >= 2:
+        if sel_mode >= 2:
             all_desks = self.get_desks(False)
             for desk_id in all_desks:
                 self.on_desk_selection_changed_on_app(desk_id, True)
@@ -334,7 +335,7 @@ class CourseController:
             self.mod_bdd.update_student_order_with_id(s, orderkey)
             orderkey += 1
         self.__bdd.commit()
-        self.gui.sidewidget.students().set_students_list(self.mod_bdd.get_students_in_group(group_name))
+        self.main_ctrl.on_config_changed()
         self.synchronize_canvas_selection_with_side_list()
 
     def remove_desk_by_id(self, id_desk):
@@ -379,6 +380,9 @@ class CourseController:
                     self.v_canvas.new_tile(d.row, d.col, d.id, firstname=std.firstname, lastname=std.lastname)
                 else:
                     self.v_canvas.new_tile(d.row, d.col, d.id)
+        if not self.gui.get_config():
+            # refresh the student list if in view mode
+            self.main_ctrl.on_config_changed()
         self.v_canvas.repaint()
 
     def show_all_courses(self):
