@@ -16,7 +16,6 @@ class CustomPrinterDialog(QDialog):
         # Widgets
         self.lab = QLabel()
         self.lab.setPixmap(pixmap)
-        self.lab.setFixedSize(QSize(pixmap.width() // 2, pixmap.height() // 2))
         self.lab.setScaledContents(True)
 
         self.save_btn = QPushButton(tr("btn_save"))
@@ -35,6 +34,9 @@ class CustomPrinterDialog(QDialog):
         self.setLayout(layout)
 
     def on_save(self) -> None:
+        """
+        Displays a save dialog to save the preview
+        """
         file_name = QFileDialog.getSaveFileName(self, tr("btn_save"), "plan_de_classe.png", "Images (*.png)")[0]
         if file_name:
             self.pix.save(file_name)
@@ -42,7 +44,11 @@ class CustomPrinterDialog(QDialog):
         self.close()
 
     def on_print(self) -> None:
+        """
+        Displays the native print dialog to print the preview
+        """
         printer = QtPrintSupport.QPrinter()
+
         dlg = QtPrintSupport.QPrintDialog(printer, self.lab)
         if dlg.exec_():
             self.lab.render(printer)
