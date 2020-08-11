@@ -1,8 +1,9 @@
 from PySide2.QtWidgets import QWidget, QDialog
-from PySide2.QtGui import QPainter, QColor, QPen, QPalette, QFont
+from PySide2.QtGui import QPainter, QColor, QPen, QPalette, QFont, QPixmap, QImage, QRegion
 from PySide2 import QtPrintSupport
 from PySide2.QtCore import QPoint, QRect, Qt, Signal, Slot, QTimer, QThread, QObject
 
+from src.View.popup.view_printer import CustomPrinterDialog
 from src.assets_manager import AssetManager
 
 from time import sleep
@@ -668,10 +669,9 @@ class ViewCanvas(QWidget):
         """
         return QRect(QPoint(PADDING + x, PADDING + y), QPoint(x + self.square_size - PADDING - 1,
                                                               y + self.square_size - PADDING - 1))
-    def print_pdf(self):
-        printer = QtPrintSupport.QPrinter()
-        print_dpi = int(AssetManager.getInstance().config('size', 'print_dpi'))
-        #printer.setResolution(print_dpi)
-        dialog = QtPrintSupport.QPrintDialog(printer, self)
-        if dialog.exec_() == QtPrintSupport.QPrintDialog.Accepted:
-            self.render(printer)
+
+    def print_pdf(self) -> None:
+        pix = QPixmap(self.rect().size())
+        self.render(pix, QPoint(), QRegion(self.rect()))
+
+        CustomPrinterDialog(pix).exec_()
