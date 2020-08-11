@@ -5,6 +5,7 @@ from src.assets_manager import get_icon, get_stylesheet, tr
 from src.View.widgets.view_add_widget import ViewAddWidget, ViewAddLine, ViewAddAttributeWidget
 from src.View.widgets.view_menubutton import ViewMenuButton
 from src.View.widgets.ToggleSwitchButton import ToggleSwitchButton
+from src.View.popup.view_about_box import AboutFrame
 
 BUTTON_SIZE = QSize(60, 60)
 ICON_SIZE = QSize(45, 45)
@@ -39,11 +40,12 @@ class ViewMainToolBar(QToolBar):
         self.__btn_lot_change = ToolBarButton("fill", tr("btn_lot_change"), lambda: self.sig_TBbutton.emit("lot_change"))
         self.__btn_pdf = ToolBarButton("print", tr("export_PDF"), lambda: self.sig_TBbutton.emit("print"))
         self.__btn_qr = ToolBarButton("qr-code", tr("btn_qr"), lambda: self.sig_TBbutton.emit("show_qr"))
+        self.__btn_about = ToolBarButton("info", tr("btn_about"), self.__open_about_box)
 
         self.actions_table = {self.__btn_config: None, self.__btn_magic: None, self.__btn_perspective: None,
                               self.__btn_shuffle: None, self.__btn_select: None, self.__btn_choice: None,
                               self.__btn_attr_choice: None, self.__btn_delete: None, self.__btn_lot_change: None,
-                              self.__btn_pdf: None, self.__btn_qr: None}
+                              self.__btn_pdf: None, self.__btn_qr: None, self.__btn_about: None}
 
         # Signals
         self.sig_enable_animation_btns.connect(self.enable_animation_btns)
@@ -131,6 +133,9 @@ class ViewMainToolBar(QToolBar):
 
     def on_config_mode(self, is_in_config_mode: bool) -> None:
         pass
+
+    def __open_about_box(self) -> None:
+        AboutFrame().exec_()
 
 
 class ViewCourseListToolbar(QToolBar):

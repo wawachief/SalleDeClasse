@@ -68,7 +68,7 @@ class ViewAttributePanel(QWidget):
             self.attributes[data] = id
             data_list.append(data)
 
-        self.datamodel = CustomTableModel(self.tableview, data_list, ("Nom", "Type"))
+        self.datamodel = CustomTableModel(self.tableview, data_list, (tr("attr_col"), tr("attr_type")))
         self.tableview.selectionModel().selectionChanged.connect(self.on_selection_changed)
 
         self.repaint()
