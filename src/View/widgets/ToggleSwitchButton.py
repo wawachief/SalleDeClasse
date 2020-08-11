@@ -32,6 +32,9 @@ class ToggleSwitchButton(QWidget):
         self.lab.setScaledContents(True)
         self.lab.setPixmap(QPixmap(QImage(self.off)))
 
+        # A click on the label will also trigger the toggle switch
+        self.lab.mousePressEvent = self.switch.mousePressEvent
+
         # Layout
         layout = QVBoxLayout()
         layout.addWidget(self.lab)
