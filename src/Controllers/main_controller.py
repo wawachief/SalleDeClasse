@@ -151,7 +151,6 @@ class MainController(QObject):
             "sort_desc": lambda: self.group_ctrl.sort_alpha(True),
             "sort_desks_Z": lambda: self.course_ctrl.sort_desks(sort_type="Z"),
             "sort_desks_2": lambda: self.course_ctrl.sort_desks(sort_type="2"),
-            "sort_desks_W": lambda: self.course_ctrl.sort_desks(sort_type="W"),
             "sort_desks_U": lambda: self.course_ctrl.sort_desks(sort_type="U"),
             "killstudent": self.group_ctrl.killstudent,
             "delete_group": self.group_ctrl.on_delete_group,
@@ -245,10 +244,15 @@ class MainController(QObject):
     def on_config_changed(self):
         """
         Triggered when the user switched configuration mode
+        Refresh the student list
         """
-        print("Configuration is on: " + str(self.gui.get_config()))
 
-        # TODO
-        #  - use GUI's current config
-        #  - use self.gui.sidewidget.students().set_students_list()
-        #    to set the students visibles in the canvas inside the list
+        if self.gui.get_config():
+            # Mode config is on, push group list
+            current_group = self.mod_bdd.get_group_name_by_id(self.id_group)
+            self.gui.sidewidget.students().set_students_list(self.mod_bdd.get_students_in_group(current_group))
+        else:
+            # Mode config is off, push students visible in the canvas inside the list
+            students_in_course = self.mod_bdd.get_students_in_course_by_id(self.id_course)
+            self.gui.sidewidget.students().set_students_list(students_in_course)
+        self.course_ctrl.synchronize_canvas_selection_with_side_list()

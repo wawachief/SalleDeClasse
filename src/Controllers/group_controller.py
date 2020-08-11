@@ -215,5 +215,5 @@ class GroupController:
             self.mod_bdd.update_student_order_with_id(s[1], orderkey)
             orderkey += 1
         self.__bdd.commit()
-        self.gui.sidewidget.students().set_students_list(self.mod_bdd.get_students_in_group(group_name))
+        self.main_ctrl.on_config_changed()
         self.course_ctrl.synchronize_canvas_selection_with_side_list()
