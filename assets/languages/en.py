@@ -72,10 +72,13 @@ dico = {"app_title": "Classroom",
         "about_links": "Useful links:",
         "about_github": "Github repository",
         "about_doc": "Full documentation",
-        "about_features": "Features:",
+        "about_features": "Features/Back-End:",
         "about_ihm": "User interface:",
         "about_web": "Web app:",
         "about_contact": "Contact us:",
         "about_sdc": "is an <i>Open Source</i>, <i>Cross-Platform</i> and <i>Free</i> project.",
-        "btn_about": "About us"
+        "btn_about": "About us",
+
+        "btn_save": "Save",
+        "btn_print": "Print"
 }

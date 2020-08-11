@@ -72,10 +72,13 @@ dico = {"app_title": "Salle de Classe",
         "about_links": "Liens utiles :",
         "about_github": "Dépôt Github",
         "about_doc": "Documentation complète",
-        "about_features": "Fonctionnalités :",
+        "about_features": "Fonctionnalités / Back-Office :",
         "about_ihm": "Interface graphique :",
         "about_web": "Application web :",
         "about_contact": "Contactez-nous :",
         "about_sdc": "est un projet <i>Open Source</i>, <i>Multi plateforme</i> et <i>Gratuit</i>.",
-        "btn_about": "À propos"
+        "btn_about": "À propos",
+
+        "btn_save": "Sauvegarder",
+        "btn_print": "Imprimer"
 }
