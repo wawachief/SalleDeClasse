@@ -1,6 +1,7 @@
 from PySide2.QtWidgets import QMainWindow, QWidget, QDockWidget, QGridLayout, QStatusBar, QTabWidget, QFileDialog
 from PySide2.QtCore import Qt, Signal
 
+from src.View.popup.view_about_box import AboutFrame
 from src.View.view_canvas import ViewCanvas
 from src.View.view_sidepanel import ViewSidePanel
 from src.View.widgets.view_board import ViewTeacherDeskLabel
@@ -163,17 +164,20 @@ class SideDockWidget(QDockWidget):
 
 class ViewMainFrame(QMainWindow):
 
-    def __init__(self, sig_quit, sig_config_mode_changed, sig_export_csv):
+    def __init__(self, sig_quit: Signal, sig_config_mode_changed: Signal, sig_export_csv: Signal):
         """
         Main application's frame
 
         :param sig_quit: signal to trigger when the application closes
-        :param sig_config_mode_changed= signal to trigger when the configuration mode changes
+        :param sig_config_mode_changed: signal to trigger when the configuration mode changes
+        :param sig_export_csv: signal to emit with the filepath to perform the export to CSV
         """
         QMainWindow.__init__(self)
 
         self.setWindowTitle(f"{tr('app_title')} | {AssetManager.getInstance().config('main', 'version')}")
         self.setContextMenuPolicy(Qt.PreventContextMenu)
+
+        self.bdd_version: str = ""  # For the about box
 
         # Widgets
         self.status_bar = QStatusBar()
@@ -200,6 +204,12 @@ class ViewMainFrame(QMainWindow):
 
         self.setStyleSheet("QMainWindow {" + f"background-color: {AssetManager.getInstance().config('colors', 'main_bg')};" + "}")
 
+    def set_bdd_version(self, bdd_version: str) -> None:
+        """
+        Sets the current BDD version. Used in the About box
+        """
+        self.bdd_version = bdd_version
+
     def __init_callbacks(self):
         """
         Dispatches the callbacks from the toolbar to the handling widgets. Also init the signal triggered to enable
@@ -209,6 +219,7 @@ class ViewMainFrame(QMainWindow):
         self.maintoolbar.on_btn_shuffle_clicked = self.central_widget.do_shuffle
         self.maintoolbar.on_config_mode = self.on_config_mode
         self.maintoolbar.on_export_csv = self.on_export_csv
+        self.maintoolbar.open_about_box = lambda: AboutFrame(self.bdd_version).exec_()
 
         self.central_widget.sig_enable_animation_btns = self.maintoolbar.sig_enable_animation_btns
 

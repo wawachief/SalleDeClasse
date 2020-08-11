@@ -70,12 +70,11 @@ dico = {"app_title": "Classroom",
         "export_CSV": "Export the attributes' table to a CSV format",
 
         "about_us": "About us",
-        "about_links": "Useful links:",
         "about_github": "Github repository",
-        "about_doc": "Full documentation",
-        "about_features": "Features/Back-End:",
-        "about_ihm": "User interface:",
-        "about_web": "Web app:",
+        "about_doc": "full documentation",
+        "about_features": "Features/Back-End: ",
+        "about_ihm": "User interface: ",
+        "about_web": "Web app: ",
         "about_contact": "Contact us:",
         "about_sdc": "is an <i>Open Source</i>, <i>Cross-Platform</i> and <i>Free</i> project.",
         "btn_about": "About us",
@@ -84,5 +83,9 @@ dico = {"app_title": "Classroom",
         "export_dialog_title": "CSV export",
         "default_save_name": "classroom_layout",
         "btn_save": "Save",
-        "save_dialog_message": "Please select a location to save your classroom layout screenshot"
+        "save_dialog_message": "Please select a location to save your classroom layout screenshot",
+
+        "link_to": "Link to the",
+        "app_version": "Software version:",
+        "bdd_version": "DataBase version:"
 }

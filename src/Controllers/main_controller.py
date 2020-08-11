@@ -93,6 +93,7 @@ class MainController(QObject):
         else:
             self.__bdd = sqlite3.connect(bdd_path)
         self.mod_bdd = ModBdd(self.__bdd)
+        self.gui.set_bdd_version(self.mod_bdd.get_version())
         print(f"bdd version : {self.mod_bdd.get_version()}")
 
         # Create secondary controllers

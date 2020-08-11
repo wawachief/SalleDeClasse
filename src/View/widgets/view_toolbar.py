@@ -5,7 +5,6 @@ from src.assets_manager import get_icon, get_stylesheet, tr
 from src.View.widgets.view_add_widget import ViewAddWidget, ViewAddLine, ViewAddAttributeWidget
 from src.View.widgets.view_menubutton import ViewMenuButton
 from src.View.widgets.ToggleSwitchButton import ToggleSwitchButton
-from src.View.popup.view_about_box import AboutFrame
 
 BUTTON_SIZE = QSize(60, 60)
 ICON_SIZE = QSize(45, 45)
@@ -28,8 +27,6 @@ class ViewMainToolBar(QToolBar):
 
         # Buttons
         self.__btn_config = ToggleSwitchButton(self, "unlock", "lock", self.on_config_mode)
-
-        # self.__btn_config = ToolBarButton("fill", tr("btn_config"), self.config_mode_clicked)
         self.__btn_magic = ToolBarButton("unkwown", tr("btn_selection_filter"), lambda: self.sig_TBbutton.emit("filter_select"))
         self.__btn_perspective = ToolBarButton("teacher", tr("btn_change_perspective"), self.on_btn_perspective_clicked)
         self.__btn_shuffle = ToolBarButton("shuffle", tr("btn_shuffle"), self.on_btn_shuffle_clicked)
@@ -41,7 +38,7 @@ class ViewMainToolBar(QToolBar):
         self.__btn_png = ToolBarButton("camera", tr("export_PNG"), lambda: self.sig_TBbutton.emit("print"))
         self.__btn_qr = ToolBarButton("qr-code", tr("btn_qr"), lambda: self.sig_TBbutton.emit("show_qr"))
         self.__btn_export_csv = ToolBarButton("csv", tr("export_CSV"), self.on_export_csv)
-        self.__btn_about = ToolBarButton("info", tr("btn_about"), self.__open_about_box)  # Keep at the end
+        self.__btn_about = ToolBarButton("info", tr("btn_about"), self.open_about_box)  # Keep at the end
 
         self.actions_table = {self.__btn_config: None, self.__btn_magic: None, self.__btn_perspective: None,
                               self.__btn_shuffle: None, self.__btn_select: None, self.__btn_choice: None,
@@ -144,8 +141,8 @@ class ViewMainToolBar(QToolBar):
     def on_config_mode(self, is_in_config_mode: bool) -> None:
         pass
 
-    def __open_about_box(self) -> None:
-        AboutFrame().exec_()
+    def open_about_box(self) -> None:
+        pass
 
     def on_export_csv(self) -> None:
         pass
