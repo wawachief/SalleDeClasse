@@ -1,7 +1,7 @@
 from PySide2 import QtPrintSupport
-from PySide2.QtCore import Qt, QSize
+from PySide2.QtCore import Qt
 from PySide2.QtGui import QPixmap
-from PySide2.QtWidgets import QDialog, QLabel, QFileDialog, QPushButton, QGridLayout
+from PySide2.QtWidgets import QDialog, QLabel, QFileDialog, QVBoxLayout
 
 from src.assets_manager import tr
 
@@ -12,45 +12,47 @@ class CustomPrinterDialog(QDialog):
         QDialog.__init__(self)
 
         self.pix = pixmap
+        self.setWindowTitle(tr("save_dialog_title"))
 
         # Widgets
+        self.fileDialog = QFileDialog(self)
+        self.fileDialog.setOption(QFileDialog.DontUseNativeDialog)
+        self.fileDialog.setWindowFlags(Qt.Widget)
+        self.fileDialog.setNameFilter("Images (*.png)")
+        self.fileDialog.selectFile(tr("default_save_name"))
+        self.fileDialog.setLabelText(QFileDialog.Accept, tr("btn_save"))
+        self.fileDialog.setLabelText(QFileDialog.Reject, tr("btn_cancel"))
+        self.fileDialog.finished.connect(self.done)
+
         self.lab = QLabel()
         self.lab.setPixmap(pixmap)
+        self.lab.setFixedSize(pixmap.width() // 1.8, pixmap.height() // 1.8)
         self.lab.setScaledContents(True)
 
-        self.save_btn = QPushButton(tr("btn_save"))
-        self.save_btn.clicked.connect(self.on_save)
-        self.print_btn = QPushButton(tr("btn_print"))
-        self.print_btn.clicked.connect(self.on_print)
+        self.lab_sep = QLabel()  # Separator
+        self.lab_sep.setFixedHeight(3)
+        self.lab_sep.setFixedWidth(pixmap.width() // 1.3)
+        self.lab_sep.setStyleSheet("background: QLinearGradient(x1: 0, y1: 0, x2: 1, y2: 0, "
+                                   "stop: 0 #283747, stop: 0.25 #1A5276, stop: 0.5 #2980B9, "
+                                   "stop: 0.75 #1A5276, stop: 1 #283747);")
+
+        self.lab_blabla = QLabel(tr("save_dialog_message"))
 
         # Layout
-        layout = QGridLayout()
-        layout.addWidget(self.lab, 0, 0, 1, 2)
+        layout = QVBoxLayout()
+        layout.addWidget(self.lab)
         layout.setAlignment(self.lab, Qt.AlignCenter)
-        layout.addWidget(self.save_btn, 1, 0)
-        layout.setAlignment(self.save_btn, Qt.AlignCenter)
-        layout.addWidget(self.print_btn, 1, 1)
-        layout.setAlignment(self.print_btn, Qt.AlignCenter)
+        layout.addWidget(self.lab_sep)
+        layout.setAlignment(self.lab_sep, Qt.AlignCenter)
+        layout.addWidget(self.lab_blabla)
+        layout.setAlignment(self.lab_blabla, Qt.AlignCenter)
+        layout.addWidget(self.fileDialog)
+        layout.setAlignment(self.fileDialog, Qt.AlignCenter)
         self.setLayout(layout)
 
-    def on_save(self) -> None:
+    def save_plan(self) -> None:
         """
-        Displays a save dialog to save the preview
+        Saves the classroom layout at the specified location
         """
-        file_name = QFileDialog.getSaveFileName(self, tr("btn_save"), "plan_de_classe.png", "Images (*.png)")[0]
-        if file_name:
-            self.pix.save(file_name)
-
-        self.close()
-
-    def on_print(self) -> None:
-        """
-        Displays the native print dialog to print the preview
-        """
-        printer = QtPrintSupport.QPrinter()
-
-        dlg = QtPrintSupport.QPrintDialog(printer, self.lab)
-        if dlg.exec_():
-            self.lab.render(printer)
-
-        self.close()
+        file = self.fileDialog.selectedFiles()[0] + ".png"
+        self.pix.save(file)

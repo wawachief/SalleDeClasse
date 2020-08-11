@@ -1,4 +1,4 @@
-from PySide2.QtWidgets import QMainWindow, QWidget, QDockWidget, QGridLayout, QStatusBar, QTabWidget
+from PySide2.QtWidgets import QMainWindow, QWidget, QDockWidget, QGridLayout, QStatusBar, QTabWidget, QFileDialog
 from PySide2.QtCore import Qt, Signal
 
 from src.View.view_canvas import ViewCanvas
@@ -163,7 +163,7 @@ class SideDockWidget(QDockWidget):
 
 class ViewMainFrame(QMainWindow):
 
-    def __init__(self, sig_quit, sig_config_mode_changed):
+    def __init__(self, sig_quit, sig_config_mode_changed, sig_export_csv):
         """
         Main application's frame
 
@@ -196,6 +196,7 @@ class ViewMainFrame(QMainWindow):
         # Signals
         self.sig_quit = sig_quit
         self.sig_config_mode_changed = sig_config_mode_changed
+        self.sig_export_csv = sig_export_csv
 
         self.setStyleSheet("QMainWindow {" + f"background-color: {AssetManager.getInstance().config('colors', 'main_bg')};" + "}")
 
@@ -207,6 +208,7 @@ class ViewMainFrame(QMainWindow):
         self.maintoolbar.on_btn_perspective_clicked = self.central_widget.on_perspective_changed
         self.maintoolbar.on_btn_shuffle_clicked = self.central_widget.do_shuffle
         self.maintoolbar.on_config_mode = self.on_config_mode
+        self.maintoolbar.on_export_csv = self.on_export_csv
 
         self.central_widget.sig_enable_animation_btns = self.maintoolbar.sig_enable_animation_btns
 
@@ -257,6 +259,16 @@ class ViewMainFrame(QMainWindow):
         """
         if self.sidewidget.isFloating():
             self.adjustSize()
+
+    def on_export_csv(self) -> None:
+        """
+        Displays a save dialog to select a file path for the export csv of the attributes table.
+        Then signals this path to the controller
+        """
+        file_path = QFileDialog.getSaveFileName(self, tr("export_dialog_title"), "untitled", "(*.csv)")[0]
+
+        if file_path:
+            self.sig_export_csv.emit(file_path)
 
     def closeEvent(self, event):
         """

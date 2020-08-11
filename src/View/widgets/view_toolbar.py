@@ -38,14 +38,16 @@ class ViewMainToolBar(QToolBar):
         self.__btn_attr_choice = ToolBarButton("choixvolontaire_attr", tr("btn_choose_student_with_attr"), lambda: self.sig_TBbutton.emit("choice_attr"))
         self.__btn_delete = ToolBarButton("corbeille", tr("btn_delete"), lambda: self.sig_TBbutton.emit("delete"))
         self.__btn_lot_change = ToolBarButton("fill", tr("btn_lot_change"), lambda: self.sig_TBbutton.emit("lot_change"))
-        self.__btn_pdf = ToolBarButton("print", tr("export_PDF"), lambda: self.sig_TBbutton.emit("print"))
+        self.__btn_png = ToolBarButton("camera", tr("export_PNG"), lambda: self.sig_TBbutton.emit("print"))
         self.__btn_qr = ToolBarButton("qr-code", tr("btn_qr"), lambda: self.sig_TBbutton.emit("show_qr"))
-        self.__btn_about = ToolBarButton("info", tr("btn_about"), self.__open_about_box)
+        self.__btn_export_csv = ToolBarButton("csv", tr("export_CSV"), self.on_export_csv)
+        self.__btn_about = ToolBarButton("info", tr("btn_about"), self.__open_about_box)  # Keep at the end
 
         self.actions_table = {self.__btn_config: None, self.__btn_magic: None, self.__btn_perspective: None,
                               self.__btn_shuffle: None, self.__btn_select: None, self.__btn_choice: None,
                               self.__btn_attr_choice: None, self.__btn_delete: None, self.__btn_lot_change: None,
-                              self.__btn_pdf: None, self.__btn_qr: None, self.__btn_about: None}
+                              self.__btn_png: None, self.__btn_qr: None, self.__btn_export_csv: None,
+                              self.__btn_about: None}
 
         # Signals
         self.sig_enable_animation_btns.connect(self.enable_animation_btns)
@@ -59,6 +61,13 @@ class ViewMainToolBar(QToolBar):
         :return:
         """
         for btn in self.actions_table:
+            if btn == self.__btn_about:
+                # Empty space to align the about button to the bottom
+                spacer = QWidget()
+                spacer.setStyleSheet("background-color: transparent;")
+                spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+                self.addWidget(spacer)
+
             self.actions_table[btn] = self.addWidget(btn)
 
     def set_widgets(self, is_view_classroom: bool) -> None:
@@ -77,7 +86,8 @@ class ViewMainToolBar(QToolBar):
         self.actions_table[self.__btn_delete].setVisible(is_view_classroom)
         self.actions_table[self.__btn_lot_change].setVisible(not is_view_classroom)
         self.actions_table[self.__btn_qr].setVisible(is_view_classroom)
-        self.actions_table[self.__btn_pdf].setVisible(True)
+        self.actions_table[self.__btn_png].setVisible(is_view_classroom)
+        self.actions_table[self.__btn_export_csv].setVisible(not is_view_classroom)
 
     def lock_buttons(self, is_config_mode: bool) -> None:
         """
@@ -136,6 +146,9 @@ class ViewMainToolBar(QToolBar):
 
     def __open_about_box(self) -> None:
         AboutFrame().exec_()
+
+    def on_export_csv(self) -> None:
+        pass
 
 
 class ViewCourseListToolbar(QToolBar):

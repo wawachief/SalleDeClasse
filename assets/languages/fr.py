@@ -66,7 +66,8 @@ dico = {"app_title": "Salle de Classe",
         "group_name": "Nom du groupe",
         "std_name": "Nom/Prénom de l'élève",
         "add_to_group": "Ajouter au groupe :",
-        "export_PDF": "Impression du plan de classe",
+        "export_PNG": "Capturer et sauver le plan de classe",
+        "export_CSV": "Exporter la table des attributs au format CSV",
 
         "about_us": "À propos",
         "about_links": "Liens utiles :",
@@ -79,6 +80,9 @@ dico = {"app_title": "Salle de Classe",
         "about_sdc": "est un projet <i>Open Source</i>, <i>Multi plateforme</i> et <i>Gratuit</i>.",
         "btn_about": "À propos",
 
+        "save_dialog_title": "Sauvegarder la capture du plan de classe",
+        "export_dialog_title": "Export CSV",
+        "default_save_name": "plan_de_classe",
         "btn_save": "Sauvegarder",
-        "btn_print": "Imprimer"
+        "save_dialog_message": "Veuillez choisir l'endroit où sauver votre image du plan de classe"
 }
