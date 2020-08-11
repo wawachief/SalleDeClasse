@@ -315,7 +315,6 @@ class CourseController:
                     ir += 1
 
             # second pass : we sort the students using the clusters
-            print(clusters, (0,0) in clusters)
             ic, ir = 0, 0
             alt = True
             while (ir, ic) in clusters:

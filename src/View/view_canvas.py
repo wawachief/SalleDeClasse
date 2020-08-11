@@ -671,7 +671,7 @@ class ViewCanvas(QWidget):
     def print_pdf(self):
         printer = QtPrintSupport.QPrinter()
         print_dpi = int(AssetManager.getInstance().config('size', 'print_dpi'))
-        printer.setResolution(print_dpi)
+        #printer.setResolution(print_dpi)
         dialog = QtPrintSupport.QPrintDialog(printer, self)
         if dialog.exec_() == QtPrintSupport.QPrintDialog.Accepted:
             self.render(printer)
