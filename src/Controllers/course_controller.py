@@ -282,31 +282,59 @@ class CourseController:
                 if not empty:
                     line += 1
 
-        def type_W():
-            # sorts col by col
-            for col in range(max_col):
-                for row in range(max_row):
+        def type_U():
+            # clever sort
+
+            clusters = dict()
+            # first pass : we detect clusters
+            ir, ic = 0,0
+            in_cluster = False
+            for row in range(max_row):
+                empty = True
+                for col in range(max_col):
                     id_desk = self.mod_bdd.get_desk_id_in_course_by_coords(self.main_ctrl.id_course, row, col)
                     if id_desk != 0:
-                        student = self.mod_bdd.get_student_by_desk_id(id_desk)
-                        if student is not None:
-                            sortlist.append(student.id)
-
-        def type_U():
-            # sorts col by col with continuity
-            co = 0
-            for col in range(max_col):
-                empty = True
-                for row in range(max_row):
-                    r = max_row-row-1 if co % 2 else row  # only non empty cols matters
-                    id_desk = self.mod_bdd.get_desk_id_in_course_by_coords(self.main_ctrl.id_course, r, col)
-                    if id_desk != 0:
                         empty = False
-                        student = self.mod_bdd.get_student_by_desk_id(id_desk)
-                        if student is not None:
-                            sortlist.append(student.id)
+                        if not in_cluster:
+                            # we enter a new cluster
+                            cluster = [(row, col)]
+                            in_cluster = True
+                        else:
+                            cluster.append((row, col))
+                    else:
+                        if in_cluster:
+                            # we leave a cluster
+                            in_cluster = False
+                            clusters[(ir, ic)] = cluster
+                            ic += 1
+                ic = 0
+                if in_cluster:
+                    in_cluster = False
+                    clusters[(ir, ic)] = cluster
                 if not empty:
-                    co += 1
+                    ir += 1
+
+            # second pass : we sort the students using the clusters
+            print(clusters, (0,0) in clusters)
+            ic, ir = 0, 0
+            alt = True
+            while (ir, ic) in clusters:
+                # gets the number of rows in this col
+                while (ir, ic) in clusters:
+                    ir += 1
+                nb_rows = ir
+                for ir in range(nb_rows):
+                    ir_alt = ir if alt else nb_rows - ir - 1
+                    for coords in clusters[(ir_alt,ic)]:
+                        # we add all students in the cluster
+                        id_desk = self.mod_bdd.get_desk_id_in_course_by_coords(self.main_ctrl.id_course, coords[0], coords[1])
+                        if id_desk != 0:
+                            student = self.mod_bdd.get_student_by_desk_id(id_desk)
+                            if student is not None:
+                                sortlist.append(student.id)
+                alt  = not alt
+                ir = 0
+                ic += 1
 
         self.gui.status_bar.showMessage(tr("grp_action_sort_by_place"), 3000)
         max_row = int(AssetManager.getInstance().config("size", "default_room_rows"))
@@ -325,8 +353,6 @@ class CourseController:
             type_Z()
         elif sort_type == "2":
             type_2()
-        elif sort_type == "W":
-            type_W()
         else:
             type_U()
         # At last, we update the sort key to re-order the list

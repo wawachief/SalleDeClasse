@@ -210,7 +210,6 @@ class ViewStudentListToolbar(QToolBar):
                                                   (tr("grp_action_sort_desc"), "sort_desc"),
                                                   (tr("grp_action_sort_by_place") + " Z", "sort_desks_Z"),
                                                   (tr("grp_action_sort_by_place") + " 2", "sort_desks_2"),
-                                                  (tr("grp_action_sort_by_place") + " W", "sort_desks_W"),
                                                   (tr("grp_action_sort_by_place") + " U", "sort_desks_U"),
                                                   ])
 
