@@ -12,7 +12,7 @@ from src.Controllers.attr_controller import AttrController
 
 # Views
 from src.Model.mod_bdd import ModBdd
-from src.View.view_mainframe import ViewMainFrame
+from src.View.view_mainframe import ViewMainFrame, EXIT_CODE_REBOOT
 from src.View.widgets.view_menubutton import ViewMenuButton
 from src.View.popup.view_student_attributes import VStdAttributesDialog
 from src.View.popup.view_confirm_dialogs import VConfirmDialog
@@ -33,7 +33,7 @@ class MainController(QObject):
 
     # Signals
     sig_select_tile = Signal()
-    sig_quit = Signal()
+    sig_quit = Signal(int)
     sig_shuffle = Signal()
     sig_desk_selected = Signal(int, bool)
     sig_canvas_click = Signal(tuple)
@@ -88,14 +88,12 @@ class MainController(QObject):
                 if not VConfirmDialog(self.gui, "confirm_db_creation").exec_():
                     self.mod_bdd = None
                     return
-                print(f"Initializing a new BDD in {bdd_path}")
                 self.__bdd = self.initialize_bdd(bdd_path)
             AssetManager.getInstance().set_bdd_path(bdd_path)
         else:
             self.__bdd = sqlite3.connect(bdd_path)
         self.mod_bdd = ModBdd(self.__bdd)
         self.gui.set_bdd_version(self.mod_bdd.get_version())
-        print(f"bdd version : {self.mod_bdd.get_version()}")
 
         # Create secondary controllers
         self.attr_ctrl = AttrController(self, self.__bdd)
@@ -205,11 +203,11 @@ class MainController(QObject):
         self.actions_table[action_key]()
 
     @Slot()
-    def do_quit(self):
+    def do_quit(self, exit_code):
         self.v_canvas.application_closing()
         self.__bdd.close()
-        # self.flask_server.stop_flask()
-        self.flask_client.emit("stop-server")
+        if exit_code != EXIT_CODE_REBOOT:
+            self.flask_client.emit("stop-server")
 
     #
     # General methods

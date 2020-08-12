@@ -102,6 +102,21 @@ class AssetManager:
 
         return settings
 
+    def get_config_parser(self) -> ConfigParser:
+        """
+        Gets the current config parser
+        """
+        return self.__config
+
+    def restore_default_settings(self) -> None:
+        """
+        Restores back the default config.ini file
+        """
+        config_ori = ConfigParser()
+        config_ori.read(CONFIG_PATH)
+
+        self.save_config(config_ori)
+
     @staticmethod
     def getInstance():
         """
@@ -109,6 +124,15 @@ class AssetManager:
         """
         if AssetManager.__instance == None:
             AssetManager()
+        return AssetManager.__instance
+
+    @staticmethod
+    def start_instance():
+        """
+        :rtype: AssetManager
+        """
+        AssetManager.__instance = None
+        AssetManager()
         return AssetManager.__instance
 
     def config(self, section: str, key: str) -> str:
