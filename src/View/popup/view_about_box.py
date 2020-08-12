@@ -2,7 +2,7 @@ from PySide2.QtWidgets import QVBoxLayout, QLabel, QDialog, QGridLayout
 from PySide2.QtGui import QPixmap
 from PySide2.QtCore import QSize, Qt
 
-from src.assets_manager import AssetManager, tr
+from src.assets_manager import AssetManager, tr, get_stylesheet
 
 SPACING_SIZE = 10
 
@@ -27,9 +27,7 @@ class AboutFrame(QDialog):
         self.links_style = "<style>a { text-decoration:none; color:#416284; font-weight: bold;}</style>"
 
         self._set_labels_and_layout()
-        self.setStyleSheet("QDialog {background-color: QLinearGradient(x1: 0, y1: 0, x2: 0, y2: 1, "
-                           "stop: 0 #E0E0E0, stop: 0.2 #EAEAEA, stop: 0.5 #F0F0F0, stop: 0.8 #EAEAEA, "
-                           "stop: 1 #E0E0E0);} QLabel {color: black;}")
+        self.setStyleSheet(get_stylesheet("dialog2"))
 
     def _set_labels_and_layout(self):
         """
@@ -93,7 +91,7 @@ class AboutFrame(QDialog):
         # Logo
         box.addWidget(logo, alignment=Qt.AlignCenter)
 
-        Separator(self.width() // 1.2, box)  # ----
+        Separator(self.width(), box)  # ----
 
         # 'Salle de Classe' credo
         box.addWidget(lab_app, alignment=Qt.AlignCenter)
@@ -114,7 +112,7 @@ class AboutFrame(QDialog):
         box.addSpacing(SPACING_SIZE)
         box.addWidget(lab_contact, alignment=Qt.AlignCenter)
 
-        Separator(self.width() // 1.2, box)  # ----
+        Separator(self.width(), box)  # ----
 
         # Links of doc, git and license
         box.addWidget(lab_link_doc, alignment=Qt.AlignCenter)
@@ -122,7 +120,7 @@ class AboutFrame(QDialog):
         box.addSpacing(SPACING_SIZE)
         box.addWidget(lab_license, alignment=Qt.AlignCenter)
 
-        Separator(self.width() // 1.2, box)  # ----
+        Separator(self.width(), box)  # ----
 
         # Version
         grid_version = QGridLayout()
@@ -146,9 +144,7 @@ class Separator(QLabel):
 
         self.setFixedHeight(3)
         self.setFixedWidth(int(width))
-        self.setStyleSheet("background: QLinearGradient(x1: 0, y1: 0, x2: 1, y2: 0, "
-                                   "stop: 0 #283747, stop: 0.25 #1A5276, stop: 0.5 #2980B9, "
-                                   "stop: 0.75 #1A5276, stop: 1 #283747);")
+        self.setStyleSheet(get_stylesheet("separator"))
 
         # Layout
         self.setAlignment(Qt.AlignCenter)

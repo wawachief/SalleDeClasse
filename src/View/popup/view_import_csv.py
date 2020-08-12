@@ -1,7 +1,7 @@
 from PySide2.QtWidgets import QDialog, QFileDialog, QGridLayout, QComboBox, QLabel
 from PySide2.QtCore import Qt
 
-from src.assets_manager import tr
+from src.assets_manager import tr, get_stylesheet
 
 
 class DialogImportCsv(QDialog):
@@ -24,9 +24,7 @@ class DialogImportCsv(QDialog):
 
         self.lab_sep = QLabel()  # Separator
         self.lab_sep.setFixedHeight(3)
-        self.lab_sep.setStyleSheet("background: QLinearGradient(x1: 0, y1: 0, x2: 1, y2: 0, "
-                                   "stop: 0 #283747, stop: 0.25 #1A5276, stop: 0.5 #2980B9, "
-                                   "stop: 0.75 #1A5276, stop: 1 #283747);")
+        self.lab_sep.setStyleSheet(get_stylesheet("separator"))
 
         self.lab_group = QLabel(tr("add_to_group"))
 

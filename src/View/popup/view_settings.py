@@ -1,10 +1,11 @@
 from PySide2.QtCore import Qt, QSize
+from PySide2.QtGui import QColor
 from PySide2.QtWidgets import QDialog, QFormLayout, QLabel, QComboBox, QPushButton, QHBoxLayout, QWidget, QVBoxLayout, \
     QLineEdit, QFileDialog, QSpinBox, QColorDialog
 
 from configparser import ConfigParser
 
-from src.assets_manager import AssetManager, tr, COLOR_DICT
+from src.assets_manager import AssetManager, tr, COLOR_DICT, get_stylesheet
 
 
 class SettingsEditionDialog(QDialog):
@@ -14,6 +15,8 @@ class SettingsEditionDialog(QDialog):
 
     def __init__(self):
         QDialog.__init__(self)
+
+        self.setFixedSize(QSize(700, 500))
 
         # Retrieve current settings
         self.settings = AssetManager.getInstance().config_to_dico(AssetManager.getInstance().get_config_parser())
@@ -49,7 +52,17 @@ class SettingsEditionDialog(QDialog):
         self.wepapp_port.setValue(int(self.settings['webapp']['port']))
 
         # Empty Tile color
-        self.empty_tile_color = ColorChooser(self.settings['colors']['tile'])
+        self.tile_color = ColorChooser(self.settings['colors']['tile'])
+        self.hovered_tile_color = ColorChooser(self.settings['colors']['hovered_tile'])
+        self.hovered_empty_tile_color = ColorChooser(self.settings['colors']['hovered_empty_tile'])
+        self.dragged_tile_color = ColorChooser(self.settings['colors']['dragged_tile'])
+        self.drag_selected_tile_color = ColorChooser(self.settings['colors']['drag_selected_tile'])
+        self.selected_tile_color = ColorChooser(self.settings['colors']['selected_tile'])
+        self.tile_text_color = ColorChooser(self.settings['colors']['tile_text'])
+        self.room_bg_color = ColorChooser(self.settings['colors']['room_bg'])
+        self.room_grid_color = ColorChooser(self.settings['colors']['room_grid'])
+        self.main_bg_color = ColorChooser(self.settings['colors']['main_bg'])
+        self.board_bg_color = ColorChooser(self.settings['colors']['board_bg'])
 
         # --- Buttons ---
 
@@ -74,6 +87,7 @@ class SettingsEditionDialog(QDialog):
         """
         # Main layout
         layout = QVBoxLayout()
+        layout.setMargin(0)
 
         # Main section
         main_layout = QFormLayout()
@@ -92,14 +106,31 @@ class SettingsEditionDialog(QDialog):
         main_layout.addRow(tr("web_port"), widget_port)
 
         layout.addLayout(main_layout)
-        Separator(400, layout)
+        Separator(self.width(), layout)
 
         # Colors
-        colors_layout = QFormLayout()
-        colors_layout.addRow(tr("tile"), self.empty_tile_color)
+        colors_layout1 = QFormLayout()
+        colors_layout1.addRow(tr("tile"), self.tile_color)
+        colors_layout1.addRow(tr("hovered_tile"), self.hovered_tile_color)
+        colors_layout1.addRow(tr("hovered_empty_tile"), self.hovered_empty_tile_color)
+        colors_layout1.addRow(tr("dragged_tile"), self.dragged_tile_color)
+        colors_layout1.addRow(tr("drag_selected_tile"), self.drag_selected_tile_color)
+        colors_layout1.addRow(tr("selected_tile"), self.selected_tile_color)
+
+        colors_layout2 = QFormLayout()
+        colors_layout2.addRow(tr("tile_text"), self.tile_text_color)
+        colors_layout2.addRow(tr("room_bg"), self.room_bg_color)
+        colors_layout2.addRow(tr("room_grid"), self.room_grid_color)
+        colors_layout2.addRow(tr("main_bg"), self.main_bg_color)
+        colors_layout2.addRow(tr("board_bg"), self.board_bg_color)
+
+        colors_layout = QHBoxLayout()
+        colors_layout.setMargin(0)
+        colors_layout.addLayout(colors_layout1)
+        colors_layout.addLayout(colors_layout2)
 
         layout.addLayout(colors_layout)
-        Separator(400, layout)
+        Separator(self.width(), layout)
 
         # Buttons
         layout_buttons = QHBoxLayout()
@@ -109,6 +140,8 @@ class SettingsEditionDialog(QDialog):
 
         layout.addLayout(layout_buttons)
         self.setLayout(layout)
+
+        self.setStyleSheet(get_stylesheet("dialog2"))
 
     def __restore(self) -> None:
         """
@@ -146,7 +179,26 @@ class SettingsEditionDialog(QDialog):
             settings['webapp']['port'] = str(self.wepapp_port.value())
 
         # Colors
-        settings['colors']['tile'] = self.empty_tile_color.get_color()
+        settings['colors']['tile'] = self.tile_color.get_color()
+        settings['colors']['hovered_tile'] = self.hovered_tile_color.get_color()
+        settings['colors']['hovered_empty_tile'] = self.hovered_empty_tile_color.get_color()
+        settings['colors']['dragged_tile'] = self.dragged_tile_color.get_color()
+        settings['colors']['drag_selected_tile'] = self.drag_selected_tile_color.get_color()
+        settings['colors']['selected_tile'] = self.selected_tile_color.get_color()
+        settings['colors']['tile_text'] = self.tile_text_color.get_color()
+        settings['colors']['room_grid'] = self.room_grid_color.get_color()
+
+        if self.room_bg_color.get_color() != settings['colors']['room_bg']:
+            settings['colors']['room_bg'] = self.room_bg_color.get_color()
+            self.__restart_needed = True
+
+        if self.main_bg_color.get_color() != settings['colors']['main_bg']:
+            settings['colors']['main_bg'] = self.main_bg_color.get_color()
+            self.__restart_needed = True
+
+        if self.board_bg_color.get_color() != settings['colors']['board_bg']:
+            settings['colors']['board_bg'] = self.board_bg_color.get_color()
+            self.__restart_needed = True
 
         return settings
 
@@ -201,9 +253,7 @@ class Separator(QLabel):
 
         self.setFixedHeight(3)
         self.setFixedWidth(int(width))
-        self.setStyleSheet("background: QLinearGradient(x1: 0, y1: 0, x2: 1, y2: 0, "
-                                   "stop: 0 #283747, stop: 0.25 #1A5276, stop: 0.5 #2980B9, "
-                                   "stop: 0.75 #1A5276, stop: 1 #283747);")
+        self.setStyleSheet(get_stylesheet("separator"))
 
         # Layout
         self.setAlignment(Qt.AlignCenter)
@@ -215,7 +265,8 @@ class ColorChooser(QWidget):
     def __init__(self, default_color: str):
         QWidget.__init__(self)
 
-        self.color = default_color.upper()
+        # Convert 'regular' name colors into QColor to retrieve their hexa code
+        self.color = QColor(default_color.upper()).name().upper()
 
         # Widgets
         self.lab = QLabel()
