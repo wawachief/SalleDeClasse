@@ -1,7 +1,9 @@
+from PySide2 import QtCore
 from PySide2.QtWidgets import QMainWindow, QWidget, QDockWidget, QGridLayout, QStatusBar, QTabWidget, QFileDialog
-from PySide2.QtCore import Qt, Signal
+from PySide2.QtCore import Qt, Signal, QSize
 
 from src.View.popup.view_about_box import AboutFrame
+from src.View.popup.view_settings import SettingsEditionDialog
 from src.View.view_canvas import ViewCanvas
 from src.View.view_sidepanel import ViewSidePanel
 from src.View.widgets.view_board import ViewTeacherDeskLabel
@@ -14,9 +16,9 @@ from src.assets_manager import AssetManager, tr
 
 from src.View.popup.view_confirm_dialogs import VConfirmDialog
 
+EXIT_CODE_REBOOT = -11231351
 
 class CentralWidget(QTabWidget):
-
     sig_move_animation_ended = Signal()
 
     def __init__(self, status_message, active_tab_changed):
@@ -100,8 +102,10 @@ class ClassRoomTab(QWidget):
 
         # Widgets
         self.v_canvas = ViewCanvas(sig_move_animation_ended)  # Central canvas
-        self.view_students = ViewTeacherDeskLabel(tr("perspective_student_txt"), AssetManager.getInstance().config('colors', 'board_bg'))
-        self.view_teacher = ViewTeacherDeskLabel(tr("perspective_teacher_txt"), AssetManager.getInstance().config('colors', 'board_bg'))
+        self.view_students = ViewTeacherDeskLabel(tr("perspective_student_txt"),
+                                                  AssetManager.getInstance().config('colors', 'board_bg'))
+        self.view_teacher = ViewTeacherDeskLabel(tr("perspective_teacher_txt"),
+                                                 AssetManager.getInstance().config('colors', 'board_bg'))
 
         # Layout
         self.__set_layout()
@@ -179,6 +183,8 @@ class ViewMainFrame(QMainWindow):
 
         self.bdd_version: str = ""  # For the about box
 
+        self.reboot_requested = False
+
         # Widgets
         self.status_bar = QStatusBar()
         self.status_bar.setStyleSheet("QStatusBar {background: lightgrey; color: black;}")
@@ -202,7 +208,11 @@ class ViewMainFrame(QMainWindow):
         self.sig_config_mode_changed = sig_config_mode_changed
         self.sig_export_csv = sig_export_csv
 
-        self.setStyleSheet("QMainWindow {" + f"background-color: {AssetManager.getInstance().config('colors', 'main_bg')};" + "}")
+        self.setStyleSheet(
+            "QMainWindow {" + f"background-color: {AssetManager.getInstance().config('colors', 'main_bg')};" + "}")
+
+    def restart(self):
+        return QtCore.QCoreApplication.exit(EXIT_CODE_REBOOT)
 
     def set_bdd_version(self, bdd_version: str) -> None:
         """
@@ -219,6 +229,7 @@ class ViewMainFrame(QMainWindow):
         self.maintoolbar.on_btn_shuffle_clicked = self.central_widget.do_shuffle
         self.maintoolbar.on_config_mode = self.on_config_mode
         self.maintoolbar.on_export_csv = self.on_export_csv
+        self.maintoolbar.on_edit_config = self.on_edit_config
         self.maintoolbar.open_about_box = lambda: AboutFrame(self.bdd_version).exec_()
 
         self.central_widget.sig_enable_animation_btns = self.maintoolbar.sig_enable_animation_btns
@@ -247,7 +258,6 @@ class ViewMainFrame(QMainWindow):
         """
         self.__config_mode = is_in_config_mode
 
-        # TODO change student's sidepanel icon & tooltip
         self.maintoolbar.lock_buttons(self.__config_mode)
         self.central_widget.classroom_tab.v_canvas.config_mode(self.__config_mode)
         self.sidewidget.courses().courses_toolbar.setVisible(self.__config_mode)
@@ -280,9 +290,37 @@ class ViewMainFrame(QMainWindow):
         if file_path:
             self.sig_export_csv.emit(file_path)
 
+    def on_edit_config(self) -> None:
+        """
+        Displays the edition dialog for application settings
+        """
+        dlg = SettingsEditionDialog()
+
+        if dlg.exec_():
+            if dlg.restore_default():
+                AssetManager.getInstance().restore_default_settings()
+            else:
+                AssetManager.getInstance().save_config(dlg.new_config())
+
+            if dlg.need_restart():
+                restart_confirm = VConfirmDialog(self, "need_restart")
+                restart_confirm.ok_btn.setText(tr("restart_now"))
+                restart_confirm.ok_btn.setFixedSize(QSize(105, 33))
+                restart_confirm.cancel_btn.setText(tr("restart_later"))
+                restart_confirm.cancel_btn.setFixedSize(QSize(105, 33))
+
+                if restart_confirm.exec_():
+                    self.reboot_requested = True
+                    self.close()
+                    self.restart()
+
     def closeEvent(self, event):
         """
         Triggered on a close operation. Signals to the controller the event
         """
-        self.sig_quit.emit()
+        if self.reboot_requested:
+            self.reboot_requested = False
+            self.sig_quit.emit(EXIT_CODE_REBOOT)
+        else:
+            self.sig_quit.emit(0)
         event.accept()

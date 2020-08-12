@@ -38,13 +38,14 @@ class ViewMainToolBar(QToolBar):
         self.__btn_png = ToolBarButton("camera", tr("export_PNG"), lambda: self.sig_TBbutton.emit("print"))
         self.__btn_qr = ToolBarButton("qr-code", tr("btn_qr"), lambda: self.sig_TBbutton.emit("show_qr"))
         self.__btn_export_csv = ToolBarButton("csv", tr("export_CSV"), self.on_export_csv)
+        self.__btn_config_edition = ToolBarButton("config", tr("btn_config"), self.on_edit_config)
         self.__btn_about = ToolBarButton("info", tr("btn_about"), self.open_about_box)  # Keep at the end
 
         self.actions_table = {self.__btn_config: None, self.__btn_magic: None, self.__btn_perspective: None,
                               self.__btn_shuffle: None, self.__btn_select: None, self.__btn_choice: None,
                               self.__btn_attr_choice: None, self.__btn_delete: None, self.__btn_lot_change: None,
                               self.__btn_png: None, self.__btn_qr: None, self.__btn_export_csv: None,
-                              self.__btn_about: None}
+                              self.__btn_config_edition: None, self.__btn_about: None}
 
         # Signals
         self.sig_enable_animation_btns.connect(self.enable_animation_btns)
@@ -85,6 +86,7 @@ class ViewMainToolBar(QToolBar):
         self.actions_table[self.__btn_qr].setVisible(is_view_classroom)
         self.actions_table[self.__btn_png].setVisible(is_view_classroom)
         self.actions_table[self.__btn_export_csv].setVisible(not is_view_classroom)
+        self.actions_table[self.__btn_config_edition].setVisible(is_view_classroom)
 
     def lock_buttons(self, is_config_mode: bool) -> None:
         """
@@ -94,6 +96,7 @@ class ViewMainToolBar(QToolBar):
 
         self.actions_table[self.__btn_shuffle].setEnabled(is_config_mode)
         self.actions_table[self.__btn_delete].setEnabled(is_config_mode)
+        self.actions_table[self.__btn_config_edition].setEnabled(is_config_mode)
 
     def __set_style(self):
         """
@@ -145,6 +148,9 @@ class ViewMainToolBar(QToolBar):
         pass
 
     def on_export_csv(self) -> None:
+        pass
+
+    def on_edit_config(self) -> None:
         pass
 
 

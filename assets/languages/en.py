@@ -41,6 +41,7 @@ dico = {"app_title": "Classroom",
         "btn_choose_student_with_attr": "Choose a student given the selected attribute",
         "btn_lot_change": "Group change",
         "btn_qr": "Connect a smartphone via QRCode",
+        "btn_config": "Settings",
 
         "status_bar_active_view_teacher": "Teacher perspective",
         "status_bar_active_view_student": "Student perspective",
@@ -87,5 +88,13 @@ dico = {"app_title": "Classroom",
 
         "link_to": "Link to the",
         "app_version": "Software version:",
-        "bdd_version": "DataBase version:"
+        "bdd_version": "DataBase version:",
+
+        "no_internet": "Internet not reachable",
+        "need_restart": "Some changes require\nthe application to restart",
+        "restart_now": "Restart now",
+        "restart_later": "Restart later",
+        "btn_restore": "Restore defaults",
+
+        "language": "Language:",
 }
