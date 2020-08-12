@@ -61,7 +61,6 @@ class GroupController:
             if name[-1] in ["1", "A", "a"] and VConfirmDialog(self.gui, "confirm_create_complementary_group").exec_():
                 namec = name[:-1]
                 namec += chr(ord(name[-1])+1)
-                print(namec)
                 # create complementary group
                 id_group = self.mod_bdd.create_group(namec)
                 # Students are unselected at this point

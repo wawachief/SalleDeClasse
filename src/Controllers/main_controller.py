@@ -12,7 +12,7 @@ from src.Controllers.attr_controller import AttrController
 
 # Views
 from src.Model.mod_bdd import ModBdd
-from src.View.view_mainframe import ViewMainFrame
+from src.View.view_mainframe import ViewMainFrame, EXIT_CODE_REBOOT
 from src.View.widgets.view_menubutton import ViewMenuButton
 from src.View.popup.view_student_attributes import VStdAttributesDialog
 from src.View.popup.view_confirm_dialogs import VConfirmDialog
@@ -33,7 +33,7 @@ class MainController(QObject):
 
     # Signals
     sig_select_tile = Signal()
-    sig_quit = Signal()
+    sig_quit = Signal(int)
     sig_shuffle = Signal()
     sig_desk_selected = Signal(int, bool)
     sig_canvas_click = Signal(tuple)
@@ -88,14 +88,12 @@ class MainController(QObject):
                 if not VConfirmDialog(self.gui, "confirm_db_creation").exec_():
                     self.mod_bdd = None
                     return
-                print(f"Initializing a new BDD in {bdd_path}")
                 self.__bdd = self.initialize_bdd(bdd_path)
             AssetManager.getInstance().set_bdd_path(bdd_path)
         else:
             self.__bdd = sqlite3.connect(bdd_path)
         self.mod_bdd = ModBdd(self.__bdd)
         self.gui.set_bdd_version(self.mod_bdd.get_version())
-        print(f"bdd version : {self.mod_bdd.get_version()}")
 
         # Create secondary controllers
         self.attr_ctrl = AttrController(self, self.__bdd)
@@ -146,7 +144,7 @@ class MainController(QObject):
         self.sig_flask_desk_selection_changed.connect(self.course_ctrl.on_desk_selection_changed_on_web)
         self.sig_close_qr.connect(self.close_qr)
         self.sig_config_mode_changed.connect(self.on_config_changed)
-        self.sig_export_csv.connect(self.export_csv)
+        self.sig_export_csv.connect(self.attr_ctrl.export_csv)
 
         self.actions_table = {  # Action buttons
             "import_csv": self.group_ctrl.import_pronote,
@@ -205,11 +203,33 @@ class MainController(QObject):
         self.actions_table[action_key]()
 
     @Slot()
-    def do_quit(self):
+    def on_config_changed(self):
+        """
+        Triggered when the user switched configuration mode
+        Refresh the student list
+        """
+
+        if self.gui.get_config():
+            # Mode config is on, push group list
+            current_group = self.mod_bdd.get_group_name_by_id(self.id_group)
+            self.gui.sidewidget.students().set_students_list(self.mod_bdd.get_students_in_group(current_group))
+        else:
+            # Mode config is off, push students visible in the canvas inside the list
+            students_in_course = self.mod_bdd.get_students_in_course_by_id(self.id_course)
+            self.gui.sidewidget.students().set_students_list(students_in_course)
+        self.course_ctrl.synchronize_canvas_selection_with_side_list()
+
+    @Slot()
+    def close_qr(self):
+        if self.qr_dialog and self.qr_dialog.isVisible():
+            self.qr_dialog.close()
+
+    @Slot()
+    def do_quit(self, exit_code):
         self.v_canvas.application_closing()
         self.__bdd.close()
-        # self.flask_server.stop_flask()
-        self.flask_client.emit("stop-server")
+        if exit_code != EXIT_CODE_REBOOT:
+            self.flask_client.emit("stop-server")
 
     #
     # General methods
@@ -264,10 +284,3 @@ class MainController(QObject):
             students_in_course = self.mod_bdd.get_students_in_course_by_id(self.id_course)
             self.gui.sidewidget.students().set_students_list(students_in_course)
         self.course_ctrl.synchronize_canvas_selection_with_side_list()
-
-    @Slot(str)
-    def export_csv(self, file_path: str) -> None:
-        """
-        Saves the attributes table in a CSV format at the specified file path
-        """
-        print(file_path)  # TODO

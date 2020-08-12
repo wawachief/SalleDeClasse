@@ -92,8 +92,8 @@ dico = {"app_title": "Classroom",
 
         "no_internet": "Internet not reachable",
         "need_restart": "Some changes require\nthe application to restart",
-        "restart_now": "Quit now",
-        "restart_later": "Quit later",
+        "restart_now": "Restart now",
+        "restart_later": "Restart later",
         "btn_restore": "Restore defaults",
         "acknowledge_changes": "Your changes have been saved",
 

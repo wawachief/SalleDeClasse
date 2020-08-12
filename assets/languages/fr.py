@@ -92,7 +92,7 @@ dico = {"app_title": "Salle de Classe",
 
         "no_internet": "Pas de connexion internet",
         "need_restart": "Certains paramètres ne seront pris\nen compte qu'après le redémarrage.",
-        "restart_now": "Quitter",
+        "restart_now": "Redémarrer",
         "restart_later": "Plus tard",
         "btn_restore": "Restaurer paramètres",
         "acknowledge_changes": "Vos modifications ont bien été prises en compte",

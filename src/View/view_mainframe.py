@@ -1,3 +1,4 @@
+from PySide2 import QtCore
 from PySide2.QtWidgets import QMainWindow, QWidget, QDockWidget, QGridLayout, QStatusBar, QTabWidget, QFileDialog
 from PySide2.QtCore import Qt, Signal, QSize
 
@@ -15,9 +16,9 @@ from src.assets_manager import AssetManager, tr
 
 from src.View.popup.view_confirm_dialogs import VConfirmDialog
 
+EXIT_CODE_REBOOT = -11231351
 
 class CentralWidget(QTabWidget):
-
     sig_move_animation_ended = Signal()
 
     def __init__(self, status_message, active_tab_changed):
@@ -101,8 +102,10 @@ class ClassRoomTab(QWidget):
 
         # Widgets
         self.v_canvas = ViewCanvas(sig_move_animation_ended)  # Central canvas
-        self.view_students = ViewTeacherDeskLabel(tr("perspective_student_txt"), AssetManager.getInstance().config('colors', 'board_bg'))
-        self.view_teacher = ViewTeacherDeskLabel(tr("perspective_teacher_txt"), AssetManager.getInstance().config('colors', 'board_bg'))
+        self.view_students = ViewTeacherDeskLabel(tr("perspective_student_txt"),
+                                                  AssetManager.getInstance().config('colors', 'board_bg'))
+        self.view_teacher = ViewTeacherDeskLabel(tr("perspective_teacher_txt"),
+                                                 AssetManager.getInstance().config('colors', 'board_bg'))
 
         # Layout
         self.__set_layout()
@@ -180,6 +183,8 @@ class ViewMainFrame(QMainWindow):
 
         self.bdd_version: str = ""  # For the about box
 
+        self.reboot_requested = False
+
         # Widgets
         self.status_bar = QStatusBar()
         self.status_bar.setStyleSheet("QStatusBar {background: lightgrey; color: black;}")
@@ -203,7 +208,11 @@ class ViewMainFrame(QMainWindow):
         self.sig_config_mode_changed = sig_config_mode_changed
         self.sig_export_csv = sig_export_csv
 
-        self.setStyleSheet("QMainWindow {" + f"background-color: {AssetManager.getInstance().config('colors', 'main_bg')};" + "}")
+        self.setStyleSheet(
+            "QMainWindow {" + f"background-color: {AssetManager.getInstance().config('colors', 'main_bg')};" + "}")
+
+    def restart(self):
+        return QtCore.QCoreApplication.exit(EXIT_CODE_REBOOT)
 
     def set_bdd_version(self, bdd_version: str) -> None:
         """
@@ -278,7 +287,6 @@ class ViewMainFrame(QMainWindow):
         Then signals this path to the controller
         """
         file_path = QFileDialog.getSaveFileName(self, tr("export_dialog_title"), "untitled", "(*.csv)")[0]
-
         if file_path:
             self.sig_export_csv.emit(file_path)
 
@@ -304,11 +312,17 @@ class ViewMainFrame(QMainWindow):
                 restart_confirm.cancel_btn.setFixedSize(QSize(105, 33))
 
                 if restart_confirm.exec_():
+                    self.reboot_requested = True
                     self.close()
+                    self.restart()
 
     def closeEvent(self, event):
         """
         Triggered on a close operation. Signals to the controller the event
         """
-        self.sig_quit.emit()
+        if self.reboot_requested:
+            self.reboot_requested = False
+            self.sig_quit.emit(EXIT_CODE_REBOOT)
+        else:
+            self.sig_quit.emit(0)
         event.accept()
