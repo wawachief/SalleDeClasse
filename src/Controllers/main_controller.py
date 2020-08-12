@@ -88,14 +88,12 @@ class MainController(QObject):
                 if not VConfirmDialog(self.gui, "confirm_db_creation").exec_():
                     self.mod_bdd = None
                     return
-                print(f"Initializing a new BDD in {bdd_path}")
                 self.__bdd = self.initialize_bdd(bdd_path)
             AssetManager.getInstance().set_bdd_path(bdd_path)
         else:
             self.__bdd = sqlite3.connect(bdd_path)
         self.mod_bdd = ModBdd(self.__bdd)
         self.gui.set_bdd_version(self.mod_bdd.get_version())
-        print(f"bdd version : {self.mod_bdd.get_version()}")
 
         # Create secondary controllers
         self.attr_ctrl = AttrController(self, self.__bdd)

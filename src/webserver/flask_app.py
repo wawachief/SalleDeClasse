@@ -14,7 +14,7 @@ flask_thread = None
 flask_app = Flask(__name__)
 flask_app.config['SECRET_KEY'] = 'secret!'
 Payload.max_decode_packets = 50
-socket_io = SocketIO(flask_app, logger=True, async_mode="eventlet", engineio_logger=True)
+socket_io = SocketIO(flask_app,  async_mode="eventlet")
 controller: MainController = None
 clients = []
 
@@ -42,45 +42,37 @@ def select_student():
 
 @socket_io.on('connect')
 def handle_connect():
-    print('Client connected')
     clients.append(request.sid)
 
 
 @socket_io.on('disconnect')
 def handle_disconnect():
-    print('Client disconnected')
     clients.remove(request.sid)
 
 
 @socket_io.on('stop-server')
 def stop_server():
-    print('Stopping server')
     controller.flask_server.stop_flask()
     # socket_io.stop()
     os.kill(os.getpid(), signal.SIGABRT)
-    print("Stopped socketio")
 
 
 @socket_io.on('confirm_connect')
 def confirm_connection_event(json):
-    print('received json: ' + str(json))
     mod_bdd = get_bdd_connection()
     ids = controller.v_canvas.get_selected_tiles()
     for desk_id in ids:
         student = mod_bdd.get_student_by_desk_id(desk_id)
         send_student_selection(student.id, True)
-        print("selected students : " + str(student.id))
 
 
 @socket_io.on('selection_changed')
 def on_selection_changed(json):
-    print('selection changed: ' + str(json))
     send_student_selection(json['id'], json['selected'])
 
 
 @socket_io.on('random_selection')
 def random_selection_request():
-    print('Random Selection requested')
     mod_bdd = get_bdd_connection()
     desks_id = controller.course_ctrl.get_unselected_occupied_desks_id(bdd=mod_bdd)
     if desks_id:
