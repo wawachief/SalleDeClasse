@@ -4,6 +4,8 @@ from PySide2.QtCore import QSize, Qt
 
 from src.assets_manager import AssetManager, tr
 
+SPACING_SIZE = 10
+
 
 class AboutFrame(QDialog):
 
@@ -95,7 +97,7 @@ class AboutFrame(QDialog):
 
         # 'Salle de Classe' credo
         box.addWidget(lab_app, alignment=Qt.AlignCenter)
-        box.addSpacing(10)
+        box.addSpacing(SPACING_SIZE)
 
         # Devs roles
         dev_grid = QGridLayout()
@@ -109,7 +111,7 @@ class AboutFrame(QDialog):
         box.addLayout(dev_grid)
 
         # Contact
-        box.addSpacing(10)
+        box.addSpacing(SPACING_SIZE)
         box.addWidget(lab_contact, alignment=Qt.AlignCenter)
 
         Separator(self.width() // 1.2, box)  # ----
@@ -117,6 +119,7 @@ class AboutFrame(QDialog):
         # Links of doc, git and license
         box.addWidget(lab_link_doc, alignment=Qt.AlignCenter)
         box.addWidget(lab_link_git, alignment=Qt.AlignCenter)
+        box.addSpacing(SPACING_SIZE)
         box.addWidget(lab_license, alignment=Qt.AlignCenter)
 
         Separator(self.width() // 1.2, box)  # ----
@@ -128,7 +131,7 @@ class AboutFrame(QDialog):
         grid_version.addWidget(app_version, 0, 1, alignment=Qt.AlignLeft)
         grid_version.addWidget(bdd_version, 1, 1, alignment=Qt.AlignLeft)
         box.addLayout(grid_version)
-        box.addSpacing(10)
+        box.addSpacing(SPACING_SIZE)
 
         self.setLayout(box)
 
@@ -149,6 +152,6 @@ class Separator(QLabel):
 
         # Layout
         self.setAlignment(Qt.AlignCenter)
-        box.addSpacing(10)
+        box.addSpacing(SPACING_SIZE)
         box.addWidget(self, alignment=Qt.AlignCenter)
-        box.addSpacing(10)
+        box.addSpacing(SPACING_SIZE)
