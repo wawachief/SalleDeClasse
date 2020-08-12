@@ -95,6 +95,12 @@ dico = {"app_title": "Salle de Classe",
         "restart_now": "Redémarrer",
         "restart_later": "Plus tard",
         "btn_restore": "Restaurer paramètres",
+        "acknowledge_changes": "Vos modifications ont bien été prises en compte",
 
         "language": "Langue :",
+        "csv_sep": "Séparateur CSV :",
+        "bdd_path": "Chemin du fichier de données :",
+        "web_port": "Port local de l'application web :",
+        "shutdown_required": "Il est nécessaire de quitter complètement l'application pour que ce paramètre soit pris en compte.",
+        "tile": "Couleur des bureaux :",
 }

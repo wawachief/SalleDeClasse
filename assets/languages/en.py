@@ -95,6 +95,12 @@ dico = {"app_title": "Classroom",
         "restart_now": "Restart now",
         "restart_later": "Restart later",
         "btn_restore": "Restore defaults",
+        "acknowledge_changes": "Your changes have been saved",
 
         "language": "Language:",
+        "csv_sep": "CSV separator:",
+        "bdd_path": "DataBase location:",
+        "web_port": "Web App local port:",
+        "shutdown_required": "A complete shutdown of the application is required for this parameter to be acknoledged.",
+        "tile": "Desks color:",
 }
