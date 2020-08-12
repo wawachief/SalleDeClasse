@@ -27,7 +27,7 @@ class AboutFrame(QDialog):
         self._set_labels_and_layout()
         self.setStyleSheet("QDialog {background-color: QLinearGradient(x1: 0, y1: 0, x2: 0, y2: 1, "
                            "stop: 0 #E0E0E0, stop: 0.2 #EAEAEA, stop: 0.5 #F0F0F0, stop: 0.8 #EAEAEA, "
-                           "stop: 1 #E0E0E0); color: black;}")
+                           "stop: 1 #E0E0E0);} QLabel {color: black;}")
 
     def _set_labels_and_layout(self):
         """
@@ -48,7 +48,7 @@ class AboutFrame(QDialog):
         features_lab = QLabel(tr("about_features"))
         ihm_lab = QLabel(tr("about_ihm"))
         web_lab = QLabel(tr("about_web"))
-        features_dev = QLabel(f'{self.links_style}<a href="https://www.google.fr">Olivier Lécluse</a>')
+        features_dev = QLabel(f'{self.links_style}<a href="https://www.lecluse.fr">Olivier Lécluse</a>')
         features_dev.setOpenExternalLinks(True)
         ihm_dev = QLabel(
             f'{self.links_style}<a href="https://www.linkedin.com/in/thomas-lécluse-62130395/">Thomas Lécluse</a>')

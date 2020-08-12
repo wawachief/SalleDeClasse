@@ -2,6 +2,7 @@ import sqlite3
 
 from PySide2.QtCore import QObject, Signal, Slot
 
+from src.View.popup.view_info_dialog import VInfoDialog
 from src.assets_manager import AssetManager, tr
 
 # Secondary controllers
@@ -236,7 +237,11 @@ class MainController(QObject):
 
     def show_qr(self):
         self.qr_dialog = VQRCode(self.gui)
-        self.qr_dialog.exec_()
+        if self.qr_dialog.has_internet:
+            self.qr_dialog.exec_()
+        else:
+            self.gui.status_bar.showMessage(tr("no_internet"), 5000)
+            VInfoDialog(self.gui, tr("no_internet")).exec_()
 
     @Slot()
     def close_qr(self):
