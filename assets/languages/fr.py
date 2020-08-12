@@ -41,6 +41,7 @@ dico = {"app_title": "Salle de Classe",
         "btn_choose_student_with_attr": "Choisir un élève en fonction de l'attribut sélectionné",
         "btn_lot_change": "Changement par Lot",
         "btn_qr": "Connecter un smartphone par QRCode",
+        "btn_config": "Paramètres",
 
         "status_bar_active_view_teacher": "Vue prof active",    # View_mainframe
         "status_bar_active_view_student": "Vue élève active",    # View_mainframe
@@ -89,5 +90,11 @@ dico = {"app_title": "Salle de Classe",
         "app_version": "Version Appli :",
         "bdd_version": "Version BDD :",
 
-        "no_internet": "Pas de connexion internet"
+        "no_internet": "Pas de connexion internet",
+        "need_restart": "Certains paramètres ne seront pris\nen compte qu'après le redémarrage.",
+        "restart_now": "Quitter",
+        "restart_later": "Plus tard",
+        "btn_restore": "Restaurer paramètres",
+
+        "language": "Langue :",
 }

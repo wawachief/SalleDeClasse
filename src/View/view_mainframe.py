@@ -1,7 +1,8 @@
 from PySide2.QtWidgets import QMainWindow, QWidget, QDockWidget, QGridLayout, QStatusBar, QTabWidget, QFileDialog
-from PySide2.QtCore import Qt, Signal
+from PySide2.QtCore import Qt, Signal, QSize
 
 from src.View.popup.view_about_box import AboutFrame
+from src.View.popup.view_settings import SettingsEditionDialog
 from src.View.view_canvas import ViewCanvas
 from src.View.view_sidepanel import ViewSidePanel
 from src.View.widgets.view_board import ViewTeacherDeskLabel
@@ -219,6 +220,7 @@ class ViewMainFrame(QMainWindow):
         self.maintoolbar.on_btn_shuffle_clicked = self.central_widget.do_shuffle
         self.maintoolbar.on_config_mode = self.on_config_mode
         self.maintoolbar.on_export_csv = self.on_export_csv
+        self.maintoolbar.on_edit_config = self.on_edit_config
         self.maintoolbar.open_about_box = lambda: AboutFrame(self.bdd_version).exec_()
 
         self.central_widget.sig_enable_animation_btns = self.maintoolbar.sig_enable_animation_btns
@@ -247,7 +249,6 @@ class ViewMainFrame(QMainWindow):
         """
         self.__config_mode = is_in_config_mode
 
-        # TODO change student's sidepanel icon & tooltip
         self.maintoolbar.lock_buttons(self.__config_mode)
         self.central_widget.classroom_tab.v_canvas.config_mode(self.__config_mode)
         self.sidewidget.courses().courses_toolbar.setVisible(self.__config_mode)
@@ -280,6 +281,28 @@ class ViewMainFrame(QMainWindow):
 
         if file_path:
             self.sig_export_csv.emit(file_path)
+
+    def on_edit_config(self) -> None:
+        """
+        Displays the edition dialog for application settings
+        """
+        dlg = SettingsEditionDialog()
+
+        if dlg.exec_():
+            if dlg.restore_default():
+                AssetManager.getInstance().restore_default_settings()
+            else:
+                AssetManager.getInstance().save_config(dlg.new_config())
+
+            if dlg.need_restart():
+                restart_confirm = VConfirmDialog(self, "need_restart")
+                restart_confirm.ok_btn.setText(tr("restart_now"))
+                restart_confirm.ok_btn.setFixedSize(QSize(105, 33))
+                restart_confirm.cancel_btn.setText(tr("restart_later"))
+                restart_confirm.cancel_btn.setFixedSize(QSize(105, 33))
+
+                if restart_confirm.exec_():
+                    self.close()
 
     def closeEvent(self, event):
         """
