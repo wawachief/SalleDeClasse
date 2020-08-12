@@ -36,8 +36,10 @@ def get_stylesheet(file):
     with open(ASSETS_PATH + STYLE_PATH + file + STYLE_EXT, "r") as f:
         return f.read()
 
+
 def tr(message):
     return AssetManager.getInstance().get_text(message)
+
 
 class AssetManager:
     __instance = None
@@ -61,11 +63,7 @@ class AssetManager:
         self.__config.read(self.config_path)
         if config_ori.get('main', 'version') != self.__config.get('main', 'version'):
             # backup old settings in a dictionary
-            old_settings = dict()
-            for s in self.__config.sections():
-                old_settings[s] = dict()
-                for o in self.__config.options(s):
-                    old_settings[s][o] = self.__config.get(s, o)
+            old_settings = self.config_to_dico(self.__config)
 
             # .SdCrc is obsolete, We overwrite the config file
             shutil.copyfile(CONFIG_PATH, self.config_path)
@@ -80,11 +78,29 @@ class AssetManager:
                         if o in optn_ori and o != "version":             # check option still exists and exclude version
                             self.__config.set(s, o, old_settings[s][o])  # reintegrate old value in current config
 
-            with open(self.config_path, 'w') as configfile:              # write the config file
-                self.__config.write(configfile)                          # in ~/.SdCrc
+            self.save_config(self.__config)
 
         language = import_module("assets.languages." + self.__config.get("main", "language"))
         self.__language_dico = language.dico
+
+    def save_config(self, config: ConfigParser) -> None:
+        """
+        Save the given configuration parser
+        """
+        with open(self.config_path, 'w') as configfile:  # write the config file
+            config.write(configfile)  # in ~/.SdCrc
+
+    def config_to_dico(self, config: ConfigParser) -> dict:
+        """
+        Converts a configuration parser object into a Python dictionary
+        """
+        settings = dict()
+        for s in config.sections():
+            settings[s] = dict()
+            for o in config.options(s):
+                settings[s][o] = config.get(s, o)
+
+        return settings
 
     @staticmethod
     def getInstance():

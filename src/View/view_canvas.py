@@ -674,4 +674,6 @@ class ViewCanvas(QWidget):
         pix = QPixmap(self.rect().size())
         self.render(pix, QPoint(), QRegion(self.rect()))
 
-        CustomPrinterDialog(pix).exec_()
+        dlg = CustomPrinterDialog(pix)
+        if dlg.exec_():
+            dlg.save_plan()

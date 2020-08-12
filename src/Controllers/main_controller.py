@@ -2,6 +2,7 @@ import sqlite3
 
 from PySide2.QtCore import QObject, Signal, Slot
 
+from src.View.popup.view_info_dialog import VInfoDialog
 from src.assets_manager import AssetManager, tr
 
 # Secondary controllers
@@ -39,6 +40,7 @@ class MainController(QObject):
     sig_canvas_drag = Signal(tuple, tuple)
     sig_canvas_right_click = Signal(tuple)
     sig_TBbutton = Signal(str)
+    sig_export_csv = Signal(str)
 
     sig_course_changed = Signal(int)
     sig_create_course = Signal(str)
@@ -68,7 +70,7 @@ class MainController(QObject):
         QObject.__init__(self)
 
         # Create the Views
-        self.gui = ViewMainFrame(self.sig_quit, self.sig_config_mode_changed)
+        self.gui = ViewMainFrame(self.sig_quit, self.sig_config_mode_changed, self.sig_export_csv)
         self.v_canvas = self.gui.central_widget.classroom_tab.v_canvas
 
         # BDD connection
@@ -92,6 +94,7 @@ class MainController(QObject):
         else:
             self.__bdd = sqlite3.connect(bdd_path)
         self.mod_bdd = ModBdd(self.__bdd)
+        self.gui.set_bdd_version(self.mod_bdd.get_version())
         print(f"bdd version : {self.mod_bdd.get_version()}")
 
         # Create secondary controllers
@@ -143,6 +146,7 @@ class MainController(QObject):
         self.sig_flask_desk_selection_changed.connect(self.course_ctrl.on_desk_selection_changed_on_web)
         self.sig_close_qr.connect(self.close_qr)
         self.sig_config_mode_changed.connect(self.on_config_changed)
+        self.sig_export_csv.connect(self.export_csv)
 
         self.actions_table = {  # Action buttons
             "import_csv": self.group_ctrl.import_pronote,
@@ -233,7 +237,11 @@ class MainController(QObject):
 
     def show_qr(self):
         self.qr_dialog = VQRCode(self.gui)
-        self.qr_dialog.exec_()
+        if self.qr_dialog.has_internet:
+            self.qr_dialog.exec_()
+        else:
+            self.gui.status_bar.showMessage(tr("no_internet"), 5000)
+            VInfoDialog(self.gui, tr("no_internet")).exec_()
 
     @Slot()
     def close_qr(self):
@@ -256,3 +264,10 @@ class MainController(QObject):
             students_in_course = self.mod_bdd.get_students_in_course_by_id(self.id_course)
             self.gui.sidewidget.students().set_students_list(students_in_course)
         self.course_ctrl.synchronize_canvas_selection_with_side_list()
+
+    @Slot(str)
+    def export_csv(self, file_path: str) -> None:
+        """
+        Saves the attributes table in a CSV format at the specified file path
+        """
+        print(file_path)  # TODO
