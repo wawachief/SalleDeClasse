@@ -3,8 +3,9 @@ import sys
 from PySide2 import QtCore
 from PySide2.QtWidgets import QApplication
 from src.Controllers.main_controller import MainController
+
 from src.View.view_mainframe import EXIT_CODE_REBOOT
-from src.assets_manager import AssetManager
+from src.assets_manager import AssetManager, COLOR_DICT
 from src.webserver import flask_app
 import logging
 import sys

@@ -144,7 +144,7 @@ class MainController(QObject):
         self.sig_flask_desk_selection_changed.connect(self.course_ctrl.on_desk_selection_changed_on_web)
         self.sig_close_qr.connect(self.close_qr)
         self.sig_config_mode_changed.connect(self.on_config_changed)
-        self.sig_export_csv.connect(self.export_csv)
+        self.sig_export_csv.connect(self.attr_ctrl.export_csv)
 
         self.actions_table = {  # Action buttons
             "import_csv": self.group_ctrl.import_pronote,
@@ -201,6 +201,28 @@ class MainController(QObject):
         :type action_key: str
         """
         self.actions_table[action_key]()
+
+    @Slot()
+    def on_config_changed(self):
+        """
+        Triggered when the user switched configuration mode
+        Refresh the student list
+        """
+
+        if self.gui.get_config():
+            # Mode config is on, push group list
+            current_group = self.mod_bdd.get_group_name_by_id(self.id_group)
+            self.gui.sidewidget.students().set_students_list(self.mod_bdd.get_students_in_group(current_group))
+        else:
+            # Mode config is off, push students visible in the canvas inside the list
+            students_in_course = self.mod_bdd.get_students_in_course_by_id(self.id_course)
+            self.gui.sidewidget.students().set_students_list(students_in_course)
+        self.course_ctrl.synchronize_canvas_selection_with_side_list()
+
+    @Slot()
+    def close_qr(self):
+        if self.qr_dialog and self.qr_dialog.isVisible():
+            self.qr_dialog.close()
 
     @Slot()
     def do_quit(self, exit_code):
@@ -262,10 +284,3 @@ class MainController(QObject):
             students_in_course = self.mod_bdd.get_students_in_course_by_id(self.id_course)
             self.gui.sidewidget.students().set_students_list(students_in_course)
         self.course_ctrl.synchronize_canvas_selection_with_side_list()
-
-    @Slot(str)
-    def export_csv(self, file_path: str) -> None:
-        """
-        Saves the attributes table in a CSV format at the specified file path
-        """
-        print(file_path)  # TODO

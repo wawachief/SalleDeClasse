@@ -287,7 +287,6 @@ class ViewMainFrame(QMainWindow):
         Then signals this path to the controller
         """
         file_path = QFileDialog.getSaveFileName(self, tr("export_dialog_title"), "untitled", "(*.csv)")[0]
-
         if file_path:
             self.sig_export_csv.emit(file_path)
 
