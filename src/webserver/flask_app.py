@@ -101,6 +101,7 @@ class FlaskThread(QThread):
 
     def run(self):
         asset_manager = AssetManager.getInstance()
+        print("started socketio")
         socket_io.run(flask_app, port=asset_manager.config('webapp', 'port'), host='0.0.0.0')
 
     def init_controller(self, controller_param):

@@ -12,7 +12,7 @@ from src.Controllers.attr_controller import AttrController
 
 # Views
 from src.Model.mod_bdd import ModBdd
-from src.View.view_mainframe import ViewMainFrame
+from src.View.view_mainframe import ViewMainFrame, EXIT_CODE_REBOOT
 from src.View.widgets.view_menubutton import ViewMenuButton
 from src.View.popup.view_student_attributes import VStdAttributesDialog
 from src.View.popup.view_confirm_dialogs import VConfirmDialog
@@ -33,7 +33,7 @@ class MainController(QObject):
 
     # Signals
     sig_select_tile = Signal()
-    sig_quit = Signal()
+    sig_quit = Signal(int)
     sig_shuffle = Signal()
     sig_desk_selected = Signal(int, bool)
     sig_canvas_click = Signal(tuple)
@@ -203,11 +203,11 @@ class MainController(QObject):
         self.actions_table[action_key]()
 
     @Slot()
-    def do_quit(self):
+    def do_quit(self, exit_code):
         self.v_canvas.application_closing()
         self.__bdd.close()
-        # self.flask_server.stop_flask()
-        self.flask_client.emit("stop-server")
+        if exit_code != EXIT_CODE_REBOOT:
+            self.flask_client.emit("stop-server")
 
     #
     # General methods

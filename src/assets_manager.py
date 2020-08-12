@@ -126,6 +126,15 @@ class AssetManager:
             AssetManager()
         return AssetManager.__instance
 
+    @staticmethod
+    def start_instance():
+        """
+        :rtype: AssetManager
+        """
+        AssetManager.__instance = None
+        AssetManager()
+        return AssetManager.__instance
+
     def config(self, section: str, key: str) -> str:
         """
         Gets the value of the specified section, key in the configuration file.
