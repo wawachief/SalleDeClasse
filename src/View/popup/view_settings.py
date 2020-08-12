@@ -266,12 +266,12 @@ class ColorChooser(QWidget):
         QWidget.__init__(self)
 
         # Convert 'regular' name colors into QColor to retrieve their hexa code
-        self.color = QColor(default_color.upper()).name().upper()
+        self.color = QColor(default_color).name().lower()
 
         # Widgets
         self.lab = QLabel()
 
-        self.btn = QPushButton(self.color)
+        self.btn = QPushButton(self.color.upper())
         self.btn.clicked.connect(self.__change_color)
 
         # Layout
@@ -289,8 +289,8 @@ class ColorChooser(QWidget):
         """
         self.btn.setStyleSheet(f"background: {self.btn.text()}; color: black;")
 
-        if self.btn.text() in COLOR_DICT:  
-            self.lab.setText(COLOR_DICT[self.btn.text()])
+        if self.btn.text().lower() in COLOR_DICT:
+            self.lab.setText(COLOR_DICT[self.btn.text().lower()])
         else:
             self.lab.clear()
 
@@ -300,8 +300,8 @@ class ColorChooser(QWidget):
         """
         dlg = QColorDialog(self.color)
         if dlg.exec_():
-            self.color = self.closest_color(dlg.currentColor().name().upper()) 
-            self.btn.setText(self.color)
+            self.color = self.closest_color(dlg.currentColor().name())
+            self.btn.setText(self.color.upper())
             self.update_bg()
 
     def get_color(self) -> str:
