@@ -183,16 +183,14 @@ class AssetManager:
         :param key: Section's key
         :return: value
         """
-        return self.__config.get(section, key)
+        return self.get_config_parser().get(section, key)
 
     def bdd_path(self):
         """return the BDD path or None if no bdd is found"""
-        bp = path.expanduser(self.__config.get("main", "bdd_path"))
+        bp = path.expanduser(self.get_config_parser().get("main", "bdd_path"))
         return bp, path.isfile(bp)
 
     def get_text(self, key: str) -> str:
         if key in self.__language_dico:
             return self.__language_dico[key]
         return "-_-"
-
-    

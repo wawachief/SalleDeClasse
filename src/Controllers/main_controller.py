@@ -89,7 +89,9 @@ class MainController(QObject):
                     self.mod_bdd = None
                     return
                 self.__bdd = self.initialize_bdd(bdd_path)
-            AssetManager.getInstance().set_bdd_path(bdd_path)
+            config = AssetManager.getInstance().get_config_parser()
+            config.set('main', 'bdd_path', bdd_path)
+            AssetManager.getInstance().save_config(config)
         else:
             self.__bdd = sqlite3.connect(bdd_path)
         self.mod_bdd = ModBdd(self.__bdd)

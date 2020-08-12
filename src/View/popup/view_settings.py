@@ -1,10 +1,10 @@
-from PySide2.QtCore import Qt
+from PySide2.QtCore import Qt, QSize
 from PySide2.QtWidgets import QDialog, QFormLayout, QLabel, QComboBox, QPushButton, QHBoxLayout, QWidget, QVBoxLayout, \
-    QLineEdit, QFileDialog
+    QLineEdit, QFileDialog, QSpinBox, QColorDialog
 
 from configparser import ConfigParser
 
-from src.assets_manager import AssetManager, tr
+from src.assets_manager import AssetManager, tr, COLOR_DICT
 
 
 class SettingsEditionDialog(QDialog):
@@ -42,6 +42,15 @@ class SettingsEditionDialog(QDialog):
         self.btn_bdd_path = QPushButton(self.settings['main']['bdd_path'])
         self.btn_bdd_path.clicked.connect(self.choose_bdd_path)
 
+        # Port
+        self.wepapp_port = QSpinBox()
+        self.wepapp_port.setMinimum(1024)
+        self.wepapp_port.setMaximum(65535)
+        self.wepapp_port.setValue(int(self.settings['webapp']['port']))
+
+        # Empty Tile color
+        self.empty_tile_color = ColorChooser(self.settings['colors']['tile'])
+
         # --- Buttons ---
 
         # Confirm button
@@ -73,7 +82,23 @@ class SettingsEditionDialog(QDialog):
         main_layout.addRow(tr("csv_sep"), self.csv_sep_edit)
         main_layout.addRow(tr("bdd_path"), self.btn_bdd_path)
 
+        # Web app
+        widget_port = QWidget()
+        layout_port = QHBoxLayout()
+        layout_port.setMargin(0)
+        layout_port.addWidget(self.wepapp_port)
+        layout_port.addWidget(ShutDownToolTip())
+        widget_port.setLayout(layout_port)
+        main_layout.addRow(tr("web_port"), widget_port)
+
         layout.addLayout(main_layout)
+        Separator(400, layout)
+
+        # Colors
+        colors_layout = QFormLayout()
+        colors_layout.addRow(tr("tile"), self.empty_tile_color)
+
+        layout.addLayout(colors_layout)
         Separator(400, layout)
 
         # Buttons
@@ -82,7 +107,6 @@ class SettingsEditionDialog(QDialog):
         layout_buttons.addWidget(self.restore_btn)
         layout_buttons.addWidget(self.cancel_btn)
 
-        Separator(400, layout)
         layout.addLayout(layout_buttons)
         self.setLayout(layout)
 
@@ -111,8 +135,18 @@ class SettingsEditionDialog(QDialog):
 
         # BDD path
         if self.btn_bdd_path.text() != settings['main']['bdd_path']:
-            settings['main']['bdd_path'] = self.btn_bdd_path.text()
+            if self.btn_bdd_path.text().endswith("sdc_db"):
+                settings['main']['bdd_path'] = self.btn_bdd_path.text()
+            else:
+                settings['main']['bdd_path'] = ""
             self.__restart_needed = True
+
+        # Port
+        if str(self.wepapp_port.value()) != settings['webapp']['port']:
+            settings['webapp']['port'] = str(self.wepapp_port.value())
+
+        # Colors
+        settings['colors']['tile'] = self.empty_tile_color.get_color()
 
         return settings
 
@@ -141,6 +175,22 @@ class SettingsEditionDialog(QDialog):
             self.btn_bdd_path.setText(bdd_path)
 
 
+class ShutDownToolTip(QLabel):
+
+    def __init__(self):
+        """
+        Information point that displays a tooltip when hovered
+        """
+        QLabel.__init__(self, "i")
+        self.setFixedSize(QSize(20, 20))
+        self.setAlignment(Qt.AlignCenter)
+
+        self.setStyleSheet("font-weight: bold; border: 1px solid transparent; border-radius: 10px; "
+                           "background-color: orange; color: black;")
+
+        self.setToolTip(tr("shutdown_required"))
+
+
 class Separator(QLabel):
 
     def __init__(self, width, layout: QVBoxLayout):
@@ -158,3 +208,53 @@ class Separator(QLabel):
         # Layout
         self.setAlignment(Qt.AlignCenter)
         layout.addWidget(self, alignment=Qt.AlignCenter)
+
+
+class ColorChooser(QWidget):
+
+    def __init__(self, default_color: str):
+        QWidget.__init__(self)
+
+        self.color = default_color.upper()
+
+        # Widgets
+        self.lab = QLabel()
+
+        self.btn = QPushButton(self.color)
+        self.btn.clicked.connect(self.__change_color)
+
+        # Layout
+        layout = QHBoxLayout()
+        layout.setMargin(0)
+        layout.addWidget(self.btn)
+        layout.addWidget(self.lab)
+        self.setLayout(layout)
+
+        self.update_bg()
+
+    def update_bg(self) -> None:
+        """
+        Updates the background color given the button's name and looks for the color's display name
+        """
+        self.btn.setStyleSheet(f"background: {self.btn.text()}; color: black;")
+
+        if self.btn.text()[1:] in COLOR_DICT:  # Without leading '#'
+            self.lab.setText(COLOR_DICT[self.btn.text()[1:]])
+        else:
+            self.lab.clear()
+
+    def __change_color(self) -> None:
+        """
+        Displays the color chooser dialog to select a new color, then updates this widget
+        """
+        dlg = QColorDialog(self.color)
+        if dlg.exec_():
+            self.color = dlg.currentColor().name().upper()  # TODO look in Tetrachiée
+            self.btn.setText(self.color)
+            self.update_bg()
+
+    def get_color(self) -> str:
+        """
+        Retrieves the selected color to HEX format
+        """
+        return self.color
