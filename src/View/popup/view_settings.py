@@ -238,8 +238,8 @@ class ColorChooser(QWidget):
         """
         self.btn.setStyleSheet(f"background: {self.btn.text()}; color: black;")
 
-        if self.btn.text()[1:] in COLOR_DICT:  # Without leading '#'
-            self.lab.setText(COLOR_DICT[self.btn.text()[1:]])
+        if self.btn.text() in COLOR_DICT:  
+            self.lab.setText(COLOR_DICT[self.btn.text()])
         else:
             self.lab.clear()
 
@@ -249,7 +249,7 @@ class ColorChooser(QWidget):
         """
         dlg = QColorDialog(self.color)
         if dlg.exec_():
-            self.color = dlg.currentColor().name().upper()  # TODO look in Tetrachiée
+            self.color = self.closest_color(dlg.currentColor().name().upper()) 
             self.btn.setText(self.color)
             self.update_bg()
 
@@ -258,3 +258,32 @@ class ColorChooser(QWidget):
         Retrieves the selected color to HEX format
         """
         return self.color
+
+    def get_distance_color(self, c1, c2):
+        """returns the distance between 2 colors"""
+        def hex2dec(h):
+            return int("0x"+h, 16)
+        
+        # normalize input format
+        if c1[0] == "#":
+            c1 = c1[1:]
+        if c2[0] == "#":
+            c2 = c2[1:]
+        r1 = hex2dec(c1[0:2])
+        g1 = hex2dec(c1[2:4])
+        b1 = hex2dec(c1[4:6])
+        r2 = hex2dec(c2[0:2])
+        g2 = hex2dec(c2[2:4])
+        b2 = hex2dec(c2[4:6])
+        return (r2-r1)**2 + (b2-b1)**2 + (g2-g1)**2
+    
+    def closest_color(self, c):
+        min_d = 1000000
+        for c1 in COLOR_DICT:
+            d = self.get_distance_color(c, c1)
+            if d == 0:
+                return c1
+            if d < min_d:
+                min_c = c1
+                min_d = d
+        return min_c
