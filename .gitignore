@@ -6,3 +6,4 @@ dist
 sdc_db
 qr.png
 *.log
+.vscode
