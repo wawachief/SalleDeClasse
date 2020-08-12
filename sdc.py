@@ -1,7 +1,7 @@
 import sys
 from PySide2.QtWidgets import QApplication
 from src.Controllers.main_controller import MainController
-from src.assets_manager import AssetManager
+from src.assets_manager import AssetManager, COLOR_DICT
 from src.webserver import flask_app
 import logging
 import sys
