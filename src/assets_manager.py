@@ -106,7 +106,9 @@ class AssetManager:
         """
         Gets the current config parser
         """
-        return self.__config
+        config = ConfigParser()
+        config.read(self.config_path)
+        return config
 
     def restore_default_settings(self) -> None:
         """

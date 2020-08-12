@@ -95,6 +95,9 @@ dico = {"app_title": "Classroom",
         "restart_now": "Quit now",
         "restart_later": "Quit later",
         "btn_restore": "Restore defaults",
+        "acknowledge_changes": "Your changes have been saved",
 
         "language": "Language:",
+        "csv_sep": "CSV separator",
+        "bdd_path": "DataBase location",
 }

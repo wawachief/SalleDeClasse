@@ -294,6 +294,8 @@ class ViewMainFrame(QMainWindow):
             else:
                 AssetManager.getInstance().save_config(dlg.new_config())
 
+            self.status_bar.showMessage(tr("acknowledge_changes"), 3000)
+
             if dlg.need_restart():
                 restart_confirm = VConfirmDialog(self, "need_restart")
                 restart_confirm.ok_btn.setText(tr("restart_now"))

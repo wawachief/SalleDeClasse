@@ -95,6 +95,9 @@ dico = {"app_title": "Salle de Classe",
         "restart_now": "Quitter",
         "restart_later": "Plus tard",
         "btn_restore": "Restaurer paramètres",
+        "acknowledge_changes": "Vos modifications ont bien été prises en compte",
 
         "language": "Langue :",
+        "csv_sep": "Séparateur CSV",
+        "bdd_path": "Chemin du fichier de données",
 }

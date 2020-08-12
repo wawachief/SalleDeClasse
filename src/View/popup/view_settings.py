@@ -1,5 +1,6 @@
 from PySide2.QtCore import Qt
-from PySide2.QtWidgets import QDialog, QFormLayout, QLabel, QComboBox, QPushButton, QHBoxLayout, QWidget, QVBoxLayout
+from PySide2.QtWidgets import QDialog, QFormLayout, QLabel, QComboBox, QPushButton, QHBoxLayout, QWidget, QVBoxLayout, \
+    QLineEdit, QFileDialog
 
 from configparser import ConfigParser
 
@@ -25,10 +26,28 @@ class SettingsEditionDialog(QDialog):
         # Language
         self.combo_language = QComboBox()
         self.combo_language.addItems(list(self.languages.keys()))
+        for lang in self.languages:  # Look for the current language to select it
+            if self.languages[lang] == self.settings['main']['language']:
+                self.combo_language.setCurrentText(lang)
+                break
+
+        # CSV separator
+        self.csv_sep_edit = QLineEdit()
+        self.csv_sep_edit.setMaxLength(2)
+        self.csv_sep_edit.setFixedWidth(25)
+        self.csv_sep_edit.setAlignment(Qt.AlignCenter)
+        self.csv_sep_edit.setText(self.settings['main']['csv_separator'])
+
+        # BDD path
+        self.btn_bdd_path = QPushButton(self.settings['main']['bdd_path'])
+        self.btn_bdd_path.clicked.connect(self.choose_bdd_path)
+
+        # --- Buttons ---
 
         # Confirm button
         self.ok_btn = QPushButton(tr("btn_save"))
         self.ok_btn.clicked.connect(self.accept)
+        self.ok_btn.setFocus()
 
         # Cancel button
         self.cancel_btn = QPushButton(tr("btn_cancel"))
@@ -44,13 +63,18 @@ class SettingsEditionDialog(QDialog):
         """
         Sets the dialog layout
         """
-        layout = QFormLayout()
-        layout.setFormAlignment(Qt.AlignCenter)
-        layout.setAlignment(Qt.AlignCenter)
+        # Main layout
+        layout = QVBoxLayout()
 
         # Main section
-        layout.addRow(tr("app_version"), self.lab_version)
-        layout.addRow(tr("language"), self.combo_language)
+        main_layout = QFormLayout()
+        main_layout.addRow(tr("app_version"), self.lab_version)
+        main_layout.addRow(tr("language"), self.combo_language)
+        main_layout.addRow(tr("csv_sep"), self.csv_sep_edit)
+        main_layout.addRow(tr("bdd_path"), self.btn_bdd_path)
+
+        layout.addLayout(main_layout)
+        Separator(400, layout)
 
         # Buttons
         layout_buttons = QHBoxLayout()
@@ -58,11 +82,9 @@ class SettingsEditionDialog(QDialog):
         layout_buttons.addWidget(self.restore_btn)
         layout_buttons.addWidget(self.cancel_btn)
 
-        # Main layout
-        main_layout = QVBoxLayout()
-        main_layout.addLayout(layout)
-        main_layout.addLayout(layout_buttons)
-        self.setLayout(main_layout)
+        Separator(400, layout)
+        layout.addLayout(layout_buttons)
+        self.setLayout(layout)
 
     def __restore(self) -> None:
         """
@@ -80,8 +102,16 @@ class SettingsEditionDialog(QDialog):
 
         # Language
         language = self.languages[self.combo_language.currentText()]
-        if language != self.settings['main']['language']:
+        if language != settings['main']['language']:
             settings['main']['language'] = language
+            self.__restart_needed = True
+
+        # CSV separator
+        settings['main']['csv_separator'] = self.csv_sep_edit.text()
+
+        # BDD path
+        if self.btn_bdd_path.text() != settings['main']['bdd_path']:
+            settings['main']['bdd_path'] = self.btn_bdd_path.text()
             self.__restart_needed = True
 
         return settings
@@ -101,3 +131,30 @@ class SettingsEditionDialog(QDialog):
     def restore_default(self) -> bool:
         return self.__restore_required
 
+    def choose_bdd_path(self) -> None:
+        """
+        Opens a file chooser to select the bdd path. Then sets the name as button text.
+        """
+        bdd_path = QFileDialog.getOpenFileName(self, tr("bdd_path"), self.btn_bdd_path.text())[0]
+
+        if bdd_path:
+            self.btn_bdd_path.setText(bdd_path)
+
+
+class Separator(QLabel):
+
+    def __init__(self, width, layout: QVBoxLayout):
+        """
+        Separator for the config dialog
+        """
+        QLabel.__init__(self)
+
+        self.setFixedHeight(3)
+        self.setFixedWidth(int(width))
+        self.setStyleSheet("background: QLinearGradient(x1: 0, y1: 0, x2: 1, y2: 0, "
+                                   "stop: 0 #283747, stop: 0.25 #1A5276, stop: 0.5 #2980B9, "
+                                   "stop: 0.75 #1A5276, stop: 1 #283747);")
+
+        # Layout
+        self.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self, alignment=Qt.AlignCenter)
