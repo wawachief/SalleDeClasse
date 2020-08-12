@@ -18,6 +18,7 @@ from src.View.popup.view_confirm_dialogs import VConfirmDialog
 
 EXIT_CODE_REBOOT = -11231351
 
+
 class CentralWidget(QTabWidget):
     sig_move_animation_ended = Signal()
 
@@ -303,6 +304,7 @@ class ViewMainFrame(QMainWindow):
                 AssetManager.getInstance().save_config(dlg.new_config())
 
             self.status_bar.showMessage(tr("acknowledge_changes"), 3000)
+            self.repaint()
 
             if dlg.need_restart():
                 restart_confirm = VConfirmDialog(self, "need_restart")

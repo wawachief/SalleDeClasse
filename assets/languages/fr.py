@@ -102,5 +102,22 @@ dico = {"app_title": "Salle de Classe",
         "bdd_path": "Chemin du fichier de données :",
         "web_port": "Port local de l'application web :",
         "shutdown_required": "Il est nécessaire de quitter complètement l'application pour que ce paramètre soit pris en compte.",
-        "tile": "Couleur des bureaux :",
+        "tile": "Bureaux :",
+        "hovered_tile": "Bureau survolés :",
+        "hovered_empty_tile": "Cases vides survolées :",
+        "dragged_tile": "Bureau déplacé :",
+        "drag_selected_tile": "Bureau déplacé sélectionné:",
+        "selected_tile": "Bureau sélectionné:",
+        "tile_text": "Nom des élèves:",
+        "room_bg": "Classe :",
+        "room_grid": "Grille :",
+        "main_bg": "Application :",
+        "board_bg": "Tableau :",
+        "attr_colors": "Attributs de type 'Couleur' :",
+        "desk_size": "Dimension du côté des bureaux (pixels) :",
+        "grid_rows": "Nombre de lignes :",
+        "grid_cols": "Nombre de colonnes : ",
+        "unmodifiable_data": "<b>Il est fortement déconseillé de modifier ces paramètres.</b><br><i>Cependant, vous "
+                             "pouvez les modifier à vos risques et périls dans le fichier '.SdCrc' situé dans votre "
+                             "home.</i>"
 }

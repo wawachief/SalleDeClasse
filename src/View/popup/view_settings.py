@@ -1,10 +1,11 @@
 from PySide2.QtCore import Qt, QSize
+from PySide2.QtGui import QColor
 from PySide2.QtWidgets import QDialog, QFormLayout, QLabel, QComboBox, QPushButton, QHBoxLayout, QWidget, QVBoxLayout, \
-    QLineEdit, QFileDialog, QSpinBox, QColorDialog
+    QLineEdit, QFileDialog, QSpinBox, QColorDialog, QGridLayout
 
 from configparser import ConfigParser
 
-from src.assets_manager import AssetManager, tr, COLOR_DICT
+from src.assets_manager import AssetManager, tr, COLOR_DICT, get_stylesheet, get_icon
 
 
 class SettingsEditionDialog(QDialog):
@@ -14,6 +15,9 @@ class SettingsEditionDialog(QDialog):
 
     def __init__(self):
         QDialog.__init__(self)
+
+        self.setWindowTitle(tr("btn_config"))
+        self.setFixedSize(QSize(700, 670))
 
         # Retrieve current settings
         self.settings = AssetManager.getInstance().config_to_dico(AssetManager.getInstance().get_config_parser())
@@ -48,8 +52,34 @@ class SettingsEditionDialog(QDialog):
         self.wepapp_port.setMaximum(65535)
         self.wepapp_port.setValue(int(self.settings['webapp']['port']))
 
-        # Empty Tile color
-        self.empty_tile_color = ColorChooser(self.settings['colors']['tile'])
+        # Colors
+        self.tile_color = ColorChooser(self.settings['colors']['tile'])
+        self.hovered_tile_color = ColorChooser(self.settings['colors']['hovered_tile'])
+        self.hovered_empty_tile_color = ColorChooser(self.settings['colors']['hovered_empty_tile'])
+        self.dragged_tile_color = ColorChooser(self.settings['colors']['dragged_tile'])
+        self.drag_selected_tile_color = ColorChooser(self.settings['colors']['drag_selected_tile'])
+        self.selected_tile_color = ColorChooser(self.settings['colors']['selected_tile'])
+        self.tile_text_color = ColorChooser(self.settings['colors']['tile_text'])
+        self.room_bg_color = ColorChooser(self.settings['colors']['room_bg'])
+        self.room_grid_color = ColorChooser(self.settings['colors']['room_grid'])
+        self.main_bg_color = ColorChooser(self.settings['colors']['main_bg'])
+        self.board_bg_color = ColorChooser(self.settings['colors']['board_bg'])
+
+        self.attr_colors = ""  # Chosen colors
+        self.attributes_colors_chooser = AttrColorsChooser(self.settings['colors']['attr_colors'].split())
+
+        # Sizes (unmodifiable)
+        self.unmodifiable = QLabel(tr("unmodifiable_data"))
+        self.unmodifiable.setAlignment(Qt.AlignCenter)
+        self.desk_size = QLineEdit(self.settings['size']['desk'])
+        self.desk_size.setEnabled(False)
+        self.desk_size.setFixedWidth(50)
+        self.grid_rows = QLineEdit(self.settings['size']['default_room_rows'])
+        self.grid_rows.setEnabled(False)
+        self.grid_rows.setFixedWidth(50)
+        self.grid_cols = QLineEdit(self.settings['size']['default_room_columns'])
+        self.grid_cols.setEnabled(False)
+        self.grid_cols.setFixedWidth(50)
 
         # --- Buttons ---
 
@@ -74,6 +104,8 @@ class SettingsEditionDialog(QDialog):
         """
         # Main layout
         layout = QVBoxLayout()
+        layout.setMargin(0)
+        layout.addSpacing(5)
 
         # Main section
         main_layout = QFormLayout()
@@ -92,14 +124,51 @@ class SettingsEditionDialog(QDialog):
         main_layout.addRow(tr("web_port"), widget_port)
 
         layout.addLayout(main_layout)
-        Separator(400, layout)
+        Separator(self.width(), layout)
 
         # Colors
-        colors_layout = QFormLayout()
-        colors_layout.addRow(tr("tile"), self.empty_tile_color)
+        colors_layout1 = QFormLayout()
+        colors_layout1.addRow(tr("tile"), self.tile_color)
+        colors_layout1.addRow(tr("hovered_tile"), self.hovered_tile_color)
+        colors_layout1.addRow(tr("hovered_empty_tile"), self.hovered_empty_tile_color)
+        colors_layout1.addRow(tr("dragged_tile"), self.dragged_tile_color)
+        colors_layout1.addRow(tr("drag_selected_tile"), self.drag_selected_tile_color)
+        colors_layout1.addRow(tr("selected_tile"), self.selected_tile_color)
+
+        colors_layout2 = QFormLayout()
+        colors_layout2.addRow(tr("tile_text"), self.tile_text_color)
+        colors_layout2.addRow(tr("room_bg"), self.room_bg_color)
+        colors_layout2.addRow(tr("room_grid"), self.room_grid_color)
+        colors_layout2.addRow(tr("main_bg"), self.main_bg_color)
+        colors_layout2.addRow(tr("board_bg"), self.board_bg_color)
+
+        colors_layout = QHBoxLayout()
+        colors_layout.setMargin(0)
+        colors_layout.addLayout(colors_layout1)
+        colors_layout.addLayout(colors_layout2)
 
         layout.addLayout(colors_layout)
-        Separator(400, layout)
+        layout.addSpacing(15)
+
+        colors_layout3 = QFormLayout()
+        colors_layout3.setMargin(0)
+        colors_layout3.addRow(tr("attr_colors"), self.attributes_colors_chooser)
+        layout.addLayout(colors_layout3)
+
+        Separator(self.width(), layout)
+
+        # Unmodifiable data
+        sizes_layout = QFormLayout()
+        sizes_layout.setMargin(0)
+        sizes_layout.addRow(tr("desk_size"), self.desk_size)
+        sizes_layout.addRow(tr("grid_rows"), self.grid_rows)
+        sizes_layout.addRow(tr("grid_cols"), self.grid_cols)
+
+        layout.addWidget(self.unmodifiable, alignment=Qt.AlignCenter)
+        layout.addSpacing(5)
+        layout.addLayout(sizes_layout)
+
+        Separator(self.width(), layout)
 
         # Buttons
         layout_buttons = QHBoxLayout()
@@ -109,6 +178,8 @@ class SettingsEditionDialog(QDialog):
 
         layout.addLayout(layout_buttons)
         self.setLayout(layout)
+
+        self.setStyleSheet(get_stylesheet("dialog2"))
 
     def __restore(self) -> None:
         """
@@ -146,7 +217,28 @@ class SettingsEditionDialog(QDialog):
             settings['webapp']['port'] = str(self.wepapp_port.value())
 
         # Colors
-        settings['colors']['tile'] = self.empty_tile_color.get_color()
+        settings['colors']['tile'] = self.tile_color.get_color()
+        settings['colors']['hovered_tile'] = self.hovered_tile_color.get_color()
+        settings['colors']['hovered_empty_tile'] = self.hovered_empty_tile_color.get_color()
+        settings['colors']['dragged_tile'] = self.dragged_tile_color.get_color()
+        settings['colors']['drag_selected_tile'] = self.drag_selected_tile_color.get_color()
+        settings['colors']['selected_tile'] = self.selected_tile_color.get_color()
+        settings['colors']['tile_text'] = self.tile_text_color.get_color()
+        settings['colors']['room_grid'] = self.room_grid_color.get_color()
+
+        if self.room_bg_color.get_color() != settings['colors']['room_bg']:
+            settings['colors']['room_bg'] = self.room_bg_color.get_color()
+            self.__restart_needed = True
+
+        if self.main_bg_color.get_color() != settings['colors']['main_bg']:
+            settings['colors']['main_bg'] = self.main_bg_color.get_color()
+            self.__restart_needed = True
+
+        if self.board_bg_color.get_color() != settings['colors']['board_bg']:
+            settings['colors']['board_bg'] = self.board_bg_color.get_color()
+            self.__restart_needed = True
+
+        settings['colors']['attr_colors'] = self.attr_colors
 
         return settings
 
@@ -164,6 +256,13 @@ class SettingsEditionDialog(QDialog):
 
     def restore_default(self) -> bool:
         return self.__restore_required
+
+    def accept(self) -> None:
+        """
+        Performs actions before calling parent's accept method
+        """
+        self.attr_colors = self.attributes_colors_chooser.get_colors_to_str()
+        super().accept()
 
     def choose_bdd_path(self) -> None:
         """
@@ -201,33 +300,158 @@ class Separator(QLabel):
 
         self.setFixedHeight(3)
         self.setFixedWidth(int(width))
-        self.setStyleSheet("background: QLinearGradient(x1: 0, y1: 0, x2: 1, y2: 0, "
-                                   "stop: 0 #283747, stop: 0.25 #1A5276, stop: 0.5 #2980B9, "
-                                   "stop: 0.75 #1A5276, stop: 1 #283747);")
+        self.setStyleSheet(get_stylesheet("separator"))
 
         # Layout
         self.setAlignment(Qt.AlignCenter)
         layout.addWidget(self, alignment=Qt.AlignCenter)
 
 
-class ColorChooser(QWidget):
+class AttrColorsChooser(QWidget):
 
-    def __init__(self, default_color: str):
+    MAX_COLORS = 6
+    MIN_COLORS = 2
+    DEFAULT_COLOR = "#FFFFFF"
+
+    def __init__(self, available_colors: list):
+        """
+        Widget allowing the user to create between 2 and 6 colors for the Colors typed attributes
+
+        :param available_colors: existing colors to initialize
+        """
         QWidget.__init__(self)
 
-        self.color = default_color.upper()
+        # Widgets
+        self.__add_btn = QPushButton()
+        self.__add_btn.setIcon(get_icon("add"))
+        self.__add_btn.setIconSize(QSize(35, 35))
+        self.__add_btn.setToolTip(tr("crs_create_btn_tooltip"))
+        self.__add_btn.clicked.connect(self.__add_color)
+        self.__add_btn.setStyleSheet("border: none;")
+
+        self.__delete_btn = QPushButton()
+        self.__delete_btn.setIcon(get_icon("del"))
+        self.__delete_btn.setIconSize(QSize(35, 35))
+        self.__delete_btn.setToolTip(tr("btn_suppr"))
+        self.__delete_btn.clicked.connect(self.__remove_color)
+        self.__delete_btn.setStyleSheet("border: none;")
+
+        self.__btns = []
+
+        for c in available_colors:  # Fill in existing colors
+            self.__btns.append(ColorChooser(c, False))
+
+        for i in range(AttrColorsChooser.MAX_COLORS - len(available_colors)):  # Complete with 'empty' colors
+            self.__btns.append(ColorChooser(AttrColorsChooser.DEFAULT_COLOR, False))  # Use white as default color
+            self.__btns[-1].setVisible(False)
+
+        if len(available_colors) <= AttrColorsChooser.MIN_COLORS:
+            self.__delete_btn.setEnabled(False)
+
+            # Displays at least the minimum of buttons
+            for i in range(AttrColorsChooser.MIN_COLORS):
+                self.__btns[i].setVisible(True)
+
+        elif len(available_colors) >= AttrColorsChooser.MAX_COLORS:
+            self.__add_btn.setEnabled(False)
+
+        # Layout
+        layout = QGridLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
+
+        layout.addWidget(self.__delete_btn, 0, 0, 2, 1)
+        r, c = 0, 1
+        for b in self.__btns:
+            layout.addWidget(b, r, c)
+
+            c += 1
+            if c == 4:
+                r, c = 1, 1
+
+        layout.addWidget(self.__add_btn, 0, 4, 2, 1)
+
+        self.setLayout(layout)
+
+    def __add_color(self) -> None:
+        """
+        Adds a color (at the end)
+        """
+        n = self.__nb_colors()
+        if n < AttrColorsChooser.MAX_COLORS:
+            self.__btns[n].setVisible(True)
+
+            if n == AttrColorsChooser.MAX_COLORS - 1:
+                self.__add_btn.setEnabled(False)
+            self.__delete_btn.setEnabled(True)  # If we were able to add a button, we can then remove it
+
+        self.repaint()
+
+    def __remove_color(self) -> None:
+        """
+        Removes a color (at the end)
+        """
+        n = self.__nb_colors()
+        if n > AttrColorsChooser.MIN_COLORS:
+            self.__btns[n-1].setVisible(False)
+
+            if n == AttrColorsChooser.MIN_COLORS + 1:
+                self.__delete_btn.setEnabled(False)
+            self.__add_btn.setEnabled(True)  # If we were able to remove a button, we can then add it
+
+        self.repaint()
+
+    def __nb_colors(self) -> int:
+        """
+        Gets the number of visible colors
+        """
+        return len([btn for btn in self.__btns if btn.isVisible()])
+
+    def get_colors(self) -> list:
+        """
+        Gets the list of all colors used for attributes
+        """
+        return [btn.get_color() for btn in self.__btns if btn.isVisible()]
+
+    def get_colors_to_str(self) -> str:
+        """
+        Gets the list of all colors in a string, with blank spaces separating colors
+        """
+        c = ""
+        for color in self.get_colors():
+            if c:
+                c += " "
+            c += color
+        return c
+
+
+class ColorChooser(QWidget):
+
+    def __init__(self, default_color: str, show_pretty_name: bool=True):
+        """
+        Color chooser widget
+
+        :param default_color: current color to set
+        :param show_pretty_name: shows the pretty name of the color next to its hexa value
+        """
+        QWidget.__init__(self)
+
+        # Convert 'regular' name colors into QColor to retrieve their hexa code
+        self.color = QColor(default_color).name().lower()
+        self.show_pretty_name = show_pretty_name
 
         # Widgets
         self.lab = QLabel()
+        self.lab.setStyleSheet("color: black; font-style: italic;")
 
-        self.btn = QPushButton(self.color)
+        self.btn = QPushButton(self.color.upper())
         self.btn.clicked.connect(self.__change_color)
 
         # Layout
         layout = QHBoxLayout()
         layout.setMargin(0)
         layout.addWidget(self.btn)
-        layout.addWidget(self.lab)
+        if self.show_pretty_name:
+            layout.addWidget(self.lab)
         self.setLayout(layout)
 
         self.update_bg()
@@ -238,10 +462,17 @@ class ColorChooser(QWidget):
         """
         self.btn.setStyleSheet(f"background: {self.btn.text()}; color: black;")
 
-        if self.btn.text() in COLOR_DICT:  
-            self.lab.setText(COLOR_DICT[self.btn.text()])
+        if self.btn.text().lower() in COLOR_DICT:
+            pretty_name = COLOR_DICT[self.btn.text().lower()]
+            if self.show_pretty_name:
+                self.lab.setText(pretty_name)
+            else:
+                self.btn.setToolTip(pretty_name)
         else:
-            self.lab.clear()
+            if self.show_pretty_name:
+                self.lab.clear()
+            else:
+                self.btn.setToolTip(None)
 
     def __change_color(self) -> None:
         """
@@ -249,8 +480,8 @@ class ColorChooser(QWidget):
         """
         dlg = QColorDialog(self.color)
         if dlg.exec_():
-            self.color = self.closest_color(dlg.currentColor().name().upper()) 
-            self.btn.setText(self.color)
+            self.color = self.closest_color(dlg.currentColor().name())
+            self.btn.setText(self.color.upper())
             self.update_bg()
 
     def get_color(self) -> str:
