@@ -4,6 +4,8 @@ from PySide2.QtCore import QSize, Qt
 
 from src.assets_manager import AssetManager, tr
 
+SPACING_SIZE = 10
+
 
 class AboutFrame(QDialog):
 
@@ -27,7 +29,7 @@ class AboutFrame(QDialog):
         self._set_labels_and_layout()
         self.setStyleSheet("QDialog {background-color: QLinearGradient(x1: 0, y1: 0, x2: 0, y2: 1, "
                            "stop: 0 #E0E0E0, stop: 0.2 #EAEAEA, stop: 0.5 #F0F0F0, stop: 0.8 #EAEAEA, "
-                           "stop: 1 #E0E0E0); color: black;}")
+                           "stop: 1 #E0E0E0);} QLabel {color: black;}")
 
     def _set_labels_and_layout(self):
         """
@@ -48,7 +50,7 @@ class AboutFrame(QDialog):
         features_lab = QLabel(tr("about_features"))
         ihm_lab = QLabel(tr("about_ihm"))
         web_lab = QLabel(tr("about_web"))
-        features_dev = QLabel(f'{self.links_style}<a href="https://www.google.fr">Olivier Lécluse</a>')
+        features_dev = QLabel(f'{self.links_style}<a href="https://www.lecluse.fr">Olivier Lécluse</a>')
         features_dev.setOpenExternalLinks(True)
         ihm_dev = QLabel(
             f'{self.links_style}<a href="https://www.linkedin.com/in/thomas-lécluse-62130395/">Thomas Lécluse</a>')
@@ -95,7 +97,7 @@ class AboutFrame(QDialog):
 
         # 'Salle de Classe' credo
         box.addWidget(lab_app, alignment=Qt.AlignCenter)
-        box.addSpacing(10)
+        box.addSpacing(SPACING_SIZE)
 
         # Devs roles
         dev_grid = QGridLayout()
@@ -109,7 +111,7 @@ class AboutFrame(QDialog):
         box.addLayout(dev_grid)
 
         # Contact
-        box.addSpacing(10)
+        box.addSpacing(SPACING_SIZE)
         box.addWidget(lab_contact, alignment=Qt.AlignCenter)
 
         Separator(self.width() // 1.2, box)  # ----
@@ -117,6 +119,7 @@ class AboutFrame(QDialog):
         # Links of doc, git and license
         box.addWidget(lab_link_doc, alignment=Qt.AlignCenter)
         box.addWidget(lab_link_git, alignment=Qt.AlignCenter)
+        box.addSpacing(SPACING_SIZE)
         box.addWidget(lab_license, alignment=Qt.AlignCenter)
 
         Separator(self.width() // 1.2, box)  # ----
@@ -128,7 +131,7 @@ class AboutFrame(QDialog):
         grid_version.addWidget(app_version, 0, 1, alignment=Qt.AlignLeft)
         grid_version.addWidget(bdd_version, 1, 1, alignment=Qt.AlignLeft)
         box.addLayout(grid_version)
-        box.addSpacing(10)
+        box.addSpacing(SPACING_SIZE)
 
         self.setLayout(box)
 
@@ -149,6 +152,6 @@ class Separator(QLabel):
 
         # Layout
         self.setAlignment(Qt.AlignCenter)
-        box.addSpacing(10)
+        box.addSpacing(SPACING_SIZE)
         box.addWidget(self, alignment=Qt.AlignCenter)
-        box.addSpacing(10)
+        box.addSpacing(SPACING_SIZE)

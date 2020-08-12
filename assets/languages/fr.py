@@ -87,5 +87,7 @@ dico = {"app_title": "Salle de Classe",
 
         "link_to": "Lien vers",
         "app_version": "Version Appli :",
-        "bdd_version": "Version BDD :"
+        "bdd_version": "Version BDD :",
+
+        "no_internet": "Pas de connexion internet"
 }
