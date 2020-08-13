@@ -1,3 +1,7 @@
+# Salle de classe by Lecluse DevCorp
+# file author : Thomas Lecluse
+# Licence GPL-v3 - see LICENCE.txt
+
 from PySide2 import QtPrintSupport
 from PySide2.QtCore import Qt
 from PySide2.QtGui import QPixmap

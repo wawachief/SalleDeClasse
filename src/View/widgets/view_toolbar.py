@@ -1,3 +1,7 @@
+# Salle de classe by Lecluse DevCorp
+# file author : Thomas Lecluse
+# Licence GPL-v3 - see LICENCE.txt
+
 from PySide2.QtWidgets import QToolBar, QPushButton, QComboBox, QWidget, QSizePolicy, QLabel
 from PySide2.QtCore import Signal, Slot, QSize
 

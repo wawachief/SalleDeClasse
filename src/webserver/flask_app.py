@@ -1,3 +1,7 @@
+# Salle de classe by Lecluse DevCorp
+# file author : Nicolas Lecluse
+# Licence GPL-v3 - see LICENCE.txt
+
 import sqlite3
 
 from PySide2.QtCore import QThread
@@ -53,7 +57,7 @@ def handle_disconnect():
 @socket_io.on('stop-server')
 def stop_server():
     controller.flask_server.stop_flask()
-    os.kill(os.getpid(), signal.SIGTERM)
+    os.kill(os.getpid(), signal.SIGABRT)
 
 
 @socket_io.on('confirm_connect')

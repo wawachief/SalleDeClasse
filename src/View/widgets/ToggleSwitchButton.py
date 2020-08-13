@@ -1,3 +1,7 @@
+# Salle de classe by Lecluse DevCorp
+# file author : Thomas Lecluse
+# Licence GPL-v3 - see LICENCE.txt
+
 from PySide2.QtCore import Qt, QPropertyAnimation, QSize, QPoint, Signal
 from PySide2.QtGui import QPainter, QLinearGradient, QColor, QPen, QRadialGradient, QBrush, QPixmap, QImage
 from PySide2.QtWidgets import QWidget, QLabel, QVBoxLayout

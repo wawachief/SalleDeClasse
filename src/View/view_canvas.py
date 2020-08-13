@@ -1,6 +1,9 @@
-from PySide2.QtWidgets import QWidget, QDialog
-from PySide2.QtGui import QPainter, QColor, QPen, QPalette, QFont, QPixmap, QImage, QRegion
-from PySide2 import QtPrintSupport
+# Salle de classe by Lecluse DevCorp
+# file author : Thomas Lecluse
+# Licence GPL-v3 - see LICENCE.txt
+
+from PySide2.QtWidgets import QWidget
+from PySide2.QtGui import QPainter, QColor, QPen, QPalette, QFont, QPixmap, QRegion
 from PySide2.QtCore import QPoint, QRect, Qt, Signal, Slot, QTimer, QThread, QObject
 
 from src.View.popup.view_printer import CustomPrinterDialog

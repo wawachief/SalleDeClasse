@@ -1,4 +1,7 @@
-import PySide2
+# Salle de classe by Lecluse DevCorp
+# file author : Thomas Lecluse
+# Licence GPL-v3 - see LICENCE.txt
+
 from PySide2.QtWidgets import QLabel, QWidget, QHBoxLayout
 from PySide2.QtCore import QSize, Qt
 

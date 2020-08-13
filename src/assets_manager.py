@@ -1,3 +1,7 @@
+# Salle de classe by Lecluse DevCorp
+# file author : Thomas & Olivier Lecluse
+# Licence GPL-v3 - see LICENCE.txt
+
 from PySide2.QtGui import QIcon
 from importlib import import_module
 from configparser import ConfigParser

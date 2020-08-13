@@ -1,5 +1,8 @@
-from enum import Enum
+# Salle de classe by Lecluse DevCorp
+# file author : Thomas Lecluse
+# Licence GPL-v3 - see LICENCE.txt
 
+from enum import Enum
 
 class EAttributesTypes(Enum):
     """

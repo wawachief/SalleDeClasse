@@ -1,3 +1,7 @@
+# Salle de classe by Lecluse DevCorp
+# file author : Thomas Lecluse
+# Licence GPL-v3 - see LICENCE.txt
+
 import PySide2
 from PySide2.QtGui import QColor
 from PySide2.QtWidgets import QTableView, QAbstractItemView, QHeaderView

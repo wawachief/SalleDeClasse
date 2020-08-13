@@ -1,3 +1,7 @@
+# Salle de classe by Lecluse DevCorp
+# file author : Olivier Lecluse
+# Licence GPL-v3 - see LICENCE.txt
+
 class Desk:
     def __init__(self, idd, row, col, id_course, id_student):
         self.id = idd

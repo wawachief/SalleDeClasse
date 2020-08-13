@@ -1,9 +1,6 @@
-# Author: Olivier Lécluse
-# License GPL-3
-
-#
-# Digirule CPU Core
-#
+# Salle de classe by Lecluse DevCorp
+# file author : Thomas Lecluse
+# Licence GPL-v3 - see LICENCE.txt
 
 import sys
 from cx_Freeze import setup, Executable

@@ -1,4 +1,6 @@
-import sys
+# Salle de classe by Lecluse DevCorp
+# file author : Olivier & Thomas & Nicolas Lecluse
+# Licence GPL-v3 - see LICENCE.txt
 
 from PySide2 import QtCore
 from PySide2.QtWidgets import QApplication

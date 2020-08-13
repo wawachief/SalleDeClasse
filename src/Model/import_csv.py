@@ -1,7 +1,8 @@
+# Salle de classe by Lecluse DevCorp
+# file author : Olivier Lecluse
+# Licence GPL-v3 - see LICENCE.txt
 #
 # Import CSV module
-# Olivier Lecluse
-#
 
 def process_line(ln, csv_sep):
     name = ln.split(csv_sep)[0]

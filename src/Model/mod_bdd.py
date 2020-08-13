@@ -1,3 +1,7 @@
+# Salle de classe by Lecluse DevCorp
+# file author : Olivier Lecluse
+# Licence GPL-v3 - see LICENCE.txt
+
 from src.Model.mod_types import Desk, Student
 
 

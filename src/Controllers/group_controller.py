@@ -1,3 +1,7 @@
+# Salle de classe by Lecluse DevCorp
+# file author : Olivier Lecluse
+# Licence GPL-v3 - see LICENCE.txt
+
 from PySide2.QtCore import Slot
 
 from src.Model.import_csv import import_csv, process_line
