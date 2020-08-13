@@ -52,6 +52,7 @@ def start_app():
         flask = flask_app.FlaskThread()
         ctrl = MainController()
 
+        exit_code = None
         if ctrl.mod_bdd is not None:
             flask.init_controller(ctrl)
             ctrl.gui.show()

@@ -256,65 +256,88 @@ class CourseController:
         self.v_canvas.repaint()
 
     def sort_desks(self, sort_type="Z"):
-        def type_Z():
-            # sorts row by row
+        """Sort students by their position
+        detects clusters of students to make a clever sort"""
+
+        def build_matrix():
+            matrix = []
             for row in range(max_row):
+                line = []
                 for col in range(max_col):
                     id_desk = self.mod_bdd.get_desk_id_in_course_by_coords(self.main_ctrl.id_course, row, col)
                     if id_desk != 0:
                         student = self.mod_bdd.get_student_by_desk_id(id_desk)
                         if student is not None:
-                            sortlist.append(student.id)
+                            line.append(student.id)
+                        else:
+                            line.append(-1)  # empty desk
+                    else:
+                        line.append(0)  # no desk
+                matrix.append(line)
+            return matrix
+
+        def search_cluster(coords, row, col):
+            """search all cells in a cluster from row, col position"""
+            if not (0 <= row < max_row and 0 <= col < max_col):
+                return False
+            if (row, col) in visited:
+                return False
+            if student_matrix[row][col] == 0:
+                return False
+
+            if coords in clusters:
+                clusters[coords].append((row, col))
+            else:
+                clusters[coords] = [(row, col)]
+
+            visited.add((row, col))
+            search_cluster(coords, row - 1, col - 1)
+            search_cluster(coords, row - 1, col)
+            search_cluster(coords, row - 1, col + 1)
+            search_cluster(coords, row, col - 1)
+            search_cluster(coords, row, col + 1)
+            search_cluster(coords, row + 1, col - 1)
+            search_cluster(coords, row + 1, col)
+            search_cluster(coords, row + 1, col + 1)
+            return True
+
+        def type_Z():
+            # we sort the students using the clusters in a simple row by row pattern
+            ic, ir = 0, 0
+            while (ir, ic) in clusters:
+                while (ir, ic) in clusters:
+                    for coords in clusters[(ir, ic)]:
+                        # we add all students in the cluster
+                        sortlist.append(student_matrix[coords[0]][coords[1]])
+                    ic += 1
+                ic = 0
+                ir += 1
 
         def type_2():
-            # sorts row by row with continuity
-            line = 0
-            for row in range(max_row):
-                empty = True
-                for col in range(max_col):
-                    c = max_col-col-1 if line % 2 else col  # only non empty lines matter
-                    id_desk = self.mod_bdd.get_desk_id_in_course_by_coords(self.main_ctrl.id_course, row, c)
-                    if id_desk != 0:
-                        empty = False
-                        student = self.mod_bdd.get_student_by_desk_id(id_desk)
-                        if student is not None:
-                            sortlist.append(student.id)
-                if not empty:
-                    line += 1
+            # we sort the students using the clusters in 2 pattern
+            ic, ir = 0, 0
+            alt = True
+            while (ir, ic) in clusters:
+                # gets the number of cols in this row
+                while (ir, ic) in clusters:
+                    ic += 1
+                nb_cols = ic
+                for ic in range(nb_cols):
+                    if alt:
+                        ic_alt = ic
+                    else:
+                        ic_alt = nb_cols - ic - 1
+                        # reverse the list when we walk right to left
+                        clusters[(ir, ic_alt)] = clusters[(ir, ic_alt)][::-1]
+                    for coords in clusters[(ir, ic_alt)]:
+                        # we add all students in the cluster
+                        sortlist.append(student_matrix[coords[0]][coords[1]])
+                alt = not alt
+                ic = 0
+                ir += 1
 
         def type_U():
-            # clever sort
-
-            clusters = dict()
-            # first pass : we detect clusters
-            ir, ic = 0,0
-            in_cluster = False
-            for row in range(max_row):
-                empty = True
-                for col in range(max_col):
-                    id_desk = self.mod_bdd.get_desk_id_in_course_by_coords(self.main_ctrl.id_course, row, col)
-                    if id_desk != 0:
-                        empty = False
-                        if not in_cluster:
-                            # we enter a new cluster
-                            cluster = [(row, col)]
-                            in_cluster = True
-                        else:
-                            cluster.append((row, col))
-                    else:
-                        if in_cluster:
-                            # we leave a cluster
-                            in_cluster = False
-                            clusters[(ir, ic)] = cluster
-                            ic += 1
-                ic = 0
-                if in_cluster:
-                    in_cluster = False
-                    clusters[(ir, ic)] = cluster
-                if not empty:
-                    ir += 1
-
-            # second pass : we sort the students using the clusters
+            # we sort the students using the clusters in U pattern
             ic, ir = 0, 0
             alt = True
             while (ir, ic) in clusters:
@@ -324,14 +347,10 @@ class CourseController:
                 nb_rows = ir
                 for ir in range(nb_rows):
                     ir_alt = ir if alt else nb_rows - ir - 1
-                    for coords in clusters[(ir_alt,ic)]:
+                    for coords in clusters[(ir_alt, ic)]:
                         # we add all students in the cluster
-                        id_desk = self.mod_bdd.get_desk_id_in_course_by_coords(self.main_ctrl.id_course, coords[0], coords[1])
-                        if id_desk != 0:
-                            student = self.mod_bdd.get_student_by_desk_id(id_desk)
-                            if student is not None:
-                                sortlist.append(student.id)
-                alt  = not alt
+                        sortlist.append(student_matrix[coords[0]][coords[1]])
+                alt = not alt
                 ir = 0
                 ic += 1
 
@@ -340,11 +359,25 @@ class CourseController:
         max_col = int(AssetManager.getInstance().config("size", "default_room_columns"))
         infty = max_row * max_col + 1
         group_name = self.mod_bdd.get_group_name_by_id(self.main_ctrl.id_group)
-
         # First we initialize the sort key for the group to infty
         group_students_id = self.mod_bdd.get_students_in_group(self.mod_bdd.get_group_name_by_id(self.main_ctrl.id_group))
         for std in group_students_id:
             self.mod_bdd.update_student_order_with_id(std.id, infty)
+
+        student_matrix = build_matrix()
+        clusters = dict()
+        visited = set()
+        # populating clusters dictionnary
+        ro = 0
+        for r in range(max_row):
+            co = 0
+            empty = True
+            for c in range(max_col):
+                if search_cluster((ro, co), r, c):
+                    co += 1
+                    empty = False
+            if not empty:
+                ro += 1
 
         # Now we get an ordered list of students matching the desk disposition
         sortlist = []  # this list is modified in one of the following function
@@ -357,8 +390,10 @@ class CourseController:
         # At last, we update the sort key to re-order the list
         orderkey = 0
         for s in sortlist:
-            self.mod_bdd.update_student_order_with_id(s, orderkey)
-            orderkey += 1
+            if s != -1:
+                # -1 is an empty desk
+                self.mod_bdd.update_student_order_with_id(s, orderkey)
+                orderkey += 1
         self.__bdd.commit()
         self.main_ctrl.on_config_changed()
         self.synchronize_canvas_selection_with_side_list()

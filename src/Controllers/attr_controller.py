@@ -174,7 +174,7 @@ class AttrController:
                             except:
                                 row.append("")
                         elif attr_type[id_a] == EAttributesTypes.COLOR.value:
-                            hexcol = data[(id_a, id_s)].name()[1:].upper()
+                            hexcol = data[(id_a, id_s)].name().lower()
                             col_name = COLOR_DICT[hexcol] if hexcol in COLOR_DICT else hexcol
                             row.append(col_name)
                         elif attr_type[id_a] == EAttributesTypes.COUNTER.value:
