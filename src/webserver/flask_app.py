@@ -53,8 +53,7 @@ def handle_disconnect():
 @socket_io.on('stop-server')
 def stop_server():
     controller.flask_server.stop_flask()
-    # socket_io.stop()
-    os.kill(os.getpid(), signal.SIGABRT)
+    os.kill(os.getpid(), signal.SIGKILL)
 
 
 @socket_io.on('confirm_connect')
