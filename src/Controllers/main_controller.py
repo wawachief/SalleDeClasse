@@ -1,3 +1,7 @@
+# Salle de classe by Lecluse DevCorp
+# file author : Olivier Lecluse
+# Licence GPL-v3 - see LICENCE.txt
+
 import sqlite3
 
 from PySide2.QtCore import QObject, Signal, Slot
