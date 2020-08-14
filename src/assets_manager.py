@@ -305,19 +305,20 @@ COLOR_DICT1 = {
     "39A78E": "Zomp"}
 
 
-def get_icon(name):
+def get_icon(name: str, ext: str = ICONS_EXT) -> QIcon:
     """
     Retrives the icon associated to the given name, into a QIcon for a button.
 
+    :param ext: icon extension
     :param name: icon name (without extension and path)
     :type name: str
     :return: Icon to set as icon for a button
     :rtype: QIcon
     """
-    return QIcon(f"{ASSETS_PATH}{ICONS_PATH}{name}{ICONS_EXT}")
+    return QIcon(f"{ASSETS_PATH}{ICONS_PATH}{name}{ext}")
 
 
-def get_stylesheet(file):
+def get_stylesheet(file: str) -> str:
     """
     Gets the qss content into a string
 
@@ -328,7 +329,7 @@ def get_stylesheet(file):
         return f.read()
 
 
-def tr(message):
+def tr(message: str) -> str:
     return AssetManager.getInstance().get_text(message)
 
 

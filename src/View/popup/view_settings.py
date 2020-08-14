@@ -21,7 +21,7 @@ class SettingsEditionDialog(QDialog):
         QDialog.__init__(self)
 
         self.setWindowTitle(tr("btn_config"))
-        self.setFixedSize(QSize(700, 670))
+        self.setFixedSize(QSize(700, 675))
 
         # Retrieve current settings
         self.settings = AssetManager.getInstance().config_to_dico(AssetManager.getInstance().get_config_parser())
@@ -90,15 +90,18 @@ class SettingsEditionDialog(QDialog):
         # Confirm button
         self.ok_btn = QPushButton(tr("btn_save"))
         self.ok_btn.clicked.connect(self.accept)
+        self.ok_btn.setFixedWidth(200)
         self.ok_btn.setFocus()
 
         # Cancel button
         self.cancel_btn = QPushButton(tr("btn_cancel"))
         self.cancel_btn.clicked.connect(self.reject)
+        self.cancel_btn.setFixedWidth(200)
 
         # Restore defaults button
         self.restore_btn = QPushButton(tr("btn_restore"))
         self.restore_btn.clicked.connect(self.__restore)
+        self.restore_btn.setFixedWidth(200)
 
         self.__set_layout()
 
@@ -112,7 +115,7 @@ class SettingsEditionDialog(QDialog):
         layout.addSpacing(5)
 
         # Main section
-        main_layout = QFormLayout()
+        main_layout = SettingsFormLayout()
         main_layout.addRow(tr("app_version"), self.lab_version)
         main_layout.addRow(tr("language"), self.combo_language)
         main_layout.addRow(tr("csv_sep"), self.csv_sep_edit)
@@ -131,7 +134,7 @@ class SettingsEditionDialog(QDialog):
         Separator(self.width(), layout)
 
         # Colors
-        colors_layout1 = QFormLayout()
+        colors_layout1 = SettingsFormLayout()
         colors_layout1.addRow(tr("tile"), self.tile_color)
         colors_layout1.addRow(tr("hovered_tile"), self.hovered_tile_color)
         colors_layout1.addRow(tr("hovered_empty_tile"), self.hovered_empty_tile_color)
@@ -139,7 +142,7 @@ class SettingsEditionDialog(QDialog):
         colors_layout1.addRow(tr("drag_selected_tile"), self.drag_selected_tile_color)
         colors_layout1.addRow(tr("selected_tile"), self.selected_tile_color)
 
-        colors_layout2 = QFormLayout()
+        colors_layout2 = SettingsFormLayout()
         colors_layout2.addRow(tr("tile_text"), self.tile_text_color)
         colors_layout2.addRow(tr("room_bg"), self.room_bg_color)
         colors_layout2.addRow(tr("room_grid"), self.room_grid_color)
@@ -154,7 +157,7 @@ class SettingsEditionDialog(QDialog):
         layout.addLayout(colors_layout)
         layout.addSpacing(15)
 
-        colors_layout3 = QFormLayout()
+        colors_layout3 = SettingsFormLayout()
         colors_layout3.setMargin(0)
         colors_layout3.addRow(tr("attr_colors"), self.attributes_colors_chooser)
         layout.addLayout(colors_layout3)
@@ -162,7 +165,7 @@ class SettingsEditionDialog(QDialog):
         Separator(self.width(), layout)
 
         # Unmodifiable data
-        sizes_layout = QFormLayout()
+        sizes_layout = SettingsFormLayout()
         sizes_layout.setMargin(0)
         sizes_layout.addRow(tr("desk_size"), self.desk_size)
         sizes_layout.addRow(tr("grid_rows"), self.grid_rows)
@@ -181,6 +184,7 @@ class SettingsEditionDialog(QDialog):
         layout_buttons.addWidget(self.cancel_btn)
 
         layout.addLayout(layout_buttons)
+        layout.addSpacing(5)
         self.setLayout(layout)
 
         self.setStyleSheet(get_stylesheet("dialog2"))
@@ -276,6 +280,19 @@ class SettingsEditionDialog(QDialog):
 
         if bdd_path:
             self.btn_bdd_path.setText(bdd_path)
+
+
+class SettingsFormLayout(QFormLayout):
+
+    def __init__(self):
+        """
+        Custom form layout with common initialization
+        """
+        QFormLayout.__init__(self)
+        self.setRowWrapPolicy(QFormLayout.DontWrapRows)
+        self.setFieldGrowthPolicy(QFormLayout.FieldsStayAtSizeHint)
+        self.setFormAlignment(Qt.AlignHCenter | Qt.AlignTop)
+        self.setLabelAlignment(Qt.AlignRight)
 
 
 class ShutDownToolTip(QLabel):
