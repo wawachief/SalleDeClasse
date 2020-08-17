@@ -16,6 +16,6 @@ Pour en savoir plus : [rendez-vous sur la documentation.](https://lecluseo.scena
 
 ## Tour d'horizon rapide : 
 
-![Alt text](https://img.youtube.com/vi/j8Ky5io8Npw/0.jpg)](https://www.youtube.com/watch?v=j8Ky5io8Npw)
+[![Alt text](https://img.youtube.com/vi/j8Ky5io8Npw/0.jpg)](https://www.youtube.com/watch?v=j8Ky5io8Npw)
 
 ![LECLUSE DevCorp.](assets/LDC-dark.png)
