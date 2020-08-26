@@ -1,4 +1,3 @@
-socketio
 flask
 flask_socketio
 pypng
