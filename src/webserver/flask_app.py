@@ -57,7 +57,10 @@ def handle_disconnect():
 @socket_io.on('stop-server')
 def stop_server():
     controller.flask_server.stop_flask()
-    os.kill(os.getpid(), signal.SIGKILL)
+    if sys.platform == "darwin":
+        os.kill(os.getpid(), signal.SIGKILL)
+    else:
+        os.kill(os.getpid(), signal.SIGABRT)
 
 
 @socket_io.on('confirm_connect')
