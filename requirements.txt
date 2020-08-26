@@ -6,3 +6,4 @@ pyside2
 python-engineio
 eventlet
 configparser
+engineio.client
