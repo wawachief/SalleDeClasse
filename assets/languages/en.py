@@ -116,7 +116,9 @@ dico = {"app_title": "Classroom",
         "attr_colors": "'Color' type attributes:",
         "desk_size": "Desk side size (pixels):",
         "grid_rows": "Number of rows:",
-        "grid_cols": "Number of columns",
+        "grid_cols": "Number of columns:",
+        "new_version": "New version available : ",
+        "latest_version": "Latest version available :",
         "unmodifiable_data": "<b>It is not advised to edit those parameters.</b><br><i>You can edit them anyway "
                              "at your own risks in the file '.SdCrc' located in your home repository.</i>"
 }

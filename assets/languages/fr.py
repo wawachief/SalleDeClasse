@@ -116,7 +116,9 @@ dico = {"app_title": "Salle de Classe",
         "attr_colors": "Attributs de type 'Couleur' :",
         "desk_size": "Dimension du côté des bureaux (pixels) :",
         "grid_rows": "Nombre de lignes :",
-        "grid_cols": "Nombre de colonnes : ",
+        "grid_cols": "Nombre de colonnes :",
+        "new_version": "Nouvelle version disponible : ",
+        "latest_version": "Dernière version disponible :",
         "unmodifiable_data": "<b>Il est fortement déconseillé de modifier ces paramètres.</b><br><i>Cependant, vous "
                              "pouvez les modifier à vos risques et périls dans le fichier '.SdCrc' situé dans votre "
                              "home.</i>"

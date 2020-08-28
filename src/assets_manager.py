@@ -7,6 +7,7 @@ from importlib import import_module
 from configparser import ConfigParser
 from os import path
 import shutil
+import requests
 
 CONFIG_PATH = 'config.ini'
 
@@ -454,3 +455,11 @@ class AssetManager:
         if key in self.__language_dico:
             return self.__language_dico[key]
         return "-_-"
+
+    def get_latest_version(self):
+        r = requests.get('https://api.github.com/repos/wawachief/SalleDeClasse/releases/latest')
+        dico = r.json()
+        version = dico["tag_name"][1:]
+        if version[-2] == "-":
+            version = version[:-2]
+        return version

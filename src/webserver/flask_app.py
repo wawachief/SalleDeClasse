@@ -11,7 +11,7 @@ from src.assets_manager import AssetManager
 from src.Model.mod_bdd import ModBdd
 from flask_socketio import SocketIO
 from random import choice
-import os, signal
+import os, signal, sys
 from engineio.payload import Payload
 
 flask_thread = None
