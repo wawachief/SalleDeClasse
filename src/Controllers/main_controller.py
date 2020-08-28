@@ -196,7 +196,7 @@ class MainController(QObject):
 
         # search for new version
         latest_version = AssetManager.getInstance().get_latest_version()
-        if latest_version != AssetManager.getInstance().config('main', 'version'):
+        if latest_version > AssetManager.getInstance().config('main', 'version'):
             self.gui.status_bar.showMessage(tr("new_version") + latest_version)
 
     #

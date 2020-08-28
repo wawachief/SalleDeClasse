@@ -457,9 +457,12 @@ class AssetManager:
         return "-_-"
 
     def get_latest_version(self):
-        r = requests.get('https://api.github.com/repos/wawachief/SalleDeClasse/releases/latest')
-        dico = r.json()
-        version = dico["tag_name"][1:]
+        try:
+            r = requests.get('https://api.github.com/repos/wawachief/SalleDeClasse/releases/latest')
+            dico = r.json()
+            version = dico["tag_name"][1:]
+        except :
+            version = "0.0.0"
         if version[-2] == "-":
             version = version[:-2]
         return version
