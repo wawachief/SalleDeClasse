@@ -194,6 +194,11 @@ class MainController(QObject):
         self.flask_client.connect('http://localhost:'+AssetManager.getInstance().config('webapp', 'port'))
         self.flask_server = None
 
+        # search for new version
+        latest_version = AssetManager.getInstance().get_latest_version()
+        if latest_version > AssetManager.getInstance().config('main', 'version'):
+            self.gui.status_bar.showMessage(tr("new_version") + latest_version)
+
     #
     # Signals handling
     #
@@ -237,6 +242,28 @@ class MainController(QObject):
         if exit_code != EXIT_CODE_REBOOT:
             self.flask_client.emit("stop-server")
 
+    @Slot()
+    def close_qr(self):
+        if self.qr_dialog and self.qr_dialog.isVisible():
+            self.qr_dialog.close()
+
+    @Slot()
+    def on_config_changed(self):
+        """
+        Triggered when the user switched configuration mode
+        Refresh the student list
+        """
+
+        if self.gui.get_config():
+            # Mode config is on, push group list
+            current_group = self.mod_bdd.get_group_name_by_id(self.id_group)
+            self.gui.sidewidget.students().set_students_list(self.mod_bdd.get_students_in_group(current_group))
+        else:
+            # Mode config is off, push students visible in the canvas inside the list
+            students_in_course = self.mod_bdd.get_students_in_course_by_id(self.id_course)
+            self.gui.sidewidget.students().set_students_list(students_in_course)
+        self.course_ctrl.synchronize_canvas_selection_with_side_list()
+
     #
     # General methods
     #
@@ -269,24 +296,3 @@ class MainController(QObject):
             self.gui.status_bar.showMessage(tr("no_internet"), 5000)
             VInfoDialog(self.gui, tr("no_internet")).exec_()
 
-    @Slot()
-    def close_qr(self):
-        if self.qr_dialog and self.qr_dialog.isVisible():
-            self.qr_dialog.close()
-
-    @Slot()
-    def on_config_changed(self):
-        """
-        Triggered when the user switched configuration mode
-        Refresh the student list
-        """
-
-        if self.gui.get_config():
-            # Mode config is on, push group list
-            current_group = self.mod_bdd.get_group_name_by_id(self.id_group)
-            self.gui.sidewidget.students().set_students_list(self.mod_bdd.get_students_in_group(current_group))
-        else:
-            # Mode config is off, push students visible in the canvas inside the list
-            students_in_course = self.mod_bdd.get_students_in_course_by_id(self.id_course)
-            self.gui.sidewidget.students().set_students_list(students_in_course)
-        self.course_ctrl.synchronize_canvas_selection_with_side_list()

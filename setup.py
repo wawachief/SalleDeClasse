@@ -12,12 +12,15 @@ build_exe_options = {
     "include_files": ["doc/", "assets/", "src/", "README.md", "config.ini"],
     "excludes": ["tkinter", "tk"]
 }
+bdist_msi_options = {
+    "upgrade_code": "{9E87FC06-B92B-4C25-A912-A7B9DB559BB3}",
+    "all_users": True,
+    "initial_target_dir": "c:\sdc"
+    }
 
 base = None
 if sys.platform == "win32":
     base = "Win32GUI"
-    if 'bdist_msi' in sys.argv:
-        sys.argv += ['--initial-target-dir', 'c:\sdc']
 
 config = ConfigParser()
 config.read("config.ini")
@@ -26,5 +29,5 @@ setup(  name = "SalleDeClasse",
         version = config.get('main', 'version'),
         description = "Salle de Classe",
         author="Olivier Lecluse - Thomas Lecluse - Nicolas Lecluse",
-        options = {"build_exe": build_exe_options},
-        executables = [Executable("sdc.py", base=base, icon="C:\sdc.ico")])
+        options = {"build_exe": build_exe_options, "bdist_msi": bdist_msi_options},
+        executables = [Executable("sdc.py", base=base)])
