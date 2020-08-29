@@ -7,3 +7,4 @@ python-engineio
 eventlet
 configparser
 engineio.client
+requests
