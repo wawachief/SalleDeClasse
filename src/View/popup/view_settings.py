@@ -76,7 +76,7 @@ class SettingsEditionDialog(QDialog):
         # Desk sizes
         self.desk_size = QSpinBox()
         self.desk_size.setMinimum(10)
-        self.desk_size.setMaximum(1000)
+        self.desk_size.setMaximum(200)
         self.desk_size.setValue(int(self.settings['size']['desk']))
         self.desk_size.setFixedWidth(50)
 
@@ -89,14 +89,14 @@ class SettingsEditionDialog(QDialog):
         # Grid rows
         self.grid_rows = QSpinBox()
         self.grid_rows.setMinimum(1)
-        self.grid_rows.setMaximum(100)
+        self.grid_rows.setMaximum(40)
         self.grid_rows.setValue(int(self.settings['size']['default_room_rows']))
         self.grid_rows.setFixedWidth(50)
 
         # Grid columns
         self.grid_cols = QSpinBox()
         self.grid_cols.setMinimum(1)
-        self.grid_cols.setMaximum(100)
+        self.grid_cols.setMaximum(40)
         self.grid_cols.setValue(int(self.settings['size']['default_room_columns']))
         self.grid_cols.setFixedWidth(50)
 

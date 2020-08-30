@@ -122,5 +122,10 @@ dico = {"app_title": "Classroom",
         "new_version": "New version available : ",
         "latest_version": "Latest version available :",
         "dangerous_parameter": "Be careful with this parameter.<br>The application window adapts itself to the number "
-                               "of rows and columns and their size,<br>so it might get too big for your screen."
+                               "of rows and columns and their size,<br>so it might get too big for your screen.",
+
+        "qr_tip": "In order for your smartphone to be able to connect to the application, it needs to share the "
+                  "same network than this computer.<br><br>It is the case when: <ul><li>Both your smartphone AND the "
+                  "computer running this software are connected to the same WIFI;"
+                  "<li>Your smartphone is in mode Access Point, and this computer is connected to it.</ul>",
 }

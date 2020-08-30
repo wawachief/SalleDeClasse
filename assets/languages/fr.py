@@ -123,5 +123,10 @@ dico = {"app_title": "Salle de Classe",
         "latest_version": "Dernière version disponible :",
         "dangerous_parameter": "Attention lors de la modification de ce paramètre.<br>L'application adapte sa taille "
                                "en fonction du nombre de lignes et colonnes et de leur taille.<br>Elle peut donc avoir "
-                               "une taille plus grande que la capacité de votre écran."
+                               "une taille plus grande que la capacité de votre écran.",
+
+        "qr_tip": "Pour que le smartphone puisse se connecter à l'application, il faut que les deux appareils (le "
+                  "téléphone et cet ordinateur) soient connectés au même réseau.<br><br>C'est le cas lorsque:<ul><li>"
+                  "L'ordinateur ET le smartphone partagent le même WIFI ;"
+                  "<li>Votre téléphone est en partage de connexion et l'ordinateur y est connecté.</ul>",
 }
