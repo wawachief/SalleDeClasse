@@ -126,7 +126,7 @@ dico = {"app_title": "Salle de Classe",
                                "une taille plus grande que la capacité de votre écran.",
 
         "qr_tip": "Pour que le smartphone puisse se connecter à l'application, il faut que les deux appareils (le "
-                  "téléphone et cet ordinateur) soient connectés au même réseau.<br><br>C'est le cas lorsque :<ul><li>"
-                  "L'ordinateur ET le smartphone partagent le même WIFI ;</li>"
+                  "téléphone et cet ordinateur) soient connectés au même réseau.<br><br>C'est le cas lorsque :<ul>"
+                  "<li>L'ordinateur ET le smartphone partagent le même WIFI ;</li>"
                   "<li>Votre téléphone est en partage de connexion et l'ordinateur y est connecté.</li></ul>",
 }
