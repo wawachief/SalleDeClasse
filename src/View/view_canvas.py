@@ -465,7 +465,7 @@ class ViewCanvas(QWidget):
         painter.setPen(pen)
 
         font = QFont()
-        font.setPixelSize(10)
+        font.setPixelSize(int(AssetManager.getInstance().config('size', 'font_size')))
         painter.setFont(font)
 
         # Current tile selected by the mouse

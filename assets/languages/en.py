@@ -101,7 +101,8 @@ dico = {"app_title": "Classroom",
         "csv_sep": "CSV separator:",
         "bdd_path": "DataBase location:",
         "web_port": "Web App local port:",
-        "shutdown_required": "A complete shutdown of the application is required for this parameter to be acknowledged.",
+        "shutdown_required": "A complete shutdown of the application is required<br>"
+                             "for this parameter to be acknowledged.",
         "tile": "Desks:",
         "hovered_tile": "Hovered desks:",
         "hovered_empty_tile": "Empty hovered tiles:",
@@ -115,10 +116,11 @@ dico = {"app_title": "Classroom",
         "board_bg": "Blackboard:",
         "attr_colors": "'Color' type attributes:",
         "desk_size": "Desk side size (pixels):",
+        "font_size": "Desk font size",
         "grid_rows": "Number of rows:",
         "grid_cols": "Number of columns:",
         "new_version": "New version available : ",
         "latest_version": "Latest version available :",
-        "unmodifiable_data": "<b>It is not advised to edit those parameters.</b><br><i>You can edit them anyway "
-                             "at your own risks in the file '.SdCrc' located in your home repository.</i>"
+        "dangerous_parameter": "Be careful with this parameter.<br>The application window adapts itself to the number "
+                               "of rows and columns and their size,<br>so it might get too big for your screen."
 }
