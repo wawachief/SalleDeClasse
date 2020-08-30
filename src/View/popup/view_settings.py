@@ -74,11 +74,17 @@ class SettingsEditionDialog(QDialog):
 
         # Sizes
         # Desk sizes
-        self.desk_size = QSpinBox()
-        self.desk_size.setMinimum(10)
-        self.desk_size.setMaximum(200)
-        self.desk_size.setValue(int(self.settings['size']['desk']))
-        self.desk_size.setFixedWidth(50)
+        self.desk_size_x = QSpinBox()
+        self.desk_size_x.setMinimum(10)
+        self.desk_size_x.setMaximum(200)
+        self.desk_size_x.setValue(int(self.settings['size']['desk_x']))
+        self.desk_size_x.setFixedWidth(50)
+
+        self.desk_size_y = QSpinBox()
+        self.desk_size_y.setMinimum(10)
+        self.desk_size_y.setMaximum(200)
+        self.desk_size_y.setValue(int(self.settings['size']['desk_y']))
+        self.desk_size_y.setFixedWidth(50)
 
         # Font size
         self.desk_font_size = QSpinBox()
@@ -186,7 +192,8 @@ class SettingsEditionDialog(QDialog):
         widget_desk = QWidget()
         layout_desk = QHBoxLayout()
         layout_desk.setMargin(0)
-        layout_desk.addWidget(self.desk_size)
+        layout_desk.addWidget(self.desk_size_x)
+        layout_desk.addWidget(self.desk_size_y)
         layout_desk.addWidget(WarningToolTip("dangerous_parameter"))
         widget_desk.setLayout(layout_desk)
         sizes_layout.addRow(tr("desk_size"), widget_desk)
@@ -286,8 +293,11 @@ class SettingsEditionDialog(QDialog):
 
         # Size settings
 
-        if str(self.desk_size.value()) != settings['size']['desk']:
-            settings['size']['desk'] = str(self.desk_size.value())
+        if str(self.desk_size_x.value()) != settings['size']['desk_x']:
+            settings['size']['desk_x'] = str(self.desk_size_x.value())
+            self.__restart_needed = True
+        if str(self.desk_size_y.value()) != settings['size']['desk_y']:
+            settings['size']['desk_y'] = str(self.desk_size_y.value())
             self.__restart_needed = True
         if str(self.desk_font_size.value()) != settings['size']['font_size']:
             settings['size']['font_size'] = str(self.desk_font_size.value())
