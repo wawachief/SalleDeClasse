@@ -85,16 +85,21 @@ class CourseController:
     def desk_shuffle(self):
         """Shuffle all desktops"""
         all_desks = self.mod_bdd.get_course_all_desks(self.main_ctrl.id_course)
-        shuffle(all_desks)
-        for i in range(0, len(all_desks) - 1, 2):
-            d1 = all_desks[i]
-            d2 = all_desks[i + 1]
+        selected_desks_id = self.v_canvas.get_selected_tiles()
+        movable_desks = [d for d in all_desks if d.id not in selected_desks_id and d.id_student != 0]
+        shuffle(movable_desks)
+
+        i = 0
+        while i < len(movable_desks)-1:
+            d1 = movable_desks[i]
+            d2 = movable_desks[(i + 1)]
             # We swap the two desks
             self.mod_bdd.move_desk_by_id(d1.id, d2.row, d2.col)
             self.mod_bdd.move_desk_by_id(d2.id, d1.row, d1.col)
             # We update the view
             self.v_canvas.move_tile(d1.id, (d2.row, d2.col), True)
             self.v_canvas.move_tile(d2.id, (d1.row, d1.col), True)
+            i += 2
         self.__bdd.commit()
         self.v_canvas.repaint()
 

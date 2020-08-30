@@ -54,7 +54,7 @@ dico = {"app_title": "Classroom",
         "attr_type": "Type",
 
         "confirm_message_delete": "Do you confirm the deletion?",
-        "confirm_message_shuffle": "Are you sure you want to shuffle?",
+        "confirm_message_shuffle": "Are you sure you want to shuffle?\nSelected desks will stay in place.",
         "confirm_message_RAZ": "Are you sure you want \nto reset all the counters ?",
         "confirm_create_complementary_group": "Do you want to create complementary group ?",
         "seats_are_missing": " seats are missing",
