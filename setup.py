@@ -10,7 +10,8 @@ from configparser import ConfigParser
 build_exe_options = {
     "packages": ["os", "pyside2", "sqlite3", "pyqrcode", "engineio", 'socketio', "eventlet", 'flask_socketio', "configparser", "jinja2.ext", "dns", "csv"],
     "include_files": ["doc/", "assets/", "src/", "README.md", "config.ini"],
-    "excludes": ["tkinter", "tk"]
+    "excludes": ["tkinter", "tk"],
+    'include_msvcr': True
 }
 bdist_msi_options = {
     "upgrade_code": "{9E87FC06-B92B-4C25-A912-A7B9DB559BB3}",
