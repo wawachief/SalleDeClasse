@@ -232,6 +232,7 @@ class AttrController:
 
             if dlg and dlg.exec_():
                 if attr_type == EAttributesTypes.COUNTER.value:
+                    # lot change for counter attrs
                     if dlg.new_value() == 0 and not VConfirmDialog(self.gui, "confirm_message_RAZ").exec_():
                         return
                     for s in students:
@@ -240,6 +241,17 @@ class AttrController:
                         else:
                             val = self.mod_bdd.get_attribute_value(s[0], attr_id, id_topic)
                             val = str(int(val) + dlg.new_value()) if val else str(dlg.new_value())
+                        self.mod_bdd.update_attr_with_ids(s[0], attr_id, id_topic, val)
+                elif attr_type == EAttributesTypes.MARK.value:
+                    # lot change for marks attrs
+                    if dlg.new_value() == "" and not VConfirmDialog(self.gui, "confirm_message_RAZ").exec_():
+                        return
+                    for s in students:
+                        if dlg.new_value() == "":
+                            val = ""
+                        else:
+                            val = self.mod_bdd.get_attribute_value(s[0], attr_id, id_topic)
+                            val += " " + dlg.new_value()
                         self.mod_bdd.update_attr_with_ids(s[0], attr_id, id_topic, val)
                 else:
                     for s in students:

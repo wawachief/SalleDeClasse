@@ -86,7 +86,8 @@ class AboutFrame(QDialog):
         lab_latest_version = QLabel(tr("latest_version"))
         lab_bdd_version = QLabel(tr("bdd_version"))
         app_version = QLabel(AssetManager.getInstance().config('main', 'version'))
-        latest_version = QLabel(AssetManager.getInstance().get_latest_version())
+        latest_version = QLabel(f'{self.links_style}<a href="https://github.com/wawachief/SalleDeClasse/releases/latest">'+AssetManager.getInstance().get_latest_version()+'</a>')
+        latest_version.setOpenExternalLinks(True)
         bdd_version = QLabel(str(self.bdd_version))
 
         # --- Layout ---

@@ -55,7 +55,7 @@ dico = {"app_title": "Salle de Classe",
 
         "confirm_message_delete": "Voulez-vous vraiment supprimer ?",
         "confirm_message_shuffle": "Voulez-vous vraiment mélanger ?\nLes élèves sélectionnés ne bougeront pas.",
-        "confirm_message_RAZ": "Voulez-vous vraiment \nremettre à 0 tous les compteurs ?",
+        "confirm_message_RAZ": "Voulez-vous vraiment \nréinitialiser cet attribut ?",
         "confirm_create_complementary_group": "Voulez-vous le groupe complémentaire ?",
         "seats_are_missing": " place manque(nt) pour placer tous les élèves",
         "seats_are_OK": "Tous les élèves sont placés",
