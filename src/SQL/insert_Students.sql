@@ -1,6 +1,6 @@
 INSERT INTO Students (StdLastname, StdFirstname) VALUES
     ("MANFIN", "Gérard"),
-    ("MANIVELLE", "Jessie"),
+    ("MALOVENTRE", "Jessie"),
     ("MEMPAFROY", "Ella"),
     ("TITEGOUTTE", "Corinne"),
     ("LICHETTE", "Justine"),
@@ -20,7 +20,7 @@ INSERT INTO Students (StdLastname, StdFirstname) VALUES
     ("RIENCORE", "Jean"),
     ("PEAU", "Pierre"),
     ("RATON", "Candy"),
-    ("DURE", "Laure"),
+    ("DINATEUR", "Laure"),
     ("DORDUR", "David"),
     ("POSTEUR", "Alain"),
     ("NEMAR", "Jean"),
