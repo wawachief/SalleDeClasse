@@ -231,11 +231,6 @@ class MainController(QObject):
         self.course_ctrl.synchronize_canvas_selection_with_side_list()
 
     @Slot()
-    def close_qr(self):
-        if self.qr_dialog and self.qr_dialog.isVisible():
-            self.qr_dialog.close()
-
-    @Slot()
     def do_quit(self, exit_code):
         self.v_canvas.application_closing()
         self.__bdd.close()
