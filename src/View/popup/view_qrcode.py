@@ -3,14 +3,14 @@
 # Licence GPL-v3 - see LICENCE.txt
 
 from PySide2.QtWidgets import QDialog, QVBoxLayout, QLabel
-from PySide2.QtCore import Qt
+from PySide2.QtCore import Qt, QSize
 from PySide2.QtGui import QPixmap, QImage
 
 import pyqrcode
 import socket
 import tempfile
 
-from src.assets_manager import AssetManager
+from src.assets_manager import AssetManager, tr
 
 
 class VQRCode(QDialog):
@@ -28,7 +28,7 @@ class VQRCode(QDialog):
         self.has_internet = True
 
         try:
-            s.connect(('8.8.8.8', 1))  # connect() for UDP doesn't send packets, this will require an internet connection
+            s.connect(('8.8.8.8', 1))  # connect() for UDP does not send packets, this will require an internet connection
 
             # IP and Port
             local_ip_address = s.getsockname()[0]
@@ -50,8 +50,29 @@ class VQRCode(QDialog):
             # Layout
             layout = QVBoxLayout()
             layout.setMargin(0)
-            layout.addWidget(self.qr)
-            layout.setAlignment(self.qr, Qt.AlignCenter)
+            layout.addWidget(self.qr, alignment=Qt.AlignCenter)
+            layout.addWidget(InfoToolTip("qr_tip"), alignment=Qt.AlignCenter)
+            layout.addSpacing(5)
             self.setLayout(layout)
+
+            self.setStyleSheet("background: white;")
         except OSError:
             self.has_internet = False
+
+
+class InfoToolTip(QLabel):
+
+    def __init__(self, text_key: str):
+        """
+        Information point that displays a tooltip when hovered
+
+        :param text_key: tooltip text
+        """
+        QLabel.__init__(self, "i")
+        self.setFixedSize(QSize(28, 28))
+        self.setAlignment(Qt.AlignCenter)
+
+        self.setStyleSheet("font-weight: bold; border: 1px solid transparent; border-radius: 14px; "
+                           "background-color: lightblue; color: black;")
+
+        self.setToolTip(tr(text_key))

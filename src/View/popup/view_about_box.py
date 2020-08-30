@@ -83,8 +83,11 @@ class AboutFrame(QDialog):
 
         # Version
         lab_app_version = QLabel(tr("app_version"))
+        lab_latest_version = QLabel(tr("latest_version"))
         lab_bdd_version = QLabel(tr("bdd_version"))
         app_version = QLabel(AssetManager.getInstance().config('main', 'version'))
+        latest_version = QLabel(f'{self.links_style}<a href="https://github.com/wawachief/SalleDeClasse/releases/latest">'+AssetManager.getInstance().get_latest_version()+'</a>')
+        latest_version.setOpenExternalLinks(True)
         bdd_version = QLabel(str(self.bdd_version))
 
         # --- Layout ---
@@ -128,10 +131,12 @@ class AboutFrame(QDialog):
 
         # Version
         grid_version = QGridLayout()
-        grid_version.addWidget(lab_app_version, 0, 0, alignment=Qt.AlignRight)
-        grid_version.addWidget(lab_bdd_version, 1, 0, alignment=Qt.AlignRight)
-        grid_version.addWidget(app_version, 0, 1, alignment=Qt.AlignLeft)
-        grid_version.addWidget(bdd_version, 1, 1, alignment=Qt.AlignLeft)
+        grid_version.addWidget(lab_app_version, 1, 0, alignment=Qt.AlignRight)
+        grid_version.addWidget(lab_latest_version, 0, 0, alignment=Qt.AlignRight)
+        grid_version.addWidget(lab_bdd_version, 2, 0, alignment=Qt.AlignRight)
+        grid_version.addWidget(app_version, 1, 1, alignment=Qt.AlignLeft)
+        grid_version.addWidget(latest_version, 0, 1, alignment=Qt.AlignLeft)
+        grid_version.addWidget(bdd_version, 2, 1, alignment=Qt.AlignLeft)
         box.addLayout(grid_version)
         box.addSpacing(SPACING_SIZE)
 

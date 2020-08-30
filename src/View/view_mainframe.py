@@ -16,7 +16,8 @@ from src.View.widgets.view_courses import ViewCoursePanel
 from src.View.widgets.view_students import ViewStudentPanel
 from src.View.widgets.view_attributes_list import ViewAttributePanel
 from src.View.view_attributes_tab import AttributesTab
-from src.assets_manager import AssetManager, tr
+
+from src.assets_manager import AssetManager, tr, get_icon
 
 from src.View.popup.view_confirm_dialogs import VConfirmDialog
 
@@ -184,6 +185,7 @@ class ViewMainFrame(QMainWindow):
         QMainWindow.__init__(self)
 
         self.setWindowTitle(f"{tr('app_title')} | {AssetManager.getInstance().config('main', 'version')}")
+        self.setWindowIcon(get_icon("sdc", ".ico"))
         self.setContextMenuPolicy(Qt.PreventContextMenu)
 
         self.bdd_version: str = ""  # For the about box
@@ -309,6 +311,7 @@ class ViewMainFrame(QMainWindow):
 
             self.status_bar.showMessage(tr("acknowledge_changes"), 3000)
             self.repaint()
+            self.central_widget.classroom_tab.v_canvas.repaint()
 
             if dlg.need_restart():
                 restart_confirm = VConfirmDialog(self, "need_restart")

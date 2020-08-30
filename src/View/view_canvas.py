@@ -75,7 +75,7 @@ class ViewTile(QObject):
     sig_move_update = Signal(int, int)
     sig_thread_finished = Signal()
 
-    def __init__(self, row, column, square_size, sig_move_ended, sig_select_tile, desk_id):
+    def __init__(self, row: int, column: int, desk_size: tuple, sig_move_ended: Signal, sig_select_tile: Signal, desk_id: int):
         """
         Description object, contains the information that needs to be displayed in the associated tile's position.
         This is the UI twin of Model's Desk object.
@@ -84,8 +84,8 @@ class ViewTile(QObject):
         :type row: int
         :param column: column coordinate
         :type column: int
-        :param square_size: size of a square in the canvas (used to calculate the real position)
-        :type square_size: int
+        :param desk_size: sizes of a desk in the canvas (used to calculate the real position): (x, y)
+        :type desk_size: tuple
         :param sig_move_ended: Signal to emit when an animated move ends.
         :type sig_move_ended: Signal
         :param desk_id: unique identifier
@@ -98,7 +98,7 @@ class ViewTile(QObject):
 
         self.__desk_id = desk_id
 
-        self.__square_size = square_size
+        self.__desk_size = desk_size
 
         self.__is_selected = False
 
@@ -198,7 +198,7 @@ class ViewTile(QObject):
 
             # Convert grid positions into mouse positions for arrival position
             self.animate_thread = MoveAnimationThread(self.real_position(),
-                                                      (new_column * self.__square_size, new_row * self.__square_size),
+                                                      (new_column * self.__desk_size[1], new_row * self.__desk_size[0]),
                                                       self.sig_move_update, self.sig_thread_finished)
             self.animate_thread.finished.connect(self.animate_thread_finished)
 
@@ -245,7 +245,7 @@ class ViewTile(QObject):
         :type column: int
         """
         self.__grid_pos = (row, column)
-        self.__real_pos = (column * self.__square_size, row * self.__square_size)
+        self.__real_pos = (column * self.__desk_size[1], row * self.__desk_size[0])
 
     def grid_position(self):
         """
@@ -278,7 +278,8 @@ class ViewCanvas(QWidget):
         """
         QWidget.__init__(self)
 
-        self.square_size = int(AssetManager.getInstance().config('size', 'desk'))
+        self.desk_h_size = int(AssetManager.getInstance().config('size', 'desk_height'))
+        self.desk_w_size = int(AssetManager.getInstance().config('size', 'desk_width'))
         self.setAutoFillBackground(True)
 
         self.__tiles = {}  # All drawn tiles
@@ -308,7 +309,7 @@ class ViewCanvas(QWidget):
 
         self.nb_rows = int(AssetManager.getInstance().config('size', 'default_room_rows'))
         self.nb_columns = int(AssetManager.getInstance().config('size', 'default_room_columns'))
-        self.setFixedSize(self.square_size * self.nb_columns, self.square_size * self.nb_rows)
+        self.setFixedSize(self.desk_w_size * self.nb_columns, self.desk_h_size * self.nb_rows)
         self.__init_style()
 
     def __init_style(self):
@@ -362,7 +363,7 @@ class ViewCanvas(QWidget):
         :param lastname: Student's last name
         :type lastname: str
         """
-        new_tile = ViewTile(row, column, self.square_size, self.sig_move_ended, self.sig_select_tile, desk_id)
+        new_tile = ViewTile(row, column, (self.desk_h_size, self.desk_w_size), self.sig_move_ended, self.sig_select_tile, desk_id)
         new_tile.set_student(firstname, lastname)
 
         self.__tiles[desk_id] = new_tile
@@ -453,19 +454,19 @@ class ViewCanvas(QWidget):
 
         # Draw the grid
         for r in range(self.nb_rows):
-            painter.drawLine(QPoint(0, r * self.square_size),
-                             QPoint(self.square_size * self.nb_columns, r * self.square_size))
+            painter.drawLine(QPoint(0, r * self.desk_h_size),
+                             QPoint(self.desk_w_size * self.nb_columns, r * self.desk_h_size))
 
         for c in range(self.nb_columns):
-            painter.drawLine(QPoint(c * self.square_size, 0),
-                             QPoint(c * self.square_size, self.square_size * self.nb_rows))
+            painter.drawLine(QPoint(c * self.desk_w_size, 0),
+                             QPoint(c * self.desk_w_size, self.desk_h_size * self.nb_rows))
 
         # Update painter color and font size for tiles
         pen.setColor(QColor(AssetManager.getInstance().config('colors', 'tile_text')))
         painter.setPen(pen)
 
         font = QFont()
-        font.setPixelSize(10)
+        font.setPixelSize(int(AssetManager.getInstance().config('size', 'font_size')))
         painter.setFont(font)
 
         # Current tile selected by the mouse
@@ -507,13 +508,13 @@ class ViewCanvas(QWidget):
         """
         if not self.hovered:  # If there is no tile under the dragged one, we draw a light gray rect below it
             # Convert x and y to get the hovered empty tile position
-            hov_x = x // self.square_size * self.square_size
-            hov_y = y // self.square_size * self.square_size
+            hov_x = x // self.desk_h_size * self.desk_h_size
+            hov_y = y // self.desk_w_size * self.desk_w_size
             hov_rect = self.__get_rect_at(hov_y, hov_x)
             painter.fillRect(hov_rect, QColor(AssetManager.getInstance().config('colors', 'hovered_empty_tile')))
 
-        rect = QRect(QPoint(PADDING + y - self.square_size / 2, PADDING + x - self.square_size / 2),
-                     QPoint(y + self.square_size / 2 - PADDING, x + self.square_size / 2 - PADDING))
+        rect = QRect(QPoint(PADDING + y - self.desk_w_size / 2, PADDING + x - self.desk_h_size / 2),
+                     QPoint(y + self.desk_w_size / 2 - PADDING, x + self.desk_h_size / 2 - PADDING))
         painter.fillRect(rect, QColor(AssetManager.getInstance().config('colors', 'dragged_tile')))
         painter.drawText(rect, Qt.AlignCenter | Qt.TextWordWrap, f"{tile.lastname()}\n{tile.firstname()}")
 
@@ -630,7 +631,7 @@ class ViewCanvas(QWidget):
         y, x = mouse_pos
 
         # Calculate reversed position using the canvas' dimensions
-        return self.square_size * (self.nb_columns - 1) - y, self.square_size * (self.nb_rows - 1) - x
+        return self.desk_w_size * (self.nb_columns - 1) - y, self.desk_h_size * (self.nb_rows - 1) - x
 
     def __relative_grid_position(self, grid_pos, get_opposite=False):
         """
@@ -660,7 +661,7 @@ class ViewCanvas(QWidget):
         :return: (row, column) coordinates associated to the mouse position
         :rtype: tuple
         """
-        return x // self.square_size, y // self.square_size
+        return x // self.desk_h_size, y // self.desk_w_size
 
     def __get_rect_at(self, x, y):
         """
@@ -670,8 +671,8 @@ class ViewCanvas(QWidget):
         :param y: mouse y
         :rtype: QRect
         """
-        return QRect(QPoint(PADDING + x, PADDING + y), QPoint(x + self.square_size - PADDING - 1,
-                                                              y + self.square_size - PADDING - 1))
+        return QRect(QPoint(PADDING + x, PADDING + y), QPoint(x + self.desk_w_size - PADDING - 1,
+                                                              y + self.desk_h_size - PADDING - 1))
 
     def print_pdf(self) -> None:
         pix = QPixmap(self.rect().size())

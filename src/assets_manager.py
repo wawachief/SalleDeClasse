@@ -7,6 +7,7 @@ from importlib import import_module
 from configparser import ConfigParser
 from os import path
 import shutil
+import requests
 
 CONFIG_PATH = 'config.ini'
 
@@ -305,19 +306,20 @@ COLOR_DICT1 = {
     "39A78E": "Zomp"}
 
 
-def get_icon(name):
+def get_icon(name: str, ext: str = ICONS_EXT) -> QIcon:
     """
     Retrives the icon associated to the given name, into a QIcon for a button.
 
+    :param ext: icon extension
     :param name: icon name (without extension and path)
     :type name: str
     :return: Icon to set as icon for a button
     :rtype: QIcon
     """
-    return QIcon(f"{ASSETS_PATH}{ICONS_PATH}{name}{ICONS_EXT}")
+    return QIcon(f"{ASSETS_PATH}{ICONS_PATH}{name}{ext}")
 
 
-def get_stylesheet(file):
+def get_stylesheet(file: str) -> str:
     """
     Gets the qss content into a string
 
@@ -328,7 +330,7 @@ def get_stylesheet(file):
         return f.read()
 
 
-def tr(message):
+def tr(message: str) -> str:
     return AssetManager.getInstance().get_text(message)
 
 
@@ -453,3 +455,14 @@ class AssetManager:
         if key in self.__language_dico:
             return self.__language_dico[key]
         return "-_-"
+
+    def get_latest_version(self):
+        try:
+            r = requests.get('https://api.github.com/repos/wawachief/SalleDeClasse/releases/latest')
+            dico = r.json()
+            version = dico["tag_name"][1:]
+        except :
+            version = "0.0.0"
+        if version[-2] == "-":
+            version = version[:-2]
+        return version
