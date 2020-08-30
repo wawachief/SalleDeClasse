@@ -76,13 +76,13 @@ class SettingsEditionDialog(QDialog):
         self.unmodifiable = QLabel(tr("unmodifiable_data"))
         self.unmodifiable.setAlignment(Qt.AlignCenter)
         self.desk_size = QLineEdit(self.settings['size']['desk'])
-        self.desk_size.setEnabled(False)
+        # self.desk_size.setEnabled(False)
         self.desk_size.setFixedWidth(50)
         self.grid_rows = QLineEdit(self.settings['size']['default_room_rows'])
-        self.grid_rows.setEnabled(False)
+        # self.grid_rows.setEnabled(False)
         self.grid_rows.setFixedWidth(50)
         self.grid_cols = QLineEdit(self.settings['size']['default_room_columns'])
-        self.grid_cols.setEnabled(False)
+        # self.grid_cols.setEnabled(False)
         self.grid_cols.setFixedWidth(50)
 
         # --- Buttons ---
@@ -164,7 +164,7 @@ class SettingsEditionDialog(QDialog):
 
         Separator(self.width(), layout)
 
-        # Unmodifiable data
+        # size data
         sizes_layout = SettingsFormLayout()
         sizes_layout.setMargin(0)
         sizes_layout.addRow(tr("desk_size"), self.desk_size)
@@ -247,6 +247,18 @@ class SettingsEditionDialog(QDialog):
             self.__restart_needed = True
 
         settings['colors']['attr_colors'] = self.attr_colors
+
+        # Size settings
+
+        if self.desk_size.text() != settings['size']['desk']:
+            settings['size']['desk'] = self.desk_size.text()
+            self.__restart_needed = True
+        if self.grid_rows.text() != settings['size']['default_room_rows']:
+            settings['size']['default_room_rows'] = self.grid_rows.text()
+            self.__restart_needed = True
+        if self.grid_cols.text() != settings['size']['default_room_columns']:
+            settings['size']['default_room_columns'] = self.grid_cols.text()
+            self.__restart_needed = True
 
         return settings
 
