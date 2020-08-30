@@ -90,7 +90,9 @@ class CourseController:
         shuffle(movable_desks)
 
         i = 0
+        has_changed = False
         while i < len(movable_desks)-1:
+            has_changed = True
             d1 = movable_desks[i]
             d2 = movable_desks[(i + 1)]
             # We swap the two desks
@@ -100,8 +102,12 @@ class CourseController:
             self.v_canvas.move_tile(d1.id, (d2.row, d2.col), True)
             self.v_canvas.move_tile(d2.id, (d1.row, d1.col), True)
             i += 2
-        self.__bdd.commit()
-        self.v_canvas.repaint()
+        if has_changed :
+            self.__bdd.commit()
+            self.v_canvas.repaint()
+        else:
+            # We re-enable shuffle and perspective buttons
+            self.gui.central_widget.sig_enable_animation_btns.emit(True)
 
     # courses methods
 
