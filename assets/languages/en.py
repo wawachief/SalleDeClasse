@@ -125,7 +125,7 @@ dico = {"app_title": "Classroom",
                                "of rows and columns and their size,<br>so it might get too big for your screen.",
 
         "qr_tip": "In order for your smartphone to be able to connect to the application, it needs to share the "
-                  "same network than this computer.<br><br>It is the case when: <ul><li>Both your smartphone AND the "
+                  "same network than this computer.<br><br>It is the case in one of these situations: <ul><li>Both your smartphone AND the "
                   "computer running this software are connected to the same WIFI;</li>"
                   "<li>Your smartphone is in mode Access Point, and this computer is connected to it.</li></ul>",
 }
