@@ -28,7 +28,7 @@ class VQRCode(QDialog):
         self.has_internet = True
 
         try:
-            s.connect(('8.8.8.8', 1))  # connect() for UDP do not send packets, this will require an internet connection
+            s.connect(('8.8.8.8', 1))  # connect() for UDP does not send packets, this will require an internet connection
 
             # IP and Port
             local_ip_address = s.getsockname()[0]
