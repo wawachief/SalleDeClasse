@@ -295,4 +295,3 @@ class MainController(QObject):
         else:
             self.gui.status_bar.showMessage(tr("no_internet"), 5000)
             VInfoDialog(self.gui, tr("no_internet")).exec_()
-
