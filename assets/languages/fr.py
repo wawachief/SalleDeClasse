@@ -94,19 +94,20 @@ dico = {"app_title": "Salle de Classe",
         "need_restart": "Certains paramètres ne seront pris\nen compte qu'après le redémarrage.",
         "restart_now": "Redémarrer",
         "restart_later": "Plus tard",
-        "btn_restore": "Restaurer paramètres",
+        "btn_restore": "Restaurer les paramètres",
         "acknowledge_changes": "Vos modifications ont bien été prises en compte",
 
         "language": "Langue :",
         "csv_sep": "Séparateur CSV :",
         "bdd_path": "Chemin du fichier de données :",
         "web_port": "Port local de l'application web :",
-        "shutdown_required": "Il est nécessaire de quitter complètement l'application pour que ce paramètre soit pris en compte.",
+        "shutdown_required": "Il est nécessaire de quitter complètement l'application<br>pour que ce paramètre soit "
+                             "pris en compte.",
         "tile": "Bureaux :",
         "hovered_tile": "Bureau survolés :",
         "hovered_empty_tile": "Cases vides survolées :",
         "dragged_tile": "Bureau déplacé :",
-        "drag_selected_tile": "Bureau déplacé sélectionné:",
+        "drag_selected_tile": "Bureau déplacé sélectionné :",
         "selected_tile": "Bureau sélectionné:",
         "tile_text": "Nom des élèves :",
         "room_bg": "Classe :",
@@ -114,12 +115,18 @@ dico = {"app_title": "Salle de Classe",
         "main_bg": "Application :",
         "board_bg": "Tableau :",
         "attr_colors": "Attributs de type 'Couleur' :",
-        "desk_size": "Dimension du côté des bureaux (pixels) :",
+        "desk_size": "Hauteur - Largeur des bureaux en pixels :",
+        "font_size": "Taille de la police des bureaux",
         "grid_rows": "Nombre de lignes :",
         "grid_cols": "Nombre de colonnes :",
         "new_version": "Nouvelle version disponible : ",
         "latest_version": "Dernière version disponible :",
-        "unmodifiable_data": "<b>Il est fortement déconseillé de modifier ces paramètres.</b><br><i>Cependant, vous "
-                             "pouvez les modifier à vos risques et périls dans le fichier '.SdCrc' situé dans votre "
-                             "home.</i>"
+        "dangerous_parameter": "Attention lors de la modification de ce paramètre.<br>L'application adapte sa taille "
+                               "en fonction du nombre de lignes et colonnes et de leur taille.<br>Elle peut donc avoir "
+                               "une taille plus grande que la capacité de votre écran.",
+
+        "qr_tip": "Pour que le smartphone puisse se connecter à l'application, il faut que les deux appareils (le "
+                  "téléphone et cet ordinateur) soient connectés au même réseau.<br><br>C'est le cas lorsque :<ul><li>"
+                  "L'ordinateur ET le smartphone partagent le même WIFI ;</li>"
+                  "<li>Votre téléphone est en partage de connexion et l'ordinateur y est connecté.</li></ul>",
 }

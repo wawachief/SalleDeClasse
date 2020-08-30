@@ -72,17 +72,38 @@ class SettingsEditionDialog(QDialog):
         self.attr_colors = ""  # Chosen colors
         self.attributes_colors_chooser = AttrColorsChooser(self.settings['colors']['attr_colors'].split())
 
-        # Sizes (unmodifiable)
-        self.unmodifiable = QLabel(tr("unmodifiable_data"))
-        self.unmodifiable.setAlignment(Qt.AlignCenter)
-        self.desk_size = QLineEdit(self.settings['size']['desk'])
-        # self.desk_size.setEnabled(False)
-        self.desk_size.setFixedWidth(50)
-        self.grid_rows = QLineEdit(self.settings['size']['default_room_rows'])
-        # self.grid_rows.setEnabled(False)
+        # Sizes
+        # Desk sizes
+        self.desk_size_h = QSpinBox()
+        self.desk_size_h.setMinimum(10)
+        self.desk_size_h.setMaximum(200)
+        self.desk_size_h.setValue(int(self.settings['size']['desk_height']))
+        self.desk_size_h.setFixedWidth(50)
+
+        self.desk_size_w = QSpinBox()
+        self.desk_size_w.setMinimum(10)
+        self.desk_size_w.setMaximum(200)
+        self.desk_size_w.setValue(int(self.settings['size']['desk_width']))
+        self.desk_size_w.setFixedWidth(50)
+
+        # Font size
+        self.desk_font_size = QSpinBox()
+        self.desk_font_size.setMinimum(4)
+        self.desk_font_size.setValue(int(self.settings['size']['font_size']))
+        self.desk_font_size.setFixedWidth(50)
+
+        # Grid rows
+        self.grid_rows = QSpinBox()
+        self.grid_rows.setMinimum(1)
+        self.grid_rows.setMaximum(40)
+        self.grid_rows.setValue(int(self.settings['size']['default_room_rows']))
         self.grid_rows.setFixedWidth(50)
-        self.grid_cols = QLineEdit(self.settings['size']['default_room_columns'])
-        # self.grid_cols.setEnabled(False)
+
+        # Grid columns
+        self.grid_cols = QSpinBox()
+        self.grid_cols.setMinimum(1)
+        self.grid_cols.setMaximum(40)
+        self.grid_cols.setValue(int(self.settings['size']['default_room_columns']))
         self.grid_cols.setFixedWidth(50)
 
         # --- Buttons ---
@@ -126,7 +147,7 @@ class SettingsEditionDialog(QDialog):
         layout_port = QHBoxLayout()
         layout_port.setMargin(0)
         layout_port.addWidget(self.wepapp_port)
-        layout_port.addWidget(ShutDownToolTip())
+        layout_port.addWidget(WarningToolTip("shutdown_required"))
         widget_port.setLayout(layout_port)
         main_layout.addRow(tr("web_port"), widget_port)
 
@@ -167,12 +188,34 @@ class SettingsEditionDialog(QDialog):
         # size data
         sizes_layout = SettingsFormLayout()
         sizes_layout.setMargin(0)
-        sizes_layout.addRow(tr("desk_size"), self.desk_size)
-        sizes_layout.addRow(tr("grid_rows"), self.grid_rows)
-        sizes_layout.addRow(tr("grid_cols"), self.grid_cols)
 
-        layout.addWidget(self.unmodifiable, alignment=Qt.AlignCenter)
-        layout.addSpacing(5)
+        widget_desk = QWidget()
+        layout_desk = QHBoxLayout()
+        layout_desk.setMargin(0)
+        layout_desk.addWidget(self.desk_size_h)
+        layout_desk.addWidget(self.desk_size_w)
+        layout_desk.addWidget(WarningToolTip("dangerous_parameter"))
+        widget_desk.setLayout(layout_desk)
+        sizes_layout.addRow(tr("desk_size"), widget_desk)
+
+        sizes_layout.addRow(tr("font_size"), self.desk_font_size)
+
+        widget_rows = QWidget()
+        layout_rows = QHBoxLayout()
+        layout_rows.setMargin(0)
+        layout_rows.addWidget(self.grid_rows)
+        layout_rows.addWidget(WarningToolTip("dangerous_parameter"))
+        widget_rows.setLayout(layout_rows)
+        sizes_layout.addRow(tr("grid_rows"), widget_rows)
+
+        widget_cols = QWidget()
+        layout_cols = QHBoxLayout()
+        layout_cols.setMargin(0)
+        layout_cols.addWidget(self.grid_cols)
+        layout_cols.addWidget(WarningToolTip("dangerous_parameter"))
+        widget_cols.setLayout(layout_cols)
+        sizes_layout.addRow(tr("grid_cols"), widget_cols)
+
         layout.addLayout(sizes_layout)
 
         Separator(self.width(), layout)
@@ -250,14 +293,20 @@ class SettingsEditionDialog(QDialog):
 
         # Size settings
 
-        if self.desk_size.text() != settings['size']['desk']:
-            settings['size']['desk'] = self.desk_size.text()
+        if str(self.desk_size_h.value()) != settings['size']['desk_height']:
+            settings['size']['desk_height'] = str(self.desk_size_h.value())
             self.__restart_needed = True
-        if self.grid_rows.text() != settings['size']['default_room_rows']:
-            settings['size']['default_room_rows'] = self.grid_rows.text()
+        if str(self.desk_size_w.value()) != settings['size']['desk_width']:
+            settings['size']['desk_width'] = str(self.desk_size_w.value())
             self.__restart_needed = True
-        if self.grid_cols.text() != settings['size']['default_room_columns']:
-            settings['size']['default_room_columns'] = self.grid_cols.text()
+        if str(self.desk_font_size.value()) != settings['size']['font_size']:
+            settings['size']['font_size'] = str(self.desk_font_size.value())
+            self.__restart_needed = False
+        if str(self.grid_rows.value()) != settings['size']['default_room_rows']:
+            settings['size']['default_room_rows'] = str(self.grid_rows.value())
+            self.__restart_needed = True
+        if str(self.grid_cols.value()) != settings['size']['default_room_columns']:
+            settings['size']['default_room_columns'] = str(self.grid_cols.value())
             self.__restart_needed = True
 
         return settings
@@ -307,11 +356,13 @@ class SettingsFormLayout(QFormLayout):
         self.setLabelAlignment(Qt.AlignRight)
 
 
-class ShutDownToolTip(QLabel):
+class WarningToolTip(QLabel):
 
-    def __init__(self):
+    def __init__(self, text_key: str):
         """
         Information point that displays a tooltip when hovered
+
+        :param text_key: tooltip text
         """
         QLabel.__init__(self, "i")
         self.setFixedSize(QSize(20, 20))
@@ -320,7 +371,7 @@ class ShutDownToolTip(QLabel):
         self.setStyleSheet("font-weight: bold; border: 1px solid transparent; border-radius: 10px; "
                            "background-color: orange; color: black;")
 
-        self.setToolTip(tr("shutdown_required"))
+        self.setToolTip(tr(text_key))
 
 
 class Separator(QLabel):

@@ -311,6 +311,7 @@ class ViewMainFrame(QMainWindow):
 
             self.status_bar.showMessage(tr("acknowledge_changes"), 3000)
             self.repaint()
+            self.central_widget.classroom_tab.v_canvas.repaint()
 
             if dlg.need_restart():
                 restart_confirm = VConfirmDialog(self, "need_restart")

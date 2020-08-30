@@ -101,7 +101,8 @@ dico = {"app_title": "Classroom",
         "csv_sep": "CSV separator:",
         "bdd_path": "DataBase location:",
         "web_port": "Web App local port:",
-        "shutdown_required": "A complete shutdown of the application is required for this parameter to be acknowledged.",
+        "shutdown_required": "A complete shutdown of the application is required<br>"
+                             "for this parameter to be acknowledged.",
         "tile": "Desks:",
         "hovered_tile": "Hovered desks:",
         "hovered_empty_tile": "Empty hovered tiles:",
@@ -114,11 +115,17 @@ dico = {"app_title": "Classroom",
         "main_bg": "Application:",
         "board_bg": "Blackboard:",
         "attr_colors": "'Color' type attributes:",
-        "desk_size": "Desk side size (pixels):",
+        "desk_size": "Desk Height - Width in pixels:",
+        "font_size": "Desk font size:",
         "grid_rows": "Number of rows:",
         "grid_cols": "Number of columns:",
-        "new_version": "New version available : ",
-        "latest_version": "Latest version available :",
-        "unmodifiable_data": "<b>It is not advised to edit those parameters.</b><br><i>You can edit them anyway "
-                             "at your own risks in the file '.SdCrc' located in your home repository.</i>"
+        "new_version": "New version available: ",
+        "latest_version": "Latest version available:",
+        "dangerous_parameter": "Be careful with this parameter.<br>The application window adapts itself to the number "
+                               "of rows and columns and their size,<br>so it might get too big for your screen.",
+
+        "qr_tip": "In order for your smartphone to be able to connect to the application, it needs to share the "
+                  "same network than this computer.<br><br>It is the case when: <ul><li>Both your smartphone AND the "
+                  "computer running this software are connected to the same WIFI;</li>"
+                  "<li>Your smartphone is in mode Access Point, and this computer is connected to it.</li></ul>",
 }
