@@ -6,8 +6,8 @@
 
 def process_line(ln, csv_sep):
     name = ln.split(csv_sep)[0]
-    if '"' in name or "'" in name:
-        name = eval(name)
+    if name[0] == name[-1] and name[0] in ['"', "'"]:
+        name = name[1:-1]
     nom_prenom = name.split(" ")
     if len(nom_prenom) == 2:
         return nom_prenom

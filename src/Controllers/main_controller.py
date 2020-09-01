@@ -214,28 +214,6 @@ class MainController(QObject):
         self.actions_table[action_key]()
 
     @Slot()
-    def on_config_changed(self):
-        """
-        Triggered when the user switched configuration mode
-        Refresh the student list
-        """
-
-        if self.gui.get_config():
-            # Mode config is on, push group list
-            current_group = self.mod_bdd.get_group_name_by_id(self.id_group)
-            self.gui.sidewidget.students().set_students_list(self.mod_bdd.get_students_in_group(current_group))
-        else:
-            # Mode config is off, push students visible in the canvas inside the list
-            students_in_course = self.mod_bdd.get_students_in_course_by_id(self.id_course)
-            self.gui.sidewidget.students().set_students_list(students_in_course)
-        self.course_ctrl.synchronize_canvas_selection_with_side_list()
-
-    @Slot()
-    def close_qr(self):
-        if self.qr_dialog and self.qr_dialog.isVisible():
-            self.qr_dialog.close()
-
-    @Slot()
     def do_quit(self, exit_code):
         self.v_canvas.application_closing()
         self.__bdd.close()
