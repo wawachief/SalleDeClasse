@@ -301,7 +301,7 @@ class SettingsEditionDialog(QDialog):
             self.__restart_needed = True
         if str(self.desk_font_size.value()) != settings['size']['font_size']:
             settings['size']['font_size'] = str(self.desk_font_size.value())
-            self.__restart_needed = False
+            #self.__restart_needed = False
         if str(self.grid_rows.value()) != settings['size']['default_room_rows']:
             settings['size']['default_room_rows'] = str(self.grid_rows.value())
             self.__restart_needed = True
