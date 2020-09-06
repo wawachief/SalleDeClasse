@@ -283,4 +283,4 @@ class MainController(QObject):
         Given the hoverred desk id, this method will set the associated student ID info to the canvas in order for it
         to draw the associated student image
         """
-        self.v_canvas.photo_std_id = self.mod_bdd.get_student_by_desk_id(desk_id).id
+        self.v_canvas.students_ids[desk_id] = self.mod_bdd.get_student_by_desk_id(desk_id).id
