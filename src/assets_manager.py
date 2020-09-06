@@ -332,12 +332,19 @@ def get_stylesheet(file: str) -> str:
 
 def get_student_img(id_std: int) -> QImage:
     """
-    Gets the student image associated to the ID
+    Gets the student image associated to the ID (tries with .png and .jpg extensions)
+
     :param id_std: id of the student
     :return: his/her associated photo
     """
-    return QImage(path.expanduser(AssetManager.getInstance().config("main", "bdd_path").
-                                 replace("sdc_db", "sdc_photos/" + str(id_std) + ".png")))
+    img_path = path.expanduser(AssetManager.getInstance().config("main", "bdd_path").
+                                 replace("sdc_db", "sdc_photos/" + str(id_std)))
+    if path.exists(img_path + ".png"):
+        img_path += ".png"
+    else:
+        img_path += ".jpg"
+
+    return QImage(img_path)
 
 
 def tr(message: str) -> str:

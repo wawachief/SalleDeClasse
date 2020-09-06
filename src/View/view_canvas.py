@@ -289,7 +289,8 @@ class ViewCanvas(QWidget):
 
         # For student photos
         self.tile_hover_for_photo: tuple = ()  # mouse positions of hovered tile
-        self.photo_std_id: int = -1
+        self.photo_desk_id: int = -1  # Desk id of the student to display the photo from
+        self.students_ids = {}
         self.do_show_photo = False  # Show photo flag
 
         self.is_view_students = True
@@ -496,7 +497,11 @@ class ViewCanvas(QWidget):
                 color = QColor(AssetManager.getInstance().config('colors', 'tile'))
 
                 if self.__is_tile_correct_for_show_photo(t):
-                    self.sig_std_id.emit(t.id())
+                    if t.id() not in self.students_ids:
+                        # if not known yet, add the student ID given the desk id
+                        self.sig_std_id.emit(t.id())
+                    # Set the student's desk id for the photo to be displayed
+                    self.photo_desk_id = t.id()
 
             rect = self.__get_rect_at(y, x)
             painter.fillRect(rect, color)
@@ -509,8 +514,8 @@ class ViewCanvas(QWidget):
             self.__draw_dragged_tile(painter, tile_selected, self.__mouse_pos[0], self.__mouse_pos[1])
 
         # Photo to draw
-        if self.photo_std_id != -1:
-            img = get_student_img(self.photo_std_id)
+        if self.photo_desk_id != -1:
+            img = get_student_img(self.students_ids[self.photo_desk_id])
             rect = self.__get_rect_at(self.tile_hover_for_photo[1], self.tile_hover_for_photo[0])
 
             # Hit frame right side
@@ -522,7 +527,7 @@ class ViewCanvas(QWidget):
                 rect = QRect(QPoint(rect.topLeft().x(), rect.topLeft().y() - img.height()), QPoint(rect.bottomRight()))
 
             painter.drawImage(rect.topLeft(), img)
-            self.photo_std_id = -1  # Reset for next time
+            self.photo_desk_id = -1  # Reset for next time
 
     def __is_tile_correct_for_show_photo(self, t: ViewTile) -> bool:
         """
