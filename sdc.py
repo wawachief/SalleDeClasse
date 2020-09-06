@@ -51,7 +51,6 @@ def start_app():
             app = QApplication(sys.argv)
         except RuntimeError:
             app = QtCore.QCoreApplication.instance()
-        print("app OK")
         flask = flask_app.FlaskThread()
         ctrl = MainController()
 

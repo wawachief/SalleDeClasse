@@ -1,6 +1,7 @@
 # Salle de classe by Lecluse DevCorp
 # file author : Olivier Lecluse
 # Licence GPL-v3 - see LICENCE.txt
+import tempfile
 
 from PySide2.QtCore import Slot
 
@@ -225,10 +226,10 @@ class GroupController:
 
     def import_photos(self):
         """Import photos from a group photo"""
-        tombinoscope = "/home/wawa/Bureau/trompbi.png" # TODO
+        trombinoscope = "/home/wawa/Bureau/trombi.png" # TODO
         photo_path = get_photo_path()
 
-        img = cv2.imread(tombinoscope)
+        img = cv2.imread(trombinoscope)
         # convert image to grayscale
         grey_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         col_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -284,9 +285,11 @@ class GroupController:
                 dico_sort[(center_x, center_y)] = pil_image
 
             # Visual check
-            cv2.imshow("image", img)
-            cv2.waitKey()
-            if VConfirmDialog(self.gui, "all_faces_ok").exec_():
+
+            tmp_path = tempfile.mktemp()+".png"
+            Image.fromarray(img, mode='RGB').save(tmp_path)
+
+            if VConfirmDialog(self.gui, "all_faces_ok", img_path=tmp_path).exec_():
                 # row detection
                 rows = []
                 keys = dico_sort.keys()
@@ -310,5 +313,5 @@ class GroupController:
                             keys_in_row.append(k)
                     keys_in_row.sort()
                     for k in keys_in_row:
-                        dico_sort[k].save(photo_path + str(stdid_to_import[id_img]) + ".png")
+                        dico_sort[k].save(photo_path + str(stdid_to_import[id_img][0]) + ".png")
                         id_img += 1

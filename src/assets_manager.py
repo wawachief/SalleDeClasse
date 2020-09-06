@@ -330,7 +330,7 @@ def get_stylesheet(file: str) -> str:
         return f.read()
 
 def get_photo_path():
-    photo_path =  path.expanduser(AssetManager.getInstance().config("main", "bdd_path").replace("sdc_db", "/"))
+    photo_path =  path.expanduser(AssetManager.getInstance().config("main", "bdd_path").replace("sdc_db", "/sdc_photos/"))
     if not path.isdir(photo_path):
         makedirs(photo_path)
     return photo_path
@@ -347,7 +347,11 @@ def get_student_img(id_std: int) -> QImage:
         img_path += ".png"
     else:
         img_path += ".jpg"
-    return QImage(img_path)
+
+    img = QImage(img_path)
+    if not img.isNull():
+        img = img.scaledToWidth(int(AssetManager.getInstance().config("photos", "photo_width")))
+    return img
 
 
 def tr(message: str) -> str:
