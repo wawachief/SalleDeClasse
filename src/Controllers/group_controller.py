@@ -212,8 +212,7 @@ class GroupController:
 
     def sort_alpha(self, desc):
         self.gui.status_bar.showMessage(tr("grp_action_alpha_sort"), 3000)
-        group_name = self.mod_bdd.get_group_name_by_id(self.main_ctrl.id_group)
-        list_students = self.mod_bdd.get_students_in_group(group_name)
+        list_students = self.mod_bdd.get_students_in_course_by_id(self.main_ctrl.id_course)
         sortlist = [(s.lastname, s.id) for s in list_students]
         sortlist.sort(reverse=desc)
         orderkey = 1
