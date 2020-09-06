@@ -98,8 +98,8 @@ dico = {"app_title": "Classroom",
         "acknowledge_changes": "Your changes have been saved",
 
         "faces_found": " faces found",
-        "std_faces_match" : "Attention : nb of detected faces<br>does not match the number of students",
-        "all_faces_ok": "Are all faces detected correctly?",
+        "std_faces_match" : "Attention : The number of faces does not match the number of students<br>Retry the procedure by selecting on the plan all non detected students",
+        "all_faces_ok": "All faces are detected<br>Shall we proceed ?",
         "action_import_photo" : "Photo import",
         "trombi_path" : "Path to big picture",
 
