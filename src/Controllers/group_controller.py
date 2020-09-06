@@ -260,61 +260,62 @@ class GroupController:
         stdid_to_import = [(d.id_student, self.mod_bdd.get_student_order_by_id(d.id_student))
                            for d in all_desks if d.id not in selected_desks_id and d.id_student != 0]
 
-        if len(stdid_to_import) != len(faces) :
-            # problem : nb of detected faces does not match the number of students
-            VInfoDialog(self.gui, tr("std_faces_match")).exec_()
-        else:
-            # now we can import faces in png files
+        # now we can import faces in png files
+        # first we sort the student list
+        stdid_to_import.sort(key=lambda x:x[1])
 
-            # first we sort the student list
-            stdid_to_import.sort(key=lambda x:x[1])
+        # We draw a frame around the faces
+        dico_sort = dict()
+        maxh = 0  # max face height
+        for (x, y, w, h) in faces:
+            if h > maxh:
+                maxh = h
+            center_x = x + w // 2
+            center_y = y + h // 2
+            top, bottom = center_y + int(h * zoomFace), center_y - int(h * zoomFace)
+            left, right = center_x - int(w * zoomFace), center_x + int(w * zoomFace)
+            cv2.rectangle(col_img,
+                          (left, bottom),
+                          (right, top),
+                          (0, 255, 0), 2)
+            face_image = col_img[bottom:top, left:right]
+            pil_image = Image.fromarray(face_image, mode='RGB')
+            dico_sort[(center_x, center_y)] = pil_image
 
-            # We draw a frame around the faces
-            dico_sort = dict()
-            maxh = 0  # max face height
-            for (x, y, w, h) in faces:
-                if h > maxh:
-                    maxh = h
-                center_x = x + w // 2
-                center_y = y + h // 2
-                top, bottom = center_y + int(h * zoomFace), center_y - int(h * zoomFace)
-                left, right = center_x - int(w * zoomFace), center_x + int(w * zoomFace)
-                cv2.rectangle(col_img,
-                              (left, bottom),
-                              (right, top),
-                              (0, 255, 0), 2)
-                face_image = col_img[bottom:top, left:right]
-                pil_image = Image.fromarray(face_image, mode='RGB')
-                dico_sort[(center_x, center_y)] = pil_image
+        # Visual check
 
-            # Visual check
+        tmp_path = tempfile.mktemp()+".png"
+        Image.fromarray(col_img, mode='RGB').save(tmp_path)
 
-            tmp_path = tempfile.mktemp()+".png"
-            Image.fromarray(col_img, mode='RGB').save(tmp_path)
+        if len(stdid_to_import) != len(faces):
+        # problem : nb of detected faces does not match the number of students
+            VInfoDialog(self.gui, tr("std_faces_match"), img_path=tmp_path).exec_()
+            # can't continue with the import procedure
+            return
 
-            if VConfirmDialog(self.gui, "all_faces_ok", img_path=tmp_path).exec_():
-                # row detection
-                rows = []
-                keys = dico_sort.keys()
-                maxh = maxh * 1.2
-                for k in keys:
-                    # search for an existing row for k[1]
-                    in_row = False
-                    for r in rows:
-                        if r - maxh <= k[1] <= r + maxh:
-                            in_row = True
-                            break
-                    if not in_row:
-                        rows.append(k[1])
-
-                # sort the photos, row by row
-                id_img = 0
+        if VConfirmDialog(self.gui, "all_faces_ok", img_path=tmp_path).exec_():
+            # row detection
+            rows = []
+            keys = dico_sort.keys()
+            maxh = maxh * 1.2
+            for k in keys:
+                # search for an existing row for k[1]
+                in_row = False
                 for r in rows:
-                    keys_in_row = []
-                    for k in keys:
-                        if r - maxh <= k[1] <= r + maxh:
-                            keys_in_row.append(k)
-                    keys_in_row.sort()
-                    for k in keys_in_row:
-                        dico_sort[k].save(photo_path + str(stdid_to_import[id_img][0]) + ".png")
-                        id_img += 1
+                    if r - maxh <= k[1] <= r + maxh:
+                        in_row = True
+                        break
+                if not in_row:
+                    rows.append(k[1])
+
+            # sort the photos, row by row
+            id_img = 0
+            for r in rows:
+                keys_in_row = []
+                for k in keys:
+                    if r - maxh <= k[1] <= r + maxh:
+                        keys_in_row.append(k)
+                keys_in_row.sort()
+                for k in keys_in_row:
+                    dico_sort[k].save(photo_path + str(stdid_to_import[id_img][0]) + ".png")
+                    id_img += 1

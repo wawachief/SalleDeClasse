@@ -98,8 +98,8 @@ dico = {"app_title": "Salle de Classe",
         "acknowledge_changes": "Vos modifications ont bien été prises en compte",
 
         "faces_found": " visages détectés",
-        "std_faces_match": "Attention : Le nombre de visages<br>ne correspond pas au nombre d'élèves",
-        "all_faces_ok": "Tous les visages sont-ils bien détectés ?",
+        "std_faces_match": "Attention : Le nombre de visages ne correspond pas au nombre d'élèves<br>Recommencez en sélectionnant sur le plan les élèves non détectés",
+        "all_faces_ok": "Tous les visages sont détectés<br>Voulez-vous poursuivre l'import ?",
         "action_import_photo": "Importer des photos",
         "trombi_path": "Emplacement du trombinoscpe global",
 
