@@ -2,8 +2,8 @@
 # file author : Thomas Lecluse
 # Licence GPL-v3 - see LICENCE.txt
 
-from PySide2.QtCore import Qt, QPropertyAnimation, QSize, QPoint, Signal
-from PySide2.QtGui import QPainter, QLinearGradient, QColor, QPen, QRadialGradient, QBrush, QPixmap, QImage
+from PySide2.QtCore import Qt, QPropertyAnimation, QSize, QPoint, Signal, QEvent
+from PySide2.QtGui import QPainter, QLinearGradient, QColor, QPen, QRadialGradient, QBrush, QPixmap, QImage, QMouseEvent
 from PySide2.QtWidgets import QWidget, QLabel, QVBoxLayout
 
 from src.assets_manager import ASSETS_PATH, ICONS_PATH
@@ -26,13 +26,13 @@ class ToggleSwitchButton(QWidget):
         self.off = f"{ASSETS_PATH}{ICONS_PATH}{off_icon}.png"
 
         # Widtgets
-        self.switch = SwitchButton(parent, "", 10, "", 30, 45)
+        self.switch = SwitchButton(parent, "", 10, "", 30, 40)
         # 2 actions to perform
         self.switch.clicked.connect(callback)
         self.switch.clicked.connect(lambda v: self.lab.setPixmap(QPixmap(QImage(self.on if v else self.off))))
 
         self.lab = QLabel()
-        self.lab.setFixedSize(35, 35)
+        self.lab.setFixedSize(25, 25)
         self.lab.setScaledContents(True)
         self.lab.setPixmap(QPixmap(QImage(self.off)))
 
@@ -41,11 +41,20 @@ class ToggleSwitchButton(QWidget):
 
         # Layout
         layout = QVBoxLayout()
+        layout.setContentsMargins(0, 10, 0, 10)
         layout.addWidget(self.lab)
         layout.setAlignment(self.lab, Qt.AlignCenter)
         layout.addWidget(self.switch)
         layout.setAlignment(self.switch, Qt.AlignCenter)
         self.setLayout(layout)
+
+    def set_value(self, do_enable):
+        """
+        Sets the specified value for the toggle switch
+        """
+        if do_enable != self.switch.is_on():
+            self.lab.mousePressEvent(QMouseEvent(
+                QEvent.MouseButtonPress, self.lab.rect().center(), Qt.LeftButton, Qt.LeftButton, Qt.NoModifier))
 
 
 # --- Following widget found on: https://stackoverflow.com/a/51023362 ---
@@ -77,6 +86,9 @@ class SwitchButton(QWidget):
         self.__circle.move(2, 2)
         self.__labelon.move(l1, 5)
         self.__labeloff.move(l2, 5)
+
+    def is_on(self):
+        return self.__value
 
     def setDuration(self, time):
         self.__duration = time

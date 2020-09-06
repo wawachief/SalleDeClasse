@@ -4,11 +4,12 @@
 
 import typing
 
-from PySide2.QtGui import QColor
-from PySide2.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton, QTableView, QAbstractItemView, QHeaderView
+from PySide2.QtGui import QColor, QPixmap
+from PySide2.QtWidgets import QDialog, QLabel, QPushButton, QTableView, QAbstractItemView, QHeaderView, QGridLayout, \
+    QFormLayout
 from PySide2.QtCore import Qt, QSize, Signal, QAbstractTableModel, QModelIndex
 
-from src.assets_manager import get_stylesheet
+from src.assets_manager import get_stylesheet, get_student_img, tr
 
 from src.Model.mod_types import Student
 
@@ -33,7 +34,8 @@ class VStdAttributesDialog(QDialog):
         self.attributes = attributes
 
         # Widgets
-        self.std_info = QLabel(f"{student.firstname} {student.lastname}")
+        self.std_photo = QLabel()
+        self.std_photo.setPixmap(QPixmap(get_student_img(student.id)))
 
         self.table_attributes = QTableView()
         self.table_attributes.setFixedWidth(300)
@@ -57,12 +59,16 @@ class VStdAttributesDialog(QDialog):
         self.table_attributes.clicked.connect(self.on_attr_clicked)
 
         # Layout
-        layout = QVBoxLayout()
-        layout.addWidget(self.std_info)
-        layout.setAlignment(self.std_info, Qt.AlignCenter)
-        layout.addWidget(self.table_attributes)
-        layout.addWidget(self.ok_btn)
-        layout.setAlignment(self.ok_btn, Qt.AlignCenter)
+        std_info_layout = QFormLayout()
+        std_info_layout.addRow(tr("grp_name") + " :", QLabel(student.firstname))
+        std_info_layout.addRow(tr("grp_surname") + " :", QLabel(student.lastname))
+        std_info_layout.addRow(tr("std_nb") + " :", QLabel(str(student.id)))
+
+        layout = QGridLayout()
+        layout.addWidget(self.std_photo, 0, 0, alignment=Qt.AlignCenter)
+        layout.addLayout(std_info_layout, 0, 1, alignment=Qt.AlignCenter)
+        layout.addWidget(self.table_attributes, 1, 0, 1, 2, alignment=Qt.AlignCenter)
+        layout.addWidget(self.ok_btn, 2, 0, 1, 2, alignment=Qt.AlignCenter)
         self.setLayout(layout)
 
         self.setStyleSheet(get_stylesheet("dialog"))

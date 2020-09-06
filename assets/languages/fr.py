@@ -129,4 +129,6 @@ dico = {"app_title": "Salle de Classe",
                   "téléphone et cet ordinateur) soient connectés au même réseau.<br><br>C'est le cas lorsque :<ul>"
                   "<li>L'ordinateur ET le smartphone partagent le même WIFI ;</li>"
                   "<li>Votre téléphone est en partage de connexion et l'ordinateur y est connecté.</li></ul>",
+
+        "std_nb": "Identifiant SdC"
 }

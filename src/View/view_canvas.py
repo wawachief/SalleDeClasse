@@ -7,7 +7,7 @@ from PySide2.QtGui import QPainter, QColor, QPen, QPalette, QFont, QPixmap, QReg
 from PySide2.QtCore import QPoint, QRect, Qt, Signal, Slot, QTimer, QThread, QObject
 
 from src.View.popup.view_printer import CustomPrinterDialog
-from src.assets_manager import AssetManager
+from src.assets_manager import AssetManager, get_student_img
 
 from time import sleep
 
@@ -281,20 +281,27 @@ class ViewCanvas(QWidget):
         self.desk_h_size = int(AssetManager.getInstance().config('size', 'desk_height'))
         self.desk_w_size = int(AssetManager.getInstance().config('size', 'desk_width'))
         self.setAutoFillBackground(True)
+        self.setMouseTracking(True)
 
         self.__tiles = {}  # All drawn tiles
         self.tmp = {}
         self.hovered = False
 
+        # For student photos
+        self.tile_hover_for_photo: tuple = ()  # mouse positions of hovered tile
+        self.photo_std_id: int = -1
+        self.do_show_photo = False  # Show photo flag
+
         self.is_view_students = True
         self.__do_switch = False
-        self.__is_config = False
+        self.__is_config = False  # Mode config, the user can interact with tiles positions
 
         self.sig_canvas_click = None  # Signal triggered when a click is performed on a desk
         self.sig_desk_selected = None  # Signal triggered when a non empty desk is selected
         self.sig_canvas_drag = None  # Signal triggered when a drag operation is performed on the canvas
         self.sig_select_tile = None  # pushed by the controller. emits when tile selection change.
         self.sig_tile_info = None  # Signal triggered when a right-click is performed on a desk. Info is to be displayed
+        self.sig_std_id = None  # Signal triggered on tile hover when not in config mode to get the student image
         self.sig_move_animation_ended = sig_move_animation_ended
 
         # Tracking for drag/drop operation
@@ -487,6 +494,10 @@ class ViewCanvas(QWidget):
                 color = QColor(AssetManager.getInstance().config('colors', 'selected_tile'))
             else:  # Regular tile
                 color = QColor(AssetManager.getInstance().config('colors', 'tile'))
+
+                if self.__is_tile_correct_for_show_photo(t):
+                    self.sig_std_id.emit(t.id())
+
             rect = self.__get_rect_at(y, x)
             painter.fillRect(rect, color)
             painter.drawText(rect, Qt.AlignCenter | Qt.TextWordWrap, f"{t.lastname()}\n{t.firstname()}")
@@ -496,6 +507,37 @@ class ViewCanvas(QWidget):
                 and tile_selected and self.__mouse_pos and self.__is_config:
             # If the mouse is no longer hover the clicked tile we draw the dragged tile
             self.__draw_dragged_tile(painter, tile_selected, self.__mouse_pos[0], self.__mouse_pos[1])
+
+        # Photo to draw
+        if self.photo_std_id != -1:
+            img = get_student_img(self.photo_std_id)
+            rect = self.__get_rect_at(self.tile_hover_for_photo[1], self.tile_hover_for_photo[0])
+
+            # Hit frame right side
+            if rect.topRight().x() > self.desk_w_size * self.nb_columns:
+                rect = QRect(QPoint(rect.topLeft().x() - img.width(), rect.topLeft().y()), QPoint(rect.bottomLeft()))
+
+            # Hit frame bottom
+            if rect.bottomLeft().y() > self.desk_h_size * self.nb_rows:
+                rect = QRect(QPoint(rect.topLeft().x(), rect.topLeft().y() - img.height()), QPoint(rect.bottomRight()))
+
+            painter.drawImage(rect.topLeft(), img)
+            self.photo_std_id = -1  # Reset for next time
+
+    def __is_tile_correct_for_show_photo(self, t: ViewTile) -> bool:
+        """
+        Checks if the given tile is the one to show the photo of (if the config allows it)
+
+        Valid if:
+        - Mode config is OFF
+        - Show photo flag is ON
+        - Mouse is above a tile
+        - The hovered tile has a student inside it (firstname and lastname are set)
+        - Relative grid tile position is equal to the mouse position converted to row/column
+        """
+        return not self.__is_config and self.do_show_photo and self.tile_hover_for_photo and t.firstname() and \
+               t.lastname() and self.__convert_point(self.tile_hover_for_photo[0], self.tile_hover_for_photo[1]) == \
+                        self.__relative_grid_position(t.grid_position())
 
     def __draw_dragged_tile(self, painter, tile, x, y):
         """
@@ -560,10 +602,16 @@ class ViewCanvas(QWidget):
         """
         Updates the mouse position
         """
-        if not self.__click_pos or not self.__is_config:  # The drag operation is performed only with a left click
+        if not self.__click_pos or not self.__is_config:
+            if not self.__is_config:
+                # Draw photo
+                self.tile_hover_for_photo = (event.y(), event.x())
+                self.repaint()
             return
 
+        # The drag operation is performed only with a left click in config mode
         self.__mouse_pos = (event.y(), event.x())
+        self.tile_hover_for_photo = ()
         self.repaint()
 
     def mouseReleaseEvent(self, event):

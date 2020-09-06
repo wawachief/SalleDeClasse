@@ -235,6 +235,7 @@ class ViewMainFrame(QMainWindow):
         self.maintoolbar.on_btn_perspective_clicked = self.central_widget.on_perspective_changed
         self.maintoolbar.on_btn_shuffle_clicked = self.central_widget.do_shuffle
         self.maintoolbar.on_config_mode = self.on_config_mode
+        self.maintoolbar.on_show_photo = self.on_show_photo
         self.maintoolbar.on_export_csv = self.on_export_csv
         self.maintoolbar.on_edit_config = self.on_edit_config
         self.maintoolbar.open_about_box = lambda: AboutFrame(self.bdd_version).exec_()
@@ -272,6 +273,12 @@ class ViewMainFrame(QMainWindow):
         self.sidewidget.students().students_toolbar.switch_config_mode(self.__config_mode)
 
         self.sig_config_mode_changed.emit()
+
+    def on_show_photo(self) -> None:
+        """
+        Switch the show photo flag in the canvas
+        """
+        self.central_widget.classroom_tab.v_canvas.do_show_photo = not self.central_widget.classroom_tab.v_canvas.do_show_photo
 
     def get_config(self) -> bool:
         """
