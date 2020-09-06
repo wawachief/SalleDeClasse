@@ -529,7 +529,7 @@ class ViewCanvas(QWidget):
             painter.drawImage(rect.topLeft(), img)
             self.photo_desk_id = -1  # Reset for next time
 
-            if AssetManager.getInstance().config("photos", "use_masks"):
+            if eval(AssetManager.getInstance().config("photos", "use_masks")):
                 top_left_x = rect.topLeft().x() + img.width() // 3
                 top_left_y = rect.topLeft().y() + img.height() * 5 // 9
 
