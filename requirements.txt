@@ -9,4 +9,4 @@ configparser
 engineio.client
 requests
 pillow
-opencv-python
+opencv-contrib-python-headless
