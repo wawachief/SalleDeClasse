@@ -529,12 +529,12 @@ class ViewCanvas(QWidget):
             painter.drawImage(rect.topLeft(), img)
             self.photo_desk_id = -1  # Reset for next time
 
-            if AssetManager.getInstance().config("covid-19", "use_masks"):
+            if AssetManager.getInstance().config("photos", "use_masks"):
                 top_left_x = rect.topLeft().x() + img.width() // 3
-                top_left_y = rect.topLeft().y() + img.height() * 2 // 9
+                top_left_y = rect.topLeft().y() + img.height() * 5 // 9
 
                 bottom_right_x = rect.topLeft().x() + img.width() * 2 // 3
-                bottom_right_y = rect.topLeft().y() + img.height() * 4 // 9
+                bottom_right_y = rect.topLeft().y() + img.height() * 7 // 9
 
                 painter.fillRect(QRect(QPoint(top_left_x, top_left_y), QPoint(bottom_right_x, bottom_right_y)), QColor("#55CECE"))
 

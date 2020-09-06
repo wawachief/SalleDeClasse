@@ -4,7 +4,7 @@
 import tempfile
 
 from PySide2.QtCore import Slot
-
+from PySide2.QtWidgets import QFileDialog
 from src.Model.import_csv import import_csv, process_line
 
 from src.View.popup.view_info_dialog import VInfoDialog
@@ -226,7 +226,10 @@ class GroupController:
 
     def import_photos(self):
         """Import photos from a group photo"""
-        trombinoscope = "/home/wawa/Bureau/trombi.png" # TODO
+        trombinoscope = QFileDialog.getOpenFileName(self.gui, tr("trombi_path"),
+                                                    get_photo_path())[0]
+        if not trombinoscope:
+            return
         photo_path = get_photo_path()
 
         img = cv2.imread(trombinoscope)
@@ -276,7 +279,7 @@ class GroupController:
                 center_y = y + h // 2
                 top, bottom = center_y + int(h * zoomFace), center_y - int(h * zoomFace)
                 left, right = center_x - int(w * zoomFace), center_x + int(w * zoomFace)
-                cv2.rectangle(img,
+                cv2.rectangle(col_img,
                               (left, bottom),
                               (right, top),
                               (0, 255, 0), 2)
@@ -287,7 +290,7 @@ class GroupController:
             # Visual check
 
             tmp_path = tempfile.mktemp()+".png"
-            Image.fromarray(img, mode='RGB').save(tmp_path)
+            Image.fromarray(col_img, mode='RGB').save(tmp_path)
 
             if VConfirmDialog(self.gui, "all_faces_ok", img_path=tmp_path).exec_():
                 # row detection

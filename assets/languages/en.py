@@ -101,6 +101,7 @@ dico = {"app_title": "Classroom",
         "std_faces_match" : "Attention : nb of detected faces<br>does not match the number of students",
         "all_faces_ok": "Are all faces detected correctly?",
         "action_import_photo" : "Photo import",
+        "trombi_path" : "Path to big picture",
 
         "language": "Language:",
         "csv_sep": "CSV separator:",
