@@ -529,6 +529,15 @@ class ViewCanvas(QWidget):
             painter.drawImage(rect.topLeft(), img)
             self.photo_desk_id = -1  # Reset for next time
 
+            if AssetManager.getInstance().config("covid-19", "use_masks"):
+                top_left_x = rect.topLeft().x() + img.width() // 3
+                top_left_y = rect.topLeft().y() + img.height() * 2 // 9
+
+                bottom_right_x = rect.topLeft().x() + img.width() * 2 // 3
+                bottom_right_y = rect.topLeft().y() + img.height() * 4 // 9
+
+                painter.fillRect(QRect(QPoint(top_left_x, top_left_y), QPoint(bottom_right_x, bottom_right_y)), QColor("#55CECE"))
+
     def __is_tile_correct_for_show_photo(self, t: ViewTile) -> bool:
         """
         Checks if the given tile is the one to show the photo of (if the config allows it)
