@@ -73,7 +73,6 @@ class MainController(QObject):
         Application main controller.
         """
         QObject.__init__(self)
-
         # Create the Views
         self.gui = ViewMainFrame(self.sig_quit, self.sig_config_mode_changed, self.sig_export_csv)
         self.v_canvas = self.gui.central_widget.classroom_tab.v_canvas
@@ -165,6 +164,7 @@ class MainController(QObject):
             "sort_desks_U": lambda: self.course_ctrl.sort_desks(sort_type="U"),
             "killstudent": self.group_ctrl.killstudent,
             "delete_group": self.group_ctrl.on_delete_group,
+            "import_photos": self.group_ctrl.import_photos,
 
             # Toolbar buttons
             "filter_select": self.attr_ctrl.change_filter_selection,

@@ -97,6 +97,11 @@ dico = {"app_title": "Salle de Classe",
         "btn_restore": "Restaurer les paramètres",
         "acknowledge_changes": "Vos modifications ont bien été prises en compte",
 
+        "faces_found" : " visages détectés",
+        "std_faces_match" : "Attention : Le nombre de visages<br>ne correspond pas au nombre d'élèves",
+        "all_faces_ok" : "Tous les visages sont-ils bien détectés ?",
+        "action_import_photo" : "Importer des photos",
+
         "language": "Langue :",
         "csv_sep": "Séparateur CSV :",
         "bdd_path": "Chemin du fichier de données :",

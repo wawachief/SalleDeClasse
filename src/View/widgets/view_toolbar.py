@@ -234,6 +234,7 @@ class ViewStudentListToolbar(QToolBar):
                                           [(tr("grp_action_import_csv"), "import_csv"),
                                            (tr("grp_action_create_group"), "create_group"),
                                            (tr("grp_action_del_group"), "delete_group"),
+                                           (tr("action_import_photo"), "import_photos"),
                                            'sep',
                                            (tr("grp_action_create_student"), "create_student"),
                                            (tr("grp_action_del_student"), "killstudent"),

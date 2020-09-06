@@ -5,7 +5,7 @@
 from PySide2.QtGui import QIcon, QImage
 from importlib import import_module
 from configparser import ConfigParser
-from os import path
+from os import path, makedirs
 import shutil
 import requests
 
@@ -329,6 +329,11 @@ def get_stylesheet(file: str) -> str:
     with open(ASSETS_PATH + STYLE_PATH + file + STYLE_EXT, "r") as f:
         return f.read()
 
+def get_photo_path():
+    photo_path =  path.expanduser(AssetManager.getInstance().config("main", "bdd_path").replace("sdc_db", "/"))
+    if not path.isdir(photo_path):
+        makedirs(photo_path)
+    return photo_path
 
 def get_student_img(id_std: int) -> QImage:
     """
@@ -337,13 +342,11 @@ def get_student_img(id_std: int) -> QImage:
     :param id_std: id of the student
     :return: his/her associated photo
     """
-    img_path = path.expanduser(AssetManager.getInstance().config("main", "bdd_path").
-                                 replace("sdc_db", "sdc_photos/" + str(id_std)))
+    img_path = get_photo_path() + str(id_std)
     if path.exists(img_path + ".png"):
         img_path += ".png"
     else:
         img_path += ".jpg"
-
     return QImage(img_path)
 
 

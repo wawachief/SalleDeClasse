@@ -97,6 +97,11 @@ dico = {"app_title": "Classroom",
         "btn_restore": "Restore defaults",
         "acknowledge_changes": "Your changes have been saved",
 
+        "faces_found": " faces found",
+        "std_faces_match" : "Attention : nb of detected faces<br>does not match the number of students",
+        "all_faces_ok": "Are all faces detected correctly?",
+        "action_import_photo" : "Photo import",
+
         "language": "Language:",
         "csv_sep": "CSV separator:",
         "bdd_path": "DataBase location:",

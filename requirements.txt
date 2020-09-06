@@ -8,3 +8,5 @@ eventlet
 configparser
 engineio.client
 requests
+pillow
+opencv-python
