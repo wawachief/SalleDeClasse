@@ -2,10 +2,10 @@
 # file author : Thomas & Olivier Lecluse
 # Licence GPL-v3 - see LICENCE.txt
 
-from PySide2.QtGui import QIcon
+from PySide2.QtGui import QIcon, QImage
 from importlib import import_module
 from configparser import ConfigParser
-from os import path
+from os import path, makedirs
 import shutil
 import requests
 
@@ -328,6 +328,30 @@ def get_stylesheet(file: str) -> str:
     """
     with open(ASSETS_PATH + STYLE_PATH + file + STYLE_EXT, "r") as f:
         return f.read()
+
+def get_photo_path():
+    photo_path =  path.expanduser(AssetManager.getInstance().config("main", "bdd_path").replace("sdc_db", "/sdc_photos/"))
+    if not path.isdir(photo_path):
+        makedirs(photo_path)
+    return photo_path
+
+def get_student_img(id_std: int) -> QImage:
+    """
+    Gets the student image associated to the ID (tries with .png and .jpg extensions)
+
+    :param id_std: id of the student
+    :return: his/her associated photo
+    """
+    img_path = get_photo_path() + str(id_std)
+    if path.exists(img_path + ".png"):
+        img_path += ".png"
+    else:
+        img_path += ".jpg"
+
+    img = QImage(img_path)
+    if not img.isNull():
+        img = img.scaledToWidth(int(AssetManager.getInstance().config("photos", "photo_width")))
+    return img
 
 
 def tr(message: str) -> str:

@@ -285,7 +285,17 @@ class ModBdd:
         self.__cursor.execute(req, [std_id])
         r = self.__cursor.fetchone()
         return r if r is None else Student(std_id, r[1], r[2])
-        
+
+    def get_student_order_by_id(self, std_id):
+        """Returns a Student object
+        Input : idStd - student id
+        Output : Student object or None of no students matches the idStd"""
+
+        req = "SELECT OrderKey FROM Students WHERE IdStudent = ?"
+        self.__cursor.execute(req, [std_id])
+        r = self.__cursor.fetchone()
+        return 0 if r is None else r[0]
+
     def get_students_in_course_by_id(self, id_course):
         """Returns an array of Students in the room
         Input : id_course - the course id

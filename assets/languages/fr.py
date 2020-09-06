@@ -97,6 +97,12 @@ dico = {"app_title": "Salle de Classe",
         "btn_restore": "Restaurer les paramètres",
         "acknowledge_changes": "Vos modifications ont bien été prises en compte",
 
+        "faces_found": " visages détectés",
+        "std_faces_match": "Attention : Le nombre de visages<br>ne correspond pas au nombre d'élèves",
+        "all_faces_ok": "Tous les visages sont-ils bien détectés ?",
+        "action_import_photo": "Importer des photos",
+        "trombi_path": "Emplacement du trombinoscpe global",
+
         "language": "Langue :",
         "csv_sep": "Séparateur CSV :",
         "bdd_path": "Chemin du fichier de données :",
@@ -129,4 +135,6 @@ dico = {"app_title": "Salle de Classe",
                   "téléphone et cet ordinateur) soient connectés au même réseau.<br><br>C'est le cas lorsque :<ul>"
                   "<li>L'ordinateur ET le smartphone partagent le même WIFI ;</li>"
                   "<li>Votre téléphone est en partage de connexion et l'ordinateur y est connecté.</li></ul>",
+
+        "std_nb": "Identifiant SdC"
 }

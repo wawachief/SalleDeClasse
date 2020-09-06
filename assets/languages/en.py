@@ -97,6 +97,12 @@ dico = {"app_title": "Classroom",
         "btn_restore": "Restore defaults",
         "acknowledge_changes": "Your changes have been saved",
 
+        "faces_found": " faces found",
+        "std_faces_match" : "Attention : nb of detected faces<br>does not match the number of students",
+        "all_faces_ok": "Are all faces detected correctly?",
+        "action_import_photo" : "Photo import",
+        "trombi_path" : "Path to big picture",
+
         "language": "Language:",
         "csv_sep": "CSV separator:",
         "bdd_path": "DataBase location:",
@@ -125,7 +131,9 @@ dico = {"app_title": "Classroom",
                                "of rows and columns and their size,<br>so it might get too big for your screen.",
 
         "qr_tip": "In order for your smartphone to be able to connect to the application, it needs to share the "
-                  "same network than this computer.<br><br>It is the case when: <ul><li>Both your smartphone AND the "
+                  "same network than this computer.<br><br>It is the case in one of these situations: <ul><li>Both your smartphone AND the "
                   "computer running this software are connected to the same WIFI;</li>"
                   "<li>Your smartphone is in mode Access Point, and this computer is connected to it.</li></ul>",
+
+        "std_nb": "App Id"
 }

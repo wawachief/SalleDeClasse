@@ -1,17 +1,19 @@
 # Salle de classe by Lecluse DevCorp
 # file author : Olivier Lecluse
 # Licence GPL-v3 - see LICENCE.txt
+import tempfile
 
 from PySide2.QtCore import Slot
-
+from PySide2.QtWidgets import QFileDialog
 from src.Model.import_csv import import_csv, process_line
 
 from src.View.popup.view_info_dialog import VInfoDialog
 from src.View.popup.view_import_csv import DialogImportCsv
 from src.View.popup.view_confirm_dialogs import VConfirmDialog
 
-from src.assets_manager import AssetManager, tr
-
+from src.assets_manager import AssetManager, tr, get_photo_path
+import cv2
+from PIL import Image
 
 class GroupController:
     def __init__(self, main_ctrl, bdd):
@@ -221,3 +223,98 @@ class GroupController:
         self.__bdd.commit()
         self.main_ctrl.on_config_changed()
         self.course_ctrl.synchronize_canvas_selection_with_side_list()
+
+    def import_photos(self):
+        """Import photos from a group photo"""
+        trombinoscope = QFileDialog.getOpenFileName(self.gui, tr("trombi_path"),
+                                                    get_photo_path())[0]
+        if not trombinoscope:
+            return
+        photo_path = get_photo_path()
+
+        img = cv2.imread(trombinoscope)
+        # convert image to grayscale
+        grey_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        col_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+        IA_model = AssetManager.getInstance().config("photos", "IA_model")
+        scaleFactor = float(AssetManager.getInstance().config("photos", "scaleFactor"))
+        zoomFace = float(AssetManager.getInstance().config("photos", "zoomFace"))
+        minNeighbors = int(AssetManager.getInstance().config("photos", "minNeighbors"))
+        minSize = eval(AssetManager.getInstance().config("photos", "minSize"))
+
+        # Face detection
+        face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + IA_model)
+        faces = face_cascade.detectMultiScale(
+            grey_img,
+            scaleFactor=scaleFactor,
+            minNeighbors=minNeighbors,
+            minSize=minSize
+        )
+
+        self.gui.status_bar.showMessage(str(len(faces)) + tr("faces_found"), 3000)
+
+        # Get all unselected desks for photo matching
+        all_desks = self.mod_bdd.get_course_all_desks(self.main_ctrl.id_course)
+        selected_desks_id = self.v_canvas.get_selected_tiles()
+        stdid_to_import = [(d.id_student, self.mod_bdd.get_student_order_by_id(d.id_student))
+                           for d in all_desks if d.id not in selected_desks_id and d.id_student != 0]
+
+        if len(stdid_to_import) != len(faces) :
+            # problem : nb of detected faces does not match the number of students
+            VInfoDialog(self.gui, tr("std_faces_match")).exec_()
+        else:
+            # now we can import faces in png files
+
+            # first we sort the student list
+            stdid_to_import.sort(key=lambda x:x[1])
+
+            # We draw a frame around the faces
+            dico_sort = dict()
+            maxh = 0  # max face height
+            for (x, y, w, h) in faces:
+                if h > maxh:
+                    maxh = h
+                center_x = x + w // 2
+                center_y = y + h // 2
+                top, bottom = center_y + int(h * zoomFace), center_y - int(h * zoomFace)
+                left, right = center_x - int(w * zoomFace), center_x + int(w * zoomFace)
+                cv2.rectangle(col_img,
+                              (left, bottom),
+                              (right, top),
+                              (0, 255, 0), 2)
+                face_image = col_img[bottom:top, left:right]
+                pil_image = Image.fromarray(face_image, mode='RGB')
+                dico_sort[(center_x, center_y)] = pil_image
+
+            # Visual check
+
+            tmp_path = tempfile.mktemp()+".png"
+            Image.fromarray(col_img, mode='RGB').save(tmp_path)
+
+            if VConfirmDialog(self.gui, "all_faces_ok", img_path=tmp_path).exec_():
+                # row detection
+                rows = []
+                keys = dico_sort.keys()
+                maxh = maxh * 1.2
+                for k in keys:
+                    # search for an existing row for k[1]
+                    in_row = False
+                    for r in rows:
+                        if r - maxh <= k[1] <= r + maxh:
+                            in_row = True
+                            break
+                    if not in_row:
+                        rows.append(k[1])
+
+                # sort the photos, row by row
+                id_img = 0
+                for r in rows:
+                    keys_in_row = []
+                    for k in keys:
+                        if r - maxh <= k[1] <= r + maxh:
+                            keys_in_row.append(k)
+                    keys_in_row.sort()
+                    for k in keys_in_row:
+                        dico_sort[k].save(photo_path + str(stdid_to_import[id_img][0]) + ".png")
+                        id_img += 1

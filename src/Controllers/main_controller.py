@@ -43,6 +43,7 @@ class MainController(QObject):
     sig_canvas_click = Signal(tuple)
     sig_canvas_drag = Signal(tuple, tuple)
     sig_canvas_right_click = Signal(tuple)
+    sig_canvas_get_std_id = Signal(int)
     sig_TBbutton = Signal(str)
     sig_export_csv = Signal(str)
 
@@ -72,7 +73,6 @@ class MainController(QObject):
         Application main controller.
         """
         QObject.__init__(self)
-
         # Create the Views
         self.gui = ViewMainFrame(self.sig_quit, self.sig_config_mode_changed, self.sig_export_csv)
         self.v_canvas = self.gui.central_widget.classroom_tab.v_canvas
@@ -114,6 +114,7 @@ class MainController(QObject):
         self.v_canvas.sig_desk_selected = self.sig_desk_selected
         self.v_canvas.sig_canvas_drag = self.sig_canvas_drag
         self.v_canvas.sig_tile_info = self.sig_canvas_right_click
+        self.v_canvas.sig_std_id = self.sig_canvas_get_std_id
         self.gui.sidewidget.courses().sig_course_changed = self.sig_course_changed
         self.gui.sidewidget.courses().courses_toolbar.add_widget.sig_new_element = self.sig_create_course
         self.gui.sidewidget.courses().sig_topic_changed = self.sig_topic_changed
@@ -151,6 +152,7 @@ class MainController(QObject):
         self.sig_close_qr.connect(self.close_qr)
         self.sig_config_mode_changed.connect(self.on_config_changed)
         self.sig_export_csv.connect(self.attr_ctrl.export_csv)
+        self.sig_canvas_get_std_id.connect(self.set_std_id_to_canvas)
 
         self.actions_table = {  # Action buttons
             "import_csv": self.group_ctrl.import_pronote,
@@ -162,6 +164,7 @@ class MainController(QObject):
             "sort_desks_U": lambda: self.course_ctrl.sort_desks(sort_type="U"),
             "killstudent": self.group_ctrl.killstudent,
             "delete_group": self.group_ctrl.on_delete_group,
+            "import_photos": self.group_ctrl.import_photos,
 
             # Toolbar buttons
             "filter_select": self.attr_ctrl.change_filter_selection,
@@ -273,3 +276,11 @@ class MainController(QObject):
         else:
             self.gui.status_bar.showMessage(tr("no_internet"), 5000)
             VInfoDialog(self.gui, tr("no_internet")).exec_()
+
+    @Slot(int)
+    def set_std_id_to_canvas(self, desk_id):
+        """
+        Given the hoverred desk id, this method will set the associated student ID info to the canvas in order for it
+        to draw the associated student image
+        """
+        self.v_canvas.students_ids[desk_id] = self.mod_bdd.get_student_by_desk_id(desk_id).id
