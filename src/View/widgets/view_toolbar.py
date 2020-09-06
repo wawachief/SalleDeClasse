@@ -10,8 +10,8 @@ from src.View.widgets.view_add_widget import ViewAddWidget, ViewAddLine, ViewAdd
 from src.View.widgets.view_menubutton import ViewMenuButton
 from src.View.widgets.ToggleSwitchButton import ToggleSwitchButton
 
-BUTTON_SIZE = QSize(60, 60)
-ICON_SIZE = QSize(45, 45)
+BUTTON_SIZE = QSize(45, 45)
+ICON_SIZE = QSize(30, 30)
 
 
 class ViewMainToolBar(QToolBar):
@@ -31,6 +31,7 @@ class ViewMainToolBar(QToolBar):
 
         # Buttons
         self.__btn_config = ToggleSwitchButton(self, "unlock", "lock", self.on_config_mode)
+        self.__btn_show_photo = ToggleSwitchButton(self, "showphoto1", "showphoto2", self.on_show_photo)
         self.__btn_magic = ToolBarButton("unkwown", tr("btn_selection_filter"), lambda: self.sig_TBbutton.emit("filter_select"))
         self.__btn_perspective = ToolBarButton("teacher", tr("btn_change_perspective"), self.on_btn_perspective_clicked)
         self.__btn_shuffle = ToolBarButton("shuffle", tr("btn_shuffle"), self.on_btn_shuffle_clicked)
@@ -45,11 +46,11 @@ class ViewMainToolBar(QToolBar):
         self.__btn_config_edition = ToolBarButton("config", tr("btn_config"), self.on_edit_config)
         self.__btn_about = ToolBarButton("info", tr("btn_about"), self.open_about_box)  # Keep at the end
 
-        self.actions_table = {self.__btn_config: None, self.__btn_magic: None, self.__btn_perspective: None,
-                              self.__btn_shuffle: None, self.__btn_select: None, self.__btn_choice: None,
-                              self.__btn_attr_choice: None, self.__btn_delete: None, self.__btn_lot_change: None,
-                              self.__btn_png: None, self.__btn_qr: None, self.__btn_export_csv: None,
-                              self.__btn_config_edition: None, self.__btn_about: None}
+        self.actions_table = {self.__btn_config: None, self.__btn_show_photo: None, self.__btn_magic: None,
+                              self.__btn_perspective: None, self.__btn_shuffle: None, self.__btn_select: None,
+                              self.__btn_choice: None, self.__btn_attr_choice: None, self.__btn_delete: None,
+                              self.__btn_lot_change: None, self.__btn_png: None, self.__btn_qr: None,
+                              self.__btn_export_csv: None, self.__btn_config_edition: None, self.__btn_about: None}
 
         # Signals
         self.sig_enable_animation_btns.connect(self.enable_animation_btns)
@@ -79,6 +80,7 @@ class ViewMainToolBar(QToolBar):
         :param is_view_classroom: True if the current central panel tab is the classroom's widget
         """
         self.actions_table[self.__btn_config].setVisible(is_view_classroom)
+        self.actions_table[self.__btn_show_photo].setVisible(is_view_classroom)
         self.actions_table[self.__btn_magic].setVisible(not is_view_classroom)
         self.actions_table[self.__btn_perspective].setVisible(is_view_classroom)
         self.actions_table[self.__btn_shuffle].setVisible(is_view_classroom)
@@ -98,6 +100,11 @@ class ViewMainToolBar(QToolBar):
         """
         self.config_mode = is_config_mode
 
+        if is_config_mode:
+            # Disables the show photo button when switching to config mode
+            self.__btn_show_photo.set_value(False)
+
+        self.actions_table[self.__btn_show_photo].setEnabled(not is_config_mode)
         self.actions_table[self.__btn_shuffle].setEnabled(is_config_mode)
         self.actions_table[self.__btn_delete].setEnabled(is_config_mode)
         self.actions_table[self.__btn_config_edition].setEnabled(is_config_mode)
@@ -155,6 +162,9 @@ class ViewMainToolBar(QToolBar):
         pass
 
     def on_edit_config(self) -> None:
+        pass
+
+    def on_show_photo(self) -> None:
         pass
 
 

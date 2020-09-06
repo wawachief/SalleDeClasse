@@ -100,6 +100,7 @@ class GroupController:
         self.main_ctrl.id_group = 0
         self.__bdd.commit()
         self.show_all_groups()
+        self.course_ctrl.show_course()
 
     #
     # General methods

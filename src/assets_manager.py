@@ -2,7 +2,7 @@
 # file author : Thomas & Olivier Lecluse
 # Licence GPL-v3 - see LICENCE.txt
 
-from PySide2.QtGui import QIcon
+from PySide2.QtGui import QIcon, QImage
 from importlib import import_module
 from configparser import ConfigParser
 from os import path
@@ -328,6 +328,16 @@ def get_stylesheet(file: str) -> str:
     """
     with open(ASSETS_PATH + STYLE_PATH + file + STYLE_EXT, "r") as f:
         return f.read()
+
+
+def get_student_img(id_std: int) -> QImage:
+    """
+    Gets the student image associated to the ID
+    :param id_std: id of the student
+    :return: his/her associated photo
+    """
+    return QImage(path.expanduser(AssetManager.getInstance().config("main", "bdd_path").
+                                 replace("sdc_db", "sdc_photos/" + str(id_std) + ".png")))
 
 
 def tr(message: str) -> str:

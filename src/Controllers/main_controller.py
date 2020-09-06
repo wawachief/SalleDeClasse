@@ -43,6 +43,7 @@ class MainController(QObject):
     sig_canvas_click = Signal(tuple)
     sig_canvas_drag = Signal(tuple, tuple)
     sig_canvas_right_click = Signal(tuple)
+    sig_canvas_get_std_id = Signal(int)
     sig_TBbutton = Signal(str)
     sig_export_csv = Signal(str)
 
@@ -114,6 +115,7 @@ class MainController(QObject):
         self.v_canvas.sig_desk_selected = self.sig_desk_selected
         self.v_canvas.sig_canvas_drag = self.sig_canvas_drag
         self.v_canvas.sig_tile_info = self.sig_canvas_right_click
+        self.v_canvas.sig_std_id = self.sig_canvas_get_std_id
         self.gui.sidewidget.courses().sig_course_changed = self.sig_course_changed
         self.gui.sidewidget.courses().courses_toolbar.add_widget.sig_new_element = self.sig_create_course
         self.gui.sidewidget.courses().sig_topic_changed = self.sig_topic_changed
@@ -151,6 +153,7 @@ class MainController(QObject):
         self.sig_close_qr.connect(self.close_qr)
         self.sig_config_mode_changed.connect(self.on_config_changed)
         self.sig_export_csv.connect(self.attr_ctrl.export_csv)
+        self.sig_canvas_get_std_id.connect(self.set_std_id_to_canvas)
 
         self.actions_table = {  # Action buttons
             "import_csv": self.group_ctrl.import_pronote,
@@ -214,28 +217,6 @@ class MainController(QObject):
         self.actions_table[action_key]()
 
     @Slot()
-    def on_config_changed(self):
-        """
-        Triggered when the user switched configuration mode
-        Refresh the student list
-        """
-
-        if self.gui.get_config():
-            # Mode config is on, push group list
-            current_group = self.mod_bdd.get_group_name_by_id(self.id_group)
-            self.gui.sidewidget.students().set_students_list(self.mod_bdd.get_students_in_group(current_group))
-        else:
-            # Mode config is off, push students visible in the canvas inside the list
-            students_in_course = self.mod_bdd.get_students_in_course_by_id(self.id_course)
-            self.gui.sidewidget.students().set_students_list(students_in_course)
-        self.course_ctrl.synchronize_canvas_selection_with_side_list()
-
-    @Slot()
-    def close_qr(self):
-        if self.qr_dialog and self.qr_dialog.isVisible():
-            self.qr_dialog.close()
-
-    @Slot()
     def do_quit(self, exit_code):
         self.v_canvas.application_closing()
         self.__bdd.close()
@@ -296,3 +277,10 @@ class MainController(QObject):
             self.gui.status_bar.showMessage(tr("no_internet"), 5000)
             VInfoDialog(self.gui, tr("no_internet")).exec_()
 
+    @Slot(int)
+    def set_std_id_to_canvas(self, desk_id):
+        """
+        Given the hoverred desk id, this method will set the associated student ID info to the canvas in order for it
+        to draw the associated student image
+        """
+        self.v_canvas.photo_std_id = self.mod_bdd.get_student_by_desk_id(desk_id).id

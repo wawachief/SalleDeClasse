@@ -128,4 +128,6 @@ dico = {"app_title": "Classroom",
                   "same network than this computer.<br><br>It is the case in one of these situations: <ul><li>Both your smartphone AND the "
                   "computer running this software are connected to the same WIFI;</li>"
                   "<li>Your smartphone is in mode Access Point, and this computer is connected to it.</li></ul>",
+
+        "std_nb": "App Id"
 }
