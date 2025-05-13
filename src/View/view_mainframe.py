@@ -2,9 +2,9 @@
 # file author : Thomas Lecluse
 # Licence GPL-v3 - see LICENCE.txt
 
-from PySide2 import QtCore
-from PySide2.QtWidgets import QMainWindow, QWidget, QDockWidget, QGridLayout, QStatusBar, QTabWidget, QFileDialog
-from PySide2.QtCore import Qt, Signal, QSize
+from PySide6 import QtCore
+from PySide6.QtWidgets import QMainWindow, QWidget, QDockWidget, QGridLayout, QStatusBar, QTabWidget, QFileDialog
+from PySide6.QtCore import Qt, Signal, QSize
 
 from src.View.popup.view_about_box import AboutFrame
 from src.View.popup.view_settings import SettingsEditionDialog

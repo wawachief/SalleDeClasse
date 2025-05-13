@@ -2,8 +2,8 @@
 # file author : Thomas Lecluse
 # Licence GPL-v3 - see LICENCE.txt
 
-from PySide2.QtWidgets import QWidget, QVBoxLayout
-from PySide2.QtCore import Signal, Qt
+from PySide6.QtWidgets import QWidget, QVBoxLayout
+from PySide6.QtCore import Signal, Qt
 
 from src.View.widgets.view_toolbar import ViewAttributeListToolbar
 from src.View.widgets.view_table import CustomTableModel, CustomTableView
@@ -47,7 +47,7 @@ class ViewAttributePanel(QWidget):
         Sets this widget's layout
         """
         layout = QVBoxLayout()
-        layout.setMargin(0)
+        layout.setContentsMargins(0, 0, 0, 0)
 
         layout.addWidget(self.attributes_toolbar)
         layout.addWidget(self.tableview)

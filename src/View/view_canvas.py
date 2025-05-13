@@ -2,9 +2,9 @@
 # file author : Thomas Lecluse
 # Licence GPL-v3 - see LICENCE.txt
 
-from PySide2.QtWidgets import QWidget
-from PySide2.QtGui import QPainter, QColor, QPen, QPalette, QFont, QPixmap, QRegion
-from PySide2.QtCore import QPoint, QRect, Qt, Signal, Slot, QTimer, QThread, QObject
+from PySide6.QtWidgets import QWidget
+from PySide6.QtGui import QPainter, QColor, QPen, QPalette, QFont, QPixmap, QRegion
+from PySide6.QtCore import QPoint, QRect, Qt, Signal, Slot, QTimer, QThread, QObject
 
 from src.View.popup.view_printer import CustomPrinterDialog
 from src.assets_manager import AssetManager, get_student_img
@@ -327,7 +327,7 @@ class ViewCanvas(QWidget):
         color = AssetManager.getInstance().config('colors', 'room_bg') if self.__is_config else "white"
 
         pal = QPalette()
-        pal.setColor(QPalette.Background, QColor(color))
+        pal.setColor(QPalette.Active, QPalette.Window, QColor(color))
         self.setPalette(pal)
 
     def config_mode(self, is_config: bool) -> None:

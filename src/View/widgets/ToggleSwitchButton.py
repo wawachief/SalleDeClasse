@@ -2,9 +2,9 @@
 # file author : Thomas Lecluse
 # Licence GPL-v3 - see LICENCE.txt
 
-from PySide2.QtCore import Qt, QPropertyAnimation, QSize, QPoint, Signal, QEvent
-from PySide2.QtGui import QPainter, QLinearGradient, QColor, QPen, QRadialGradient, QBrush, QPixmap, QImage, QMouseEvent
-from PySide2.QtWidgets import QWidget, QLabel, QVBoxLayout
+from PySide6.QtCore import Qt, QPropertyAnimation, QSize, QPoint, Signal, QEvent
+from PySide6.QtGui import QPainter, QLinearGradient, QColor, QPen, QRadialGradient, QBrush, QPixmap, QImage, QMouseEvent
+from PySide6.QtWidgets import QWidget, QLabel, QVBoxLayout
 
 from src.assets_manager import ASSETS_PATH, ICONS_PATH
 

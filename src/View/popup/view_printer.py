@@ -2,10 +2,10 @@
 # file author : Thomas Lecluse
 # Licence GPL-v3 - see LICENCE.txt
 
-from PySide2 import QtPrintSupport
-from PySide2.QtCore import Qt
-from PySide2.QtGui import QPixmap
-from PySide2.QtWidgets import QDialog, QLabel, QFileDialog, QVBoxLayout
+from PySide6 import QtPrintSupport
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QPixmap
+from PySide6.QtWidgets import QDialog, QLabel, QFileDialog, QVBoxLayout
 
 from src.assets_manager import tr
 

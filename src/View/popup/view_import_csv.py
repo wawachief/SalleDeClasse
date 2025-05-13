@@ -2,8 +2,8 @@
 # file author : Thomas Lecluse
 # Licence GPL-v3 - see LICENCE.txt
 
-from PySide2.QtWidgets import QDialog, QFileDialog, QGridLayout, QComboBox, QLabel
-from PySide2.QtCore import Qt
+from PySide6.QtWidgets import QDialog, QFileDialog, QGridLayout, QComboBox, QLabel
+from PySide6.QtCore import Qt
 
 from src.assets_manager import tr, get_stylesheet
 

@@ -2,10 +2,10 @@
 # file author : Thomas Lecluse
 # Licence GPL-v3 - see LICENCE.txt
 
-import PySide2
-from PySide2.QtGui import QColor
-from PySide2.QtWidgets import QTableView, QAbstractItemView, QHeaderView
-from PySide2.QtCore import QAbstractTableModel, Qt, QModelIndex
+import PySide6
+from PySide6.QtGui import QColor
+from PySide6.QtWidgets import QTableView, QAbstractItemView, QHeaderView
+from PySide6.QtCore import QAbstractTableModel, Qt, QModelIndex
 
 import typing
 import operator
@@ -61,7 +61,7 @@ class CustomTableModel(QAbstractTableModel):
             return self.header[section]
         return None
 
-    def sort(self, column: int, order: PySide2.QtCore.Qt.SortOrder = ...):
+    def sort(self, column: int, order: PySide6.QtCore.Qt.SortOrder = ...):
         self.layoutAboutToBeChanged.emit()
         self.data_list = sorted(self.data_list, key=operator.itemgetter(column), reverse=order != Qt.AscendingOrder)
         self.layoutChanged.emit()

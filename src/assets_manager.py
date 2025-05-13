@@ -2,7 +2,7 @@
 # file author : Thomas & Olivier Lecluse
 # Licence GPL-v3 - see LICENCE.txt
 
-from PySide2.QtGui import QIcon, QImage
+from PySide6.QtGui import QIcon, QImage
 from importlib import import_module
 from configparser import ConfigParser
 from os import path, makedirs

@@ -2,9 +2,9 @@
 # file author : Thomas Lecluse
 # Licence GPL-v3 - see LICENCE.txt
 
-from PySide2.QtWidgets import QDialog, QVBoxLayout, QLabel
-from PySide2.QtCore import Qt, QSize
-from PySide2.QtGui import QPixmap, QImage
+from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel
+from PySide6.QtCore import Qt, QSize
+from PySide6.QtGui import QPixmap, QImage
 
 import pyqrcode
 import socket
@@ -49,9 +49,9 @@ class VQRCode(QDialog):
 
             # Layout
             layout = QVBoxLayout()
-            layout.setMargin(0)
-            layout.addWidget(self.qr, alignment=Qt.AlignCenter)
-            layout.addWidget(InfoToolTip("qr_tip"), alignment=Qt.AlignCenter)
+            layout.setContentsMargins(0, 0, 0, 0)
+            layout.addWidget(self.qr, alignment=Qt.AlignmentFlag.AlignCenter)
+            layout.addWidget(InfoToolTip("qr_tip"), alignment=Qt.AlignmentFlag.AlignCenter)
             layout.addSpacing(5)
             self.setLayout(layout)
 

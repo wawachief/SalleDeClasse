@@ -4,7 +4,7 @@
 
 import sqlite3
 
-from PySide2.QtCore import QObject, Signal, Slot
+from PySide6.QtCore import QObject, Signal, Slot
 
 from src.View.popup.view_info_dialog import VInfoDialog
 from src.assets_manager import AssetManager, tr
@@ -21,7 +21,7 @@ from src.View.widgets.view_menubutton import ViewMenuButton
 from src.View.popup.view_student_attributes import VStdAttributesDialog
 from src.View.popup.view_confirm_dialogs import VConfirmDialog
 from src.View.popup.view_qrcode import VQRCode
-from PySide2.QtWidgets import QFileDialog
+from PySide6.QtWidgets import QFileDialog
 
 from os import path
 # web sockets

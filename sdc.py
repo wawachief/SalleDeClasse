@@ -2,8 +2,8 @@
 # file author : Olivier & Thomas & Nicolas Lecluse
 # Licence GPL-v3 - see LICENCE.txt
 
-from PySide2 import QtCore
-from PySide2.QtWidgets import QApplication
+from PySide6 import QtCore
+from PySide6.QtWidgets import QApplication
 from src.Controllers.main_controller import MainController
 
 from src.View.view_mainframe import EXIT_CODE_REBOOT

@@ -2,9 +2,9 @@
 # file author : Thomas Lecluse
 # Licence GPL-v3 - see LICENCE.txt
 
-from PySide2.QtWidgets import QWidget, QPushButton, QLineEdit, QHBoxLayout, QShortcut, QComboBox
-from PySide2.QtCore import QSize, Qt, Signal
-from PySide2.QtGui import QKeySequence
+from PySide6.QtWidgets import QWidget, QPushButton, QLineEdit, QHBoxLayout, QComboBox
+from PySide6.QtCore import QSize, Qt, Signal
+from PySide6.QtGui import QKeySequence, QShortcut
 
 from src.assets_manager import get_icon, tr
 
@@ -51,10 +51,10 @@ class ViewAddWidget(QWidget):
 
     def __init_layout(self):
         layout = QHBoxLayout()
-        layout.setMargin(0)
+        layout.setContentsMargins(0, 0, 0, 0)
 
-        layout.addWidget(self.add_btn, alignment=Qt.AlignLeft)
-        layout.addWidget(self.field, alignment=Qt.AlignLeft)
+        layout.addWidget(self.add_btn, alignment=Qt.AlignmentFlag.AlignLeft)
+        layout.addWidget(self.field, alignment=Qt.AlignmentFlag.AlignLeft)
 
         self.setLayout(layout)
 
@@ -118,7 +118,7 @@ class ViewAddLine(QWidget):
 
         # Layout
         layout = QHBoxLayout()
-        layout.setMargin(0)
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(self.create_field)
         self.setLayout(layout)
 
@@ -236,13 +236,13 @@ class ViewAddAttributeWidget(QWidget):
 
     def __init_layout(self) -> None:
         layout = QHBoxLayout()
-        layout.setMargin(0)
+        layout.setContentsMargins(0, 0, 0, 0)
 
-        layout.addWidget(self.add_btn, alignment=Qt.AlignLeft)
-        layout.addWidget(self.field, alignment=Qt.AlignLeft)
-        layout.addWidget(self.combo, alignment=Qt.AlignLeft)
-        layout.addWidget(self.ok_btn, alignment=Qt.AlignRight)
-        layout.addWidget(self.delete_btn, alignment=Qt.AlignRight)
+        layout.addWidget(self.add_btn, alignment=Qt.AlignmentFlag.AlignLeft)
+        layout.addWidget(self.field, alignment=Qt.AlignmentFlag.AlignLeft)
+        layout.addWidget(self.combo, alignment=Qt.AlignmentFlag.AlignLeft)
+        layout.addWidget(self.ok_btn, alignment=Qt.AlignmentFlag.AlignRight)
+        layout.addWidget(self.delete_btn, alignment=Qt.AlignmentFlag.AlignRight)
 
         self.setLayout(layout)
 

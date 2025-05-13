@@ -2,9 +2,9 @@
 # file author : Thomas Lecluse
 # Licence GPL-v3 - see LICENCE.txt
 
-from PySide2.QtWidgets import QVBoxLayout, QLabel, QDialog, QGridLayout
-from PySide2.QtGui import QPixmap
-from PySide2.QtCore import QSize, Qt
+from PySide6.QtWidgets import QVBoxLayout, QLabel, QDialog, QGridLayout
+from PySide6.QtGui import QPixmap
+from PySide6.QtCore import QSize, Qt
 
 from src.assets_manager import AssetManager, tr, get_stylesheet
 

@@ -2,8 +2,8 @@
 # file author : Thomas Lecluse
 # Licence GPL-v3 - see LICENCE.txt
 
-from PySide2.QtWidgets import QTabWidget
-from PySide2.QtCore import QSize
+from PySide6.QtWidgets import QTabWidget
+from PySide6.QtCore import QSize
 
 from src.View.widgets.view_courses import ViewCoursePanel
 from src.View.widgets.view_students import ViewStudentPanel

@@ -3,8 +3,8 @@
 # Licence GPL-v3 - see LICENCE.txt
 import tempfile
 
-from PySide2.QtCore import Slot
-from PySide2.QtWidgets import QFileDialog
+from PySide6.QtCore import Slot
+from PySide6.QtWidgets import QFileDialog
 from src.Model.import_csv import import_csv, process_line
 
 from src.View.popup.view_info_dialog import VInfoDialog

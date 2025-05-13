@@ -2,7 +2,7 @@
 # file author : Thomas Lecluse
 # Licence GPL-v3 - see LICENCE.txt
 
-from PySide2.QtWidgets import QMenu, QPushButton
+from PySide6.QtWidgets import QMenu, QPushButton
 
 from src.assets_manager import get_stylesheet
 

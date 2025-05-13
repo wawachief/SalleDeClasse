@@ -2,8 +2,8 @@
 # file author : Olivier Lecluse
 # Licence GPL-v3 - see LICENCE.txt
 
-from PySide2.QtCore import Slot
-from PySide2.QtGui import QColor
+from PySide6.QtCore import Slot
+from PySide6.QtGui import QColor
 
 from src.View.popup.view_confirm_dialogs import VConfirmDialog
 from src.View.popup.view_attribute_edition import VDlgEditText, VDlgEditCounter, VDlgEditMark, VDlgEditColor

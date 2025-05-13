@@ -2,7 +2,7 @@ flask
 flask_socketio
 pypng
 pyqrcode
-pyside2
+PySide6
 python-engineio
 eventlet
 configparser

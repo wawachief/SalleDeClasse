@@ -2,9 +2,9 @@
 # file author : Thomas Lecluse
 # Licence GPL-v3 - see LICENCE.txt
 
-from PySide2.QtCore import Qt, QSize
-from PySide2.QtGui import QColor
-from PySide2.QtWidgets import QDialog, QFormLayout, QLabel, QComboBox, QPushButton, QHBoxLayout, QWidget, QVBoxLayout, \
+from PySide6.QtCore import Qt, QSize
+from PySide6.QtGui import QColor
+from PySide6.QtWidgets import QDialog, QFormLayout, QLabel, QComboBox, QPushButton, QHBoxLayout, QWidget, QVBoxLayout, \
     QLineEdit, QFileDialog, QSpinBox, QColorDialog, QGridLayout
 
 from configparser import ConfigParser

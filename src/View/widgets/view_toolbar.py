@@ -2,8 +2,8 @@
 # file author : Thomas Lecluse
 # Licence GPL-v3 - see LICENCE.txt
 
-from PySide2.QtWidgets import QToolBar, QPushButton, QComboBox, QWidget, QSizePolicy, QLabel
-from PySide2.QtCore import Signal, Slot, QSize
+from PySide6.QtWidgets import QToolBar, QPushButton, QComboBox, QWidget, QSizePolicy, QLabel
+from PySide6.QtCore import Signal, Slot, QSize
 
 from src.assets_manager import get_icon, get_stylesheet, tr
 from src.View.widgets.view_add_widget import ViewAddWidget, ViewAddLine, ViewAddAttributeWidget

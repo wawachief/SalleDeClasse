@@ -4,10 +4,10 @@
 
 import typing
 
-from PySide2.QtGui import QColor, QPixmap
-from PySide2.QtWidgets import QDialog, QLabel, QPushButton, QTableView, QAbstractItemView, QHeaderView, QGridLayout, \
+from PySide6.QtGui import QColor, QPixmap
+from PySide6.QtWidgets import QDialog, QLabel, QPushButton, QTableView, QAbstractItemView, QHeaderView, QGridLayout, \
     QFormLayout
-from PySide2.QtCore import Qt, QSize, Signal, QAbstractTableModel, QModelIndex
+from PySide6.QtCore import Qt, QSize, Signal, QAbstractTableModel, QModelIndex
 
 from src.assets_manager import get_stylesheet, get_student_img, tr
 

@@ -4,7 +4,7 @@
 
 import sqlite3
 
-from PySide2.QtCore import QThread
+from PySide6.QtCore import QThread
 from flask import Flask, render_template, request, jsonify
 from src.Controllers.main_controller import MainController
 from src.assets_manager import AssetManager

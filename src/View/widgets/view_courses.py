@@ -2,8 +2,8 @@
 # file author : Thomas Lecluse
 # Licence GPL-v3 - see LICENCE.txt
 
-from PySide2.QtCore import QModelIndex
-from PySide2.QtWidgets import QWidget, QVBoxLayout
+from PySide6.QtCore import QModelIndex
+from PySide6.QtWidgets import QWidget, QVBoxLayout
 
 from src.View.widgets.view_toolbar import ViewCourseListToolbar
 from src.View.widgets.view_table import CustomTableModel, CustomTableView
@@ -54,7 +54,7 @@ class ViewCoursePanel(QWidget):
         Sets this widget's layout
         """
         layout = QVBoxLayout()
-        layout.setMargin(0)
+        layout.setContentsMargins(0, 0, 0, 0)
 
         layout.addWidget(self.courses_toolbar)
         layout.addWidget(self.tableview)

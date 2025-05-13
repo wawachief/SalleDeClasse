@@ -2,8 +2,8 @@
 # file author : Thomas Lecluse
 # Licence GPL-v3 - see LICENCE.txt
 
-from PySide2.QtWidgets import QDialog, QGridLayout, QLineEdit, QPushButton, QTextEdit, QSpinBox, QHBoxLayout
-from PySide2.QtCore import QSize, Qt
+from PySide6.QtWidgets import QDialog, QGridLayout, QLineEdit, QPushButton, QTextEdit, QSpinBox, QHBoxLayout
+from PySide6.QtCore import QSize, Qt
 
 from src.assets_manager import AssetManager, tr
 

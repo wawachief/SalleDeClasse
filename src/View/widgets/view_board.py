@@ -2,8 +2,8 @@
 # file author : Thomas Lecluse
 # Licence GPL-v3 - see LICENCE.txt
 
-from PySide2.QtWidgets import QLabel, QWidget, QHBoxLayout
-from PySide2.QtCore import QSize, Qt
+from PySide6.QtWidgets import QLabel, QWidget, QHBoxLayout
+from PySide6.QtCore import QSize, Qt
 
 from src.assets_manager import tr
 
@@ -26,11 +26,11 @@ class ViewTeacherDeskLabel(QWidget):
         self.label = QLabel(text)
         self.label.setToolTip(tr("perspective_tootip"))
         self.label.setStyleSheet(f"border-radius: 5px; background: {bg_color}; color: white;")
-        self.label.setAlignment(Qt.AlignCenter)
+        self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.label.setFixedSize(QSize(200, 30))
 
         layout = QHBoxLayout()
-        layout.setMargin(0)
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(self.label)
         self.setLayout(layout)
 

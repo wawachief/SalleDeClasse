@@ -8,7 +8,7 @@ from configparser import ConfigParser
 
 # Dependencies are automatically detected, but it might need fine tuning.
 build_exe_options = {
-    "packages": ["os", "pyside2", "sqlite3", "pyqrcode", "engineio", 'socketio', "eventlet", 'flask_socketio', "configparser", "jinja2.ext", "dns", "csv"],
+    "packages": ["os", "pyside6", "sqlite3", "pyqrcode", "engineio", 'socketio', "eventlet", 'flask_socketio', "configparser", "jinja2.ext", "dns", "csv"],
     "include_files": ["doc/", "assets/", "src/", "README.md", "config.ini"],
     "excludes": ["tkinter", "tk"],
     'include_msvcr': True
